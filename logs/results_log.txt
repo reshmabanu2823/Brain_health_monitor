@@ -1,0 +1,52 @@
+[2026-07-08 13:33:11] | File: gg (1).jpg                     | Result: Glioma Tumor         | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 13:34:12] | File: gg (10).jpg                    | Result: Glioma Tumor         | Confidence:  85.8% | TUMOR DETECTED
+[2026-07-08 13:45:33] | File: image(1).jpg                   | Result: Meningioma Tumor     | Confidence:  99.9% | TUMOR DETECTED
+[2026-07-08 13:45:38] | File: image(100).jpg                 | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 13:53:00] | File: image(34).jpg                  | Result: No Tumor             | Confidence:  91.9% | NORMAL
+[2026-07-08 13:53:23] | File: image(23).jpg                  | Result: Pituitary Tumor      | Confidence:  89.5% | TUMOR DETECTED
+[2026-07-08 13:53:30] | File: image(23).jpg                  | Result: Pituitary Tumor      | Confidence:  89.5% | TUMOR DETECTED
+[2026-07-08 13:53:42] | File: image(28).jpg                  | Result: Pituitary Tumor      | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:14:40] | File: image(14).jpg                  | Result: Meningioma Tumor     | Confidence:  99.8% | TUMOR DETECTED
+[2026-07-08 14:14:45] | File: image(16).jpg                  | Result: Meningioma Tumor     | Confidence:  91.6% | TUMOR DETECTED
+[2026-07-08 14:15:10] | File: image(100).jpg                 | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:15:12] | File: image(118).jpg                 | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:15:18] | File: image(16).jpg                  | Result: Meningioma Tumor     | Confidence:  99.9% | TUMOR DETECTED
+[2026-07-08 14:15:22] | File: image(26).jpg                  | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:15:27] | File: image(30).jpg                  | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:15:32] | File: image(41).jpg                  | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:15:57] | File: image(100).jpg                 | Result: No Tumor             | Confidence:  99.3% | NORMAL
+[2026-07-08 14:16:03] | File: image(10).jpg                  | Result: No Tumor             | Confidence:  50.8% | NORMAL
+[2026-07-08 14:16:08] | File: image(25).jpg                  | Result: Meningioma Tumor     | Confidence:  97.4% | TUMOR DETECTED
+[2026-07-08 14:16:11] | File: image(29).jpg                  | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:16:18] | File: image(11).jpg                  | Result: Meningioma Tumor     | Confidence:  50.1% | TUMOR DETECTED
+[2026-07-08 14:16:21] | File: image(1).jpg                   | Result: Glioma Tumor         | Confidence:  99.7% | TUMOR DETECTED
+[2026-07-08 14:16:24] | File: image(16).jpg                  | Result: Meningioma Tumor     | Confidence:  91.6% | TUMOR DETECTED
+[2026-07-08 14:16:27] | File: image(22).jpg                  | Result: Meningioma Tumor     | Confidence:  99.9% | TUMOR DETECTED
+[2026-07-08 14:16:31] | File: image(26).jpg                  | Result: Glioma Tumor         | Confidence:  72.7% | TUMOR DETECTED
+[2026-07-08 14:16:35] | File: image(29).jpg                  | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:16:38] | File: image(29).jpg                  | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:16:42] | File: image(35).jpg                  | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:16:45] | File: image(4).jpg                   | Result: Pituitary Tumor      | Confidence:  99.1% | TUMOR DETECTED
+[2026-07-08 14:16:49] | File: image(43).jpg                  | Result: Glioma Tumor         | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:17:07] | File: image(1).jpg                   | Result: No Tumor             | Confidence:  99.7% | NORMAL
+[2026-07-08 14:17:10] | File: image(12).jpg                  | Result: No Tumor             | Confidence: 100.0% | NORMAL
+[2026-07-08 14:17:14] | File: image(21).jpg                  | Result: No Tumor             | Confidence: 100.0% | NORMAL
+[2026-07-08 14:17:17] | File: image(27).jpg                  | Result: No Tumor             | Confidence:  99.9% | NORMAL
+[2026-07-08 14:17:20] | File: image(27).jpg                  | Result: No Tumor             | Confidence:  99.9% | NORMAL
+[2026-07-08 14:17:23] | File: image(32).jpg                  | Result: No Tumor             | Confidence: 100.0% | NORMAL
+[2026-07-08 14:17:26] | File: image(41).jpg                  | Result: No Tumor             | Confidence: 100.0% | NORMAL
+[2026-07-08 14:18:23] | File: image(44).jpg                  | Result: No Tumor             | Confidence: 100.0% | NORMAL
+[2026-07-08 14:18:27] | File: image(48).jpg                  | Result: Pituitary Tumor      | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:23:21] | File: image(57).jpg                  | Result: Pituitary Tumor      | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:23:23] | File: image(56).jpg                  | Result: Pituitary Tumor      | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:23:26] | File: image(5).jpg                   | Result: Pituitary Tumor      | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:23:30] | File: image(47).jpg                  | Result: Pituitary Tumor      | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:23:33] | File: image(41).jpg                  | Result: Pituitary Tumor      | Confidence:  90.1% | TUMOR DETECTED
+[2026-07-08 14:24:11] | File: image(42).jpg                  | Result: Pituitary Tumor      | Confidence:  90.1% | TUMOR DETECTED
+[2026-07-08 14:24:15] | File: image(36).jpg                  | Result: Meningioma Tumor     | Confidence:  96.8% | TUMOR DETECTED
+[2026-07-08 14:24:21] | File: image(48).jpg                  | Result: Pituitary Tumor      | Confidence: 100.0% | TUMOR DETECTED
+[2026-07-08 14:24:25] | File: image(54).jpg                  | Result: No Tumor             | Confidence: 100.0% | NORMAL
+[2026-08-09 18:58:20] | File: Y1.jpg                         | Result: Pituitary Tumor      | Confidence:  82.0% | TUMOR DETECTED
+[2026-08-09 19:08:09] | File: Y1.jpg                         | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
+[2026-08-09 19:08:38] | File: 1-mri-scan-of-brain-tumour-cerebellar-glioma-simon-fraserneuroradiology-deptnewcastle-general-hospitalscience-photo-library.jpg | Result: No Tumor             | Confidence:  99.6% | NORMAL
+[2026-08-09 19:09:36] | File: K0037770-Glioma_brain_tumour,_MRI_sequence.jpg | Result: No Tumor             | Confidence:  99.7% | NORMAL

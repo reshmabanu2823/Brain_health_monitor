@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Tumor AI Diagnostic Suite</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🧠</div>
+      <div class="brand-text">
+        <h1>Brain Tumor AI Diagnostic Suite</h1>
+        <p>Embedded Deep Learning Diagnostic System</p>
+      </div>
+    </div>
+    <div class="header-status">
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span id="api-status">Server & Model Online</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-container">
+
+    <!-- Stats Counter Row -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Total Scans</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-icon icon-blue">📊</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Tumors Detected</div>
+          <div class="stat-value" id="stat-tumors">0</div>
+        </div>
+        <div class="stat-icon icon-red">⚠️</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Normal Scans</div>
+          <div class="stat-value" id="stat-normal">0</div>
+        </div>
+        <div class="stat-icon icon-green">✅</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Model Accuracy</div>
+          <div class="stat-value" id="stat-accuracy">96.4%</div>
+        </div>
+        <div class="stat-icon icon-purple">🎯</div>
+      </div>
+    </div>
+
+    <!-- Main Diagnostic Workspace -->
+    <div class="workspace-grid">
+
+      <!-- Left Panel: Upload Zone -->
+      <div class="card">
+        <div class="card-title">
+          <span>📁 Select MRI Image</span>
+        </div>
+
+        <div class="drop-zone" id="drop-zone">
+          <div class="drop-icon">📤</div>
+          <div class="drop-title">Drag & Drop MRI Scan Here</div>
+          <div class="drop-sub">or click to browse from computer (.jpg, .png)</div>
+          <input type="file" id="file-input" accept="image/*" style="display: none;" />
+        </div>
+
+        <div id="file-preview-info" style="display: none; font-size: 0.85rem; color: var(--text-secondary); text-align: center;">
+          Selected: <strong id="selected-filename" style="color: var(--text-primary);">None</strong>
+        </div>
+
+        <button class="btn-upload" id="btn-analyse" disabled>
+          ▶ RUN AI DIAGNOSIS
+        </button>
+      </div>
+
+      <!-- Right Panel: Diagnostics & Visualizations -->
+      <div class="card">
+        <div class="card-title">
+          <span>🔬 AI Visual Analysis & Heatmap</span>
+        </div>
+
+        <!-- Side-by-Side Scans -->
+        <div class="viewer-grid">
+          <div class="image-frame">
+            <span class="frame-label">Original MRI Scan</span>
+            <img id="img-original" style="display: none;" alt="Original MRI" />
+            <div class="placeholder-text" id="ph-original">Upload an MRI scan image to preview</div>
+          </div>
+
+          <div class="image-frame">
+            <span class="frame-label">Grad-CAM Heatmap</span>
+            <img id="img-heatmap" style="display: none;" alt="Grad-CAM Heatmap" />
+            <div class="placeholder-text" id="ph-heatmap">Heatmap overlay will appear after analysis</div>
+          </div>
+        </div>
+
+        <!-- Classification & Confidence Result Box -->
+        <div class="result-box">
+          <div class="result-header">
+            <div class="result-title-group">
+              <span style="font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase;">Diagnostic Outcome</span>
+              <h2 id="result-label" style="color: var(--text-muted);">AWAITING SCAN</h2>
+            </div>
+            <span class="result-badge" id="result-badge" style="display: none;">NO SCAN</span>
+          </div>
+
+          <!-- Probability Bars -->
+          <div class="confidence-bar-container">
+            <div class="prob-row">
+              <span class="prob-name">Glioma</span>
+              <div class="prob-track"><div class="prob-fill" id="bar-glioma" style="background: var(--red);"></div></div>
+              <span class="prob-pct" id="pct-glioma">0%</span>
+            </div>
+
+            <div class="prob-row">
+              <span class="prob-name">Meningioma</span>
+              <div class="prob-track"><div class="prob-fill" id="bar-meningioma" style="background: var(--orange);"></div></div>
+              <span class="prob-pct" id="pct-meningioma">0%</span>
+            </div>
+
+            <div class="prob-row">
+              <span class="prob-name">No Tumor</span>
+              <div class="prob-track"><div class="prob-fill" id="bar-notumor" style="background: var(--green);"></div></div>
+              <span class="prob-pct" id="pct-notumor">0%</span>
+            </div>
+
+            <div class="prob-row">
+              <span class="prob-name">Pituitary</span>
+              <div class="prob-track"><div class="prob-fill" id="bar-pituitary" style="background: var(--purple);"></div></div>
+              <span class="prob-pct" id="pct-pituitary">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Panel: Recent Scan Log History Table -->
+    <div class="card table-card">
+      <div class="card-title">
+        <span>📜 Recent Diagnostic Scan History</span>
+        <button id="btn-refresh-history" style="background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 12px; border-radius: 6px; cursor: pointer;">↺ Refresh</button>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Filename</th>
+              <th>Classification Result</th>
+              <th>Confidence %</th>
+              <th>Status Flag</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr>
+              <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No diagnostic history logged yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    Brain Tumor AI Diagnostic System &copy; 2026 — Edge Deep Learning Solution
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
