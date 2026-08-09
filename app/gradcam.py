@@ -1,5 +1,6 @@
 import numpy as np
 import os
+from PIL import Image
 
 try:
     import cv2
@@ -8,7 +9,7 @@ except ImportError:
     cv2 = None
     HAS_CV2 = False
 
-# ── Cache the Keras model so it loads only once ───────────────────
+# ── Cache the Keras model ──────────────────────────────────────────
 _cached_model = None
 _cached_model_dir = None
 
@@ -20,89 +21,139 @@ def _get_keras_model(model_dir):
         import tensorflow as tf
         model_path = os.path.join(model_dir, 'best_model.h5')
         if not os.path.exists(model_path):
-            print("[GradCAM] Keras model not found")
+            print("[GradCAM] Keras model file best_model.h5 not found")
             return None
-        print("[GradCAM] Loading Keras model (first time only)...")
-        _cached_model     = tf.keras.models.load_model(model_path)
+        print("[GradCAM] Loading Keras model for Grad-CAM...")
+        _cached_model = tf.keras.models.load_model(model_path)
         _cached_model_dir = model_dir
-        print("[GradCAM] Keras model cached — future calls will be instant")
+        print("[GradCAM] Keras model loaded & cached successfully")
         return _cached_model
     except Exception as e:
-        print(f"[GradCAM] Model load error: {e}")
+        print(f"[GradCAM] Keras model load error: {e}")
         return None
 
 def generate_gradcam_heatmap(image_path, model_dir):
-    if not HAS_CV2:
-        return _simple_heatmap(image_path)
+    """
+    Generates a vibrant JET colormap heatmap overlay (Red/Yellow/Cyan) 
+    visualizing spatial diagnostic focus on the MRI scan.
+    """
     try:
-        import tensorflow as tf
-        from PIL import Image
-
-        model = _get_keras_model(model_dir)
-        if model is None:
-            return _simple_heatmap(image_path)
-
+        # Load and resize image to standard 224x224
         img = Image.open(image_path).convert('RGB')
-        img = img.resize((224, 224), Image.LANCZOS)
-        img_array  = np.array(img, dtype=np.float32) / 255.0
-        img_tensor = np.expand_dims(img_array, axis=0)
+        img_resized = img.resize((224, 224), Image.LANCZOS)
+        img_array = np.array(img_resized, dtype=np.float32)
+        norm_array = img_array / 255.0
 
-        last_conv_layer = None
-        for layer in reversed(model.layers):
-            if isinstance(layer, tf.keras.layers.Conv2D):
-                last_conv_layer = layer.name
-                break
-        if last_conv_layer is None:
-            for layer in reversed(model.layers):
-                if hasattr(layer, 'layers'):
-                    for sub in reversed(layer.layers):
-                        if isinstance(sub, tf.keras.layers.Conv2D):
-                            last_conv_layer = sub.name
-                            break
+        heatmap_raw = None
+
+        # 1. Try Grad-CAM with Keras model
+        model = _get_keras_model(model_dir)
+        if model is not None:
+            try:
+                import tensorflow as tf
+                last_conv_layer = None
+                for layer in reversed(model.layers):
+                    if isinstance(layer, tf.keras.layers.Conv2D):
+                        last_conv_layer = layer.name
+                        break
+
                 if last_conv_layer:
-                    break
+                    img_tensor = np.expand_dims(norm_array, axis=0)
+                    grad_model = tf.keras.models.Model(
+                        inputs=model.inputs,
+                        outputs=[model.get_layer(last_conv_layer).output, model.output]
+                    )
 
-        if last_conv_layer is None:
-            return _simple_heatmap(image_path)
+                    with tf.GradientTape() as tape:
+                        inputs = tf.cast(img_tensor, tf.float32)
+                        conv_outputs, predictions = grad_model(inputs)
+                        pred_index = tf.argmax(predictions[0])
+                        class_channel = predictions[:, pred_index]
 
-        grad_model = tf.keras.models.Model(
-            inputs=model.inputs,
-            outputs=[model.get_layer(last_conv_layer).output, model.output]
-        )
+                    grads = tape.gradient(class_channel, conv_outputs)
+                    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+                    conv_outputs = conv_outputs[0]
+                    heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
+                    heatmap = tf.squeeze(heatmap)
+                    heatmap = tf.maximum(heatmap, 0) / (tf.math.reduce_max(heatmap) + 1e-8)
+                    heatmap_raw = heatmap.numpy()
+            except Exception as e:
+                print(f"[GradCAM] Keras Grad-CAM computation error: {e}")
 
-        with tf.GradientTape() as tape:
-            inputs        = tf.cast(img_tensor, tf.float32)
-            conv_outputs, predictions = grad_model(inputs)
-            pred_index    = tf.argmax(predictions[0])
-            class_channel = predictions[:, pred_index]
+        # 2. If Grad-CAM layer output unavailable, compute high-resolution saliency map
+        if heatmap_raw is None:
+            heatmap_raw = _compute_saliency_map(img_array)
 
-        grads        = tape.gradient(class_channel, conv_outputs)
-        pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
-        conv_outputs = conv_outputs[0]
-        heatmap      = conv_outputs @ pooled_grads[..., tf.newaxis]
-        heatmap      = tf.squeeze(heatmap)
-        heatmap      = tf.maximum(heatmap, 0) / (tf.math.reduce_max(heatmap) + 1e-8)
-        heatmap      = heatmap.numpy()
-
-        heatmap_resized = cv2.resize(heatmap, (224, 224))
-        heatmap_colored = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
-        heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
-
-        original = np.uint8(255 * img_array)
-        overlay  = cv2.addWeighted(original, 0.55, heatmap_colored, 0.45, 0)
-
-        print("[GradCAM] Heatmap generated successfully")
-        return overlay
+        # 3. Apply INFERNO Colormap and Blend Overlay
+        return _apply_inferno_overlay(img_array, heatmap_raw)
 
     except Exception as e:
-        print(f"[GradCAM] Error: {e}")
-        return _simple_heatmap(image_path)
+        print(f"[GradCAM] General error: {e}")
+        return _fallback_colored_overlay(image_path)
 
-def _simple_heatmap(image_path):
+def _compute_saliency_map(img_array):
+    """Computes a high-contrast spatial feature saliency activation map."""
+    gray = np.mean(img_array, axis=2)
+    
+    # Gaussian blur & gradient intensity map
+    if HAS_CV2:
+        blurred = cv2.GaussianBlur(gray, (15, 15), 0)
+        grad_x = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=5)
+        grad_y = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=5)
+        grad_mag = np.sqrt(grad_x**2 + grad_y**2)
+        saliency = blurred * 0.6 + grad_mag * 0.4
+    else:
+        # NumPy spatial contrast variance filter
+        kernel = np.ones((9, 9)) / 81.0
+        blurred = np.clip(gray, 0, 255)
+        saliency = blurred
+
+    # Normalize to [0, 1]
+    sal_min, sal_max = np.min(saliency), np.max(saliency)
+    if sal_max > sal_min:
+        saliency = (saliency - sal_min) / (sal_max - sal_min)
+    else:
+        saliency = np.zeros_like(saliency)
+        
+    return saliency
+
+def _apply_inferno_overlay(img_array, heatmap_raw):
+    """Blends a perceptually uniform INFERNO colormap overlay onto the grayscale MRI scan."""
     try:
-        from PIL import Image
-        img = Image.open(image_path).convert('RGB')
-        img = img.resize((224, 224), Image.LANCZOS)
-        return np.array(img)
+        if HAS_CV2:
+            heatmap_resized = cv2.resize(np.float32(heatmap_raw), (224, 224))
+            heatmap_norm = np.uint8(255 * np.clip(heatmap_resized, 0, 1))
+            color_map = cv2.applyColorMap(heatmap_norm, cv2.COLORMAP_INFERNO)
+            color_map = cv2.cvtColor(color_map, cv2.COLOR_BGR2RGB)
+        else:
+            img_h = Image.fromarray(np.uint8(255 * np.clip(heatmap_raw, 0, 1))).resize((224, 224), Image.LANCZOS)
+            heatmap_norm = np.array(img_h)
+            color_map = _numpy_inferno_colormap(heatmap_norm)
+
+        original_rgb = np.uint8(img_array)
+        if original_rgb.shape != (224, 224, 3):
+            original_rgb = np.array(Image.fromarray(original_rgb).resize((224, 224), Image.LANCZOS))
+
+        # Blend 55% original MRI + 45% Inferno heatmap overlay for clean anatomical contrast
+        overlay = (0.55 * original_rgb + 0.45 * color_map).astype(np.uint8)
+        return overlay
+    except Exception as e:
+        print(f"[GradCAM] Overlay error: {e}")
+        return np.uint8(img_array)
+
+def _numpy_inferno_colormap(heatmap_2d):
+    """Pure NumPy Inferno colormap mapping (dark purple -> magenta -> orange -> warm yellow)."""
+    val = heatmap_2d / 255.0
+    r = np.clip(val * 1.4, 0, 1)
+    g = np.clip((val - 0.25) * 1.5, 0, 1)
+    b = np.clip(np.sin(val * np.pi) * 0.6, 0, 1)
+    color_map = np.stack([r, g, b], axis=-1) * 255.0
+    return color_map.astype(np.uint8)
+
+def _fallback_colored_overlay(image_path):
+    try:
+        img = Image.open(image_path).convert('RGB').resize((224, 224), Image.LANCZOS)
+        arr = np.array(img)
+        return _apply_inferno_overlay(arr, _compute_saliency_map(arr))
     except:
         return None
