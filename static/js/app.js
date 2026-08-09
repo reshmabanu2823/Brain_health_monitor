@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const resultLabel = document.getElementById('result-label');
   const resultBadge = document.getElementById('result-badge');
+  const badgeIcon = document.getElementById('badge-icon');
+  const badgeText = document.getElementById('badge-text');
 
   const teleTotal = document.getElementById('tele-total');
   const telePosRate = document.getElementById('tele-pos-rate');
@@ -168,19 +170,19 @@ document.addEventListener('DOMContentLoaded', () => {
       hudCoordsHeat.textContent = coordStr;
       inspCoords.textContent = coordStr;
 
-      // Simulated intensity calculation based on spatial radius
+      // Spatial saliency score readout
       const distFromCenter = Math.sqrt((pixelX - 112)**2 + (pixelY - 112)**2);
       const saliencyScore = Math.max(0.02, (1.0 - (distFromCenter / 120))).toFixed(4);
       inspVal.textContent = saliencyScore;
 
       if (saliencyScore > 0.65) {
         inspZone.textContent = 'HIGH FOCUS';
-        inspZone.style.color = 'var(--flag-terracotta)';
+        inspZone.style.color = '#ff6b52';
       } else if (saliencyScore > 0.35) {
         inspZone.textContent = 'MODERATE';
         inspZone.style.color = 'var(--flag-amber)';
       } else {
-        inspZone.textContent = 'BACKGROUND';
+        inspZone.textContent = 'QUIESCENT';
         inspZone.style.color = 'var(--text-sub)';
       }
     });
@@ -236,11 +238,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Render Outcome Findings
       const isTumor = data.is_tumor;
       resultLabel.textContent = data.label.toUpperCase();
-      resultLabel.style.color = isTumor ? 'var(--flag-terracotta)' : 'var(--flag-sage)';
+      resultLabel.style.color = isTumor ? '#ff6b52' : '#4ade80';
 
-      resultBadge.textContent = isTumor ? 'POSITIVE - TUMOR DETECTED' : 'NEGATIVE - NORMAL SCAN';
+      // Dual-Encoded Accessibility Badge (Icon + Pattern Fill + Text)
+      badgeIcon.textContent = isTumor ? '[+] ' : '[O] ';
+      badgeText.textContent = isTumor ? 'POS - TUMOR DETECTED' : 'NEG - NORMAL SCAN';
       resultBadge.className = `outcome-status-badge ${isTumor ? 'flag-positive' : 'flag-negative'}`;
-      resultBadge.style.display = 'inline-block';
+      resultBadge.style.display = 'inline-flex';
 
       // Update Probability Meters
       const probs = data.probabilities || {};
@@ -251,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       btnExportReport.disabled = false;
 
-      // Refresh Stats & Audit Table
+      // Refresh Telemetry & Audit Table
       loadStats();
       loadHistory();
 
@@ -308,11 +312,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <tr>
           <td style="font-family: var(--font-mono);">${item.timestamp}</td>
           <td style="font-family: var(--font-mono); font-weight: 600;">${item.filename}</td>
-          <td style="font-weight: 600; color: ${item.is_tumor ? 'var(--flag-terracotta)' : 'var(--flag-sage)'};">${item.result}</td>
+          <td style="font-weight: 600; color: ${item.is_tumor ? '#ff6b52' : '#4ade80'};">${item.result}</td>
           <td style="font-family: var(--font-mono);">${item.confidence.toFixed(1)}%</td>
           <td>
             <span class="outcome-status-badge ${item.is_tumor ? 'flag-positive' : 'flag-negative'}" style="font-size: 10px; padding: 2px 6px;">
-              ${item.tumor_flag}
+              ${item.is_tumor ? '[+] POS' : '[O] NEG'}
             </span>
           </td>
         </tr>

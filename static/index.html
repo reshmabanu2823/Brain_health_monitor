@@ -25,7 +25,7 @@
     </div>
 
     <!-- Header Telemetry Strip (Denser Single Strip) -->
-    <div class="telemetry-strip">
+    <div class="telemetry-strip" role="region" aria-label="System Telemetry">
       <div class="telem-item">
         <span class="telem-label">SYSTEM LOGS</span>
         <span class="telem-val" id="tele-total">53</span>
@@ -53,7 +53,7 @@
     </div>
 
     <div class="header-actions">
-      <button class="btn-pacs" id="btn-export-report" disabled>
+      <button class="btn-pacs" id="btn-export-report" disabled aria-label="Generate Diagnostic PDF Report">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
           <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
@@ -73,7 +73,7 @@
       <section class="sidebar-section">
         <div class="section-header">INPUT MRI SCAN SEQUENCE</div>
         
-        <div class="drop-target" id="drop-zone">
+        <div class="drop-target" id="drop-zone" tabindex="0" role="button" aria-label="Drop MRI scan file here or click to select file">
           <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
           </svg>
@@ -110,7 +110,7 @@
           <div class="meta-row"><span>Color Space:</span> <strong id="meta-type">RGB (8-bit)</strong></div>
           <div class="meta-row"><span>File Size:</span> <strong id="meta-size">0 KB</strong></div>
           <div class="meta-row"><span>Inference Latency:</span> <strong id="meta-time">-- ms</strong></div>
-          <div class="meta-row"><span>Colormap:</span> <strong>Inferno (Uniform)</strong></div>
+          <div class="meta-row"><span>Colormap:</span> <strong>Inferno (Perceptually Uniform)</strong></div>
         </div>
       </section>
 
@@ -146,7 +146,7 @@
         </div>
 
         <div class="toolbar-group">
-          <span class="tool-label">SALIENCY OPACITY:</span>
+          <label for="heatmap-opacity" class="tool-label">SALIENCY OPACITY:</label>
           <input type="range" id="heatmap-opacity" min="0.1" max="1.0" step="0.05" value="0.9" class="pacs-slider" />
           <span id="opacity-val" class="slider-readout">90%</span>
         </div>
@@ -163,7 +163,7 @@
           <div class="hud hud-br" id="hud-coords-orig">X:0 Y:0</div>
 
           <div class="frame-canvas-wrapper" id="wrapper-orig">
-            <img id="img-original" style="display: none;" alt="Original MRI" />
+            <img id="img-original" style="display: none;" alt="Original T1 MRI Anatomical Scan" />
             <div class="crosshair-h" id="ch-orig-h" style="display: none;"></div>
             <div class="crosshair-v" id="ch-orig-v" style="display: none;"></div>
             <div class="pacs-placeholder" id="ph-original">
@@ -180,7 +180,7 @@
           <div class="hud hud-br" id="hud-coords-heat">X:0 Y:0</div>
 
           <div class="frame-canvas-wrapper" id="wrapper-heat">
-            <img id="img-heatmap" style="display: none;" alt="Grad-CAM Heatmap" />
+            <img id="img-heatmap" style="display: none;" alt="Grad-CAM Inferno Saliency Overlay" />
             <div class="crosshair-h" id="ch-heat-h" style="display: none;"></div>
             <div class="crosshair-v" id="ch-heat-v" style="display: none;"></div>
             <div class="pacs-placeholder" id="ph-heatmap">
@@ -200,13 +200,15 @@
             <h2 id="result-label" class="outcome-heading">AWAITING SEQUENCE</h2>
           </div>
 
+          <!-- Dual-Encoded WCAG AA Status Badge (Icon + Pattern Fill + Text Label) -->
           <div class="outcome-status-badge" id="result-badge" style="display: none;">
-            UNCERTIFIED
+            <span class="badge-icon" id="badge-icon"></span>
+            <span class="badge-text" id="badge-text">UNCERTIFIED</span>
           </div>
         </div>
 
-        <!-- Calibrated Diagnostic Class Probability Scale -->
-        <div class="probability-instrument">
+        <!-- Calibrated Diagnostic Class Probability Scale with Texture Pattern Indicators -->
+        <div class="probability-instrument" aria-label="Class Confidence Probability Distribution">
           
           <div class="class-readout-row">
             <div class="class-info">
@@ -214,7 +216,7 @@
               <span class="class-code">ICD-O 9380/3</span>
             </div>
             <div class="meter-track">
-              <div class="meter-fill fill-terracotta" id="bar-glioma"></div>
+              <div class="meter-fill fill-terracotta pattern-striped" id="bar-glioma"></div>
             </div>
             <span class="meter-val" id="pct-glioma">0.0%</span>
           </div>
@@ -225,7 +227,7 @@
               <span class="class-code">ICD-O 9530/0</span>
             </div>
             <div class="meter-track">
-              <div class="meter-fill fill-amber" id="bar-meningioma"></div>
+              <div class="meter-fill fill-amber pattern-dots" id="bar-meningioma"></div>
             </div>
             <span class="meter-val" id="pct-meningioma">0.0%</span>
           </div>
@@ -236,7 +238,7 @@
               <span class="class-code">NOR-0000</span>
             </div>
             <div class="meter-track">
-              <div class="meter-fill fill-sage" id="bar-notumor"></div>
+              <div class="meter-fill fill-sage pattern-solid" id="bar-notumor"></div>
             </div>
             <span class="meter-val" id="pct-notumor">0.0%</span>
           </div>
@@ -247,7 +249,7 @@
               <span class="class-code">ICD-O 8272/0</span>
             </div>
             <div class="meter-track">
-              <div class="meter-fill fill-slate" id="bar-pituitary"></div>
+              <div class="meter-fill fill-slate pattern-crosshatch" id="bar-pituitary"></div>
             </div>
             <span class="meter-val" id="pct-pituitary">0.0%</span>
           </div>
@@ -267,11 +269,11 @@
           <table class="pacs-table">
             <thead>
               <tr>
-                <th>Timestamp</th>
-                <th>File Identifier</th>
-                <th>Classification Finding</th>
-                <th>Confidence Index</th>
-                <th>Diagnostic Flag</th>
+                <th scope="col">Timestamp</th>
+                <th scope="col">File Identifier</th>
+                <th scope="col">Classification Finding</th>
+                <th scope="col">Confidence Index</th>
+                <th scope="col">Diagnostic Flag</th>
               </tr>
             </thead>
             <tbody id="history-tbody">
@@ -288,14 +290,14 @@
   </div>
 
   <!-- Medical Diagnostic Report Modal -->
-  <div class="modal-backdrop" id="report-modal" style="display: none;">
+  <div class="modal-backdrop" id="report-modal" style="display: none;" role="dialog" aria-modal="true">
     <div class="modal-dialog">
       <div class="modal-header-pacs">
         <div>
           <h3>RADIOLOGY DIAGNOSTIC FINDINGS REPORT</h3>
           <span class="modal-sub">NeuroDiagnostic PACS System &bull; Confidential Clinical Summary</span>
         </div>
-        <button class="modal-close-btn" id="modal-close">&times;</button>
+        <button class="modal-close-btn" id="modal-close" aria-label="Close Report Modal">&times;</button>
       </div>
 
       <div class="modal-body-pacs" id="modal-body">

@@ -2,29 +2,29 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-base: #14181c;
-  --bg-panel: #1b2026;
-  --bg-surface: #222830;
+  --bg-base: #12161a;
+  --bg-panel: #181d23;
+  --bg-surface: #222a34;
   --bg-canvas: #0b0d10;
 
-  --border-subtle: #2a323d;
-  --border-bright: #3b4654;
+  --border-subtle: #28313d;
+  --border-bright: #3d4a5c;
 
-  --text-main: #e2e7ec;
-  --text-sub: #7e8b9b;
-  --text-muted: #525e6e;
+  --text-main: #e6ecf2;      /* >7:1 Contrast Ratio on #12161a (WCAG AAA) */
+  --text-sub: #8290a0;       /* >4.5:1 Contrast Ratio on #12161a (WCAG AA) */
+  --text-muted: #5a6878;
 
   --flag-terracotta: #c84b31;
-  --flag-terracotta-bg: rgba(200, 75, 49, 0.15);
+  --flag-terracotta-bg: rgba(200, 75, 49, 0.18);
   
   --flag-sage: #3b7a57;
-  --flag-sage-bg: rgba(59, 122, 87, 0.15);
+  --flag-sage-bg: rgba(59, 122, 87, 0.18);
 
   --flag-amber: #d97706;
-  --flag-amber-bg: rgba(217, 119, 6, 0.15);
+  --flag-amber-bg: rgba(217, 119, 6, 0.18);
 
   --flag-slate: #64748b;
-  --flag-slate-bg: rgba(100, 116, 139, 0.15);
+  --flag-slate-bg: rgba(100, 116, 139, 0.18);
 
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
@@ -39,6 +39,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--text-main);
+  outline-offset: 2px;
 }
 
 body {
@@ -135,14 +140,14 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--flag-sage);
+  color: #4ade80; /* High contrast Sage */
   font-weight: 600;
 }
 
 .status-indicator {
   width: 6px;
   height: 6px;
-  background-color: var(--flag-sage);
+  background-color: #4ade80;
   border-radius: 50%;
 }
 
@@ -274,7 +279,7 @@ body {
 
 /* Buttons */
 .btn-execute {
-  background: #2b3648;
+  background: #283446;
   border: 1px solid var(--border-bright);
   color: var(--text-main);
   padding: 10px 14px;
@@ -287,8 +292,8 @@ body {
 }
 
 .btn-execute:hover:not(:disabled) {
-  background: #36445a;
-  border-color: #4b5d78;
+  background: #35445c;
+  border-color: #4f6382;
 }
 
 .btn-execute:disabled {
@@ -461,7 +466,7 @@ body {
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-sub);
-  background: rgba(11, 13, 16, 0.75);
+  background: rgba(11, 13, 16, 0.85);
   padding: 2px 6px;
   border-radius: 2px;
   z-index: 10;
@@ -478,7 +483,7 @@ body {
   position: absolute;
   width: 100%;
   height: 1px;
-  background: rgba(226, 231, 236, 0.4);
+  background: rgba(230, 236, 242, 0.45);
   pointer-events: none;
   z-index: 20;
 }
@@ -487,7 +492,7 @@ body {
   position: absolute;
   height: 100%;
   width: 1px;
-  background: rgba(226, 231, 236, 0.4);
+  background: rgba(230, 236, 242, 0.45);
   pointer-events: none;
   z-index: 20;
 }
@@ -532,28 +537,33 @@ body {
   margin-top: 2px;
 }
 
+/* Dual-Encoded Accessibility Badge (Icon + Pattern Fill + Text Label) */
 .outcome-status-badge {
   font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
+  font-weight: 700;
+  padding: 6px 12px;
   border-radius: var(--radius-sm);
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.03em;
 }
 
 .flag-positive {
   background-color: var(--flag-terracotta-bg);
-  border: 1px solid var(--flag-terracotta);
-  color: var(--flag-terracotta);
+  border: 1.5px solid var(--flag-terracotta);
+  color: #ff6b52; /* Verified >4.5:1 WCAG AA */
+  background-image: repeating-linear-gradient(45deg, rgba(200, 75, 49, 0.1), rgba(200, 75, 49, 0.1) 6px, transparent 6px, transparent 12px);
 }
 
 .flag-negative {
   background-color: var(--flag-sage-bg);
-  border: 1px solid var(--flag-sage);
-  color: var(--flag-sage);
+  border: 1.5px solid var(--flag-sage);
+  color: #4ade80; /* Verified >4.5:1 WCAG AA */
 }
 
-/* Calibrated Probability Instrument Rows */
+/* Calibrated Probability Instrument Rows & Texture Patterns */
 .probability-instrument {
   display: flex;
   flex-direction: column;
@@ -586,7 +596,7 @@ body {
 
 .meter-track {
   flex: 1;
-  height: 8px;
+  height: 10px;
   background-color: var(--bg-base);
   border: 1px solid var(--border-subtle);
   border-radius: 2px;
@@ -603,6 +613,24 @@ body {
 .fill-amber { background-color: var(--flag-amber); }
 .fill-sage { background-color: var(--flag-sage); }
 .fill-slate { background-color: var(--flag-slate); }
+
+/* Colorblind Pattern Textures */
+.pattern-striped {
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.15), rgba(255,255,255,0.15) 4px, transparent 4px, transparent 8px);
+}
+
+.pattern-dots {
+  background-image: radial-gradient(rgba(255,255,255,0.25) 1.5px, transparent 1.5px);
+  background-size: 5px 5px;
+}
+
+.pattern-solid {
+  background-image: none;
+}
+
+.pattern-crosshatch {
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.15), rgba(255,255,255,0.15) 1px, transparent 1px, transparent 4px);
+}
 
 .meter-val {
   width: 50px;
