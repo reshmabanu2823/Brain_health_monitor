@@ -11,8 +11,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const metaSize = document.getElementById('meta-size');
   const metaTime = document.getElementById('meta-time');
 
+  // ROI Lesion Quantitative Metrics
+  const metricTumorArea = document.getElementById('metric-tumor-area');
+  const metricPeakSal = document.getElementById('metric-peak-sal');
+  const metricBbox = document.getElementById('metric-bbox');
+  const metricCenter = document.getElementById('metric-center');
+
+  // Viewport adjustments
   const heatmapOpacity = document.getElementById('heatmap-opacity');
   const opacityVal = document.getElementById('opacity-val');
+  const imgContrast = document.getElementById('img-contrast');
+  const contrastVal = document.getElementById('contrast-val');
+  const imgBrightness = document.getElementById('img-brightness');
+  const brightnessVal = document.getElementById('brightness-val');
+
+  const btnZoomIn = document.getElementById('btn-zoom-in');
+  const btnZoomOut = document.getElementById('btn-zoom-out');
+  const btnZoomReset = document.getElementById('btn-zoom-reset');
 
   const imgOriginal = document.getElementById('img-original');
   const phOriginal = document.getElementById('ph-original');
@@ -44,12 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const historyTbody = document.getElementById('history-tbody');
   const btnRefreshHistory = document.getElementById('btn-refresh-history');
+  const btnClearHistory = document.getElementById('btn-clear-history');
 
   const btnExportReport = document.getElementById('btn-export-report');
   const reportModal = document.getElementById('report-modal');
+  const btnDownloadPdf = document.getElementById('btn-download-pdf');
 
   let selectedFile = null;
   let currentScanData = null;
+  let currentZoom = 1.0;
 
   // ── Drag & Drop Handlers ──────────────────────────────────────────
   dropZone.addEventListener('click', () => fileInput.click());
@@ -92,11 +110,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  function isDicomFile(file) {
+    const name = file.name.toLowerCase();
+    return name.endsWith('.dcm') || name.endsWith('.dicom') || file.type === 'application/dicom';
+  }
+
   function handleFile(file) {
-    if (!file.type.startsWith('image/')) {
-      alert('Please select a valid DICOM/JPEG/PNG image file.');
+    const isDcm = isDicomFile(file);
+    if (!file.type.startsWith('image/') && !isDcm) {
+      alert('Please select a valid DICOM (.dcm) or JPEG/PNG/WebP image file.');
       return;
     }
+
     selectedFile = file;
     selectedFilename.textContent = `FILE: ${file.name}`;
     fileBadge.style.display = 'block';
@@ -104,34 +129,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render Acquisition Metadata
     metaSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
-    metaType.textContent = file.type || 'RGB (8-bit)';
+    metaType.textContent = isDcm ? 'DICOM (Medical Pixel Stream)' : (file.type || 'RGB (8-bit)');
 
-    // Load Local Preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imgOriginal.src = e.target.result;
-      imgOriginal.style.display = 'block';
-      phOriginal.style.display = 'none';
+    // Reset Zoom and Filters
+    resetViewportFilters();
 
-      const tempImg = new Image();
-      tempImg.src = e.target.result;
-      tempImg.onload = () => {
-        metaRes.textContent = `${tempImg.width} x ${tempImg.height} px`;
+    if (isDcm) {
+      // For DICOM files, show an indicator preview until server renders the windowed RGB
+      phOriginal.innerHTML = `<span>DICOM Medical Scan Loaded (${file.name})<br/>Click "Execute Diagnostic Analysis" to parse pixel array</span>`;
+      phOriginal.style.display = 'block';
+      imgOriginal.style.display = 'none';
+      metaRes.textContent = 'DICOM Matrix';
+    } else {
+      // Standard image preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imgOriginal.src = e.target.result;
+        imgOriginal.style.display = 'block';
+        phOriginal.style.display = 'none';
+
+        const tempImg = new Image();
+        tempImg.src = e.target.result;
+        tempImg.onload = () => {
+          metaRes.textContent = `${tempImg.width} x ${tempImg.height} px`;
+        };
       };
+      reader.readAsDataURL(file);
+    }
 
-      // Reset Heatmap Viewport & Outcome
-      imgHeatmap.style.display = 'none';
-      phHeatmap.style.display = 'block';
-      resultLabel.textContent = 'READY FOR ANALYSIS';
-      resultLabel.style.color = 'var(--text-main)';
-      resultBadge.style.display = 'none';
-      btnExportReport.disabled = true;
-      resetMeters();
-    };
-    reader.readAsDataURL(file);
+    // Reset Heatmap Viewport & Outcome
+    imgHeatmap.style.display = 'none';
+    phHeatmap.style.display = 'block';
+    resultLabel.textContent = 'READY FOR ANALYSIS';
+    resultLabel.style.color = 'var(--text-main)';
+    resultBadge.style.display = 'none';
+    btnExportReport.disabled = true;
+    resetMeters();
+    resetRoiMetrics();
   }
 
-  // ── Saliency Opacity Slider ───────────────────────────────────────
+  // ── Viewport Filters (Contrast & Brightness & Opacity & Zoom) ─────
+  function applyImageFilters() {
+    const contrast = imgContrast ? imgContrast.value : 100;
+    const brightness = imgBrightness ? imgBrightness.value : 100;
+    const filterStr = `contrast(${contrast}%) brightness(${brightness}%)`;
+    if (imgOriginal) imgOriginal.style.filter = filterStr;
+    if (imgHeatmap) imgHeatmap.style.filter = filterStr;
+  }
+
+  function applyZoom() {
+    const scaleStr = `scale(${currentZoom})`;
+    if (imgOriginal) imgOriginal.style.transform = scaleStr;
+    if (imgHeatmap) imgHeatmap.style.transform = scaleStr;
+  }
+
+  function resetViewportFilters() {
+    currentZoom = 1.0;
+    applyZoom();
+    if (imgContrast) { imgContrast.value = 100; contrastVal.textContent = '100%'; }
+    if (imgBrightness) { imgBrightness.value = 100; brightnessVal.textContent = '100%'; }
+    applyImageFilters();
+  }
+
   if (heatmapOpacity) {
     heatmapOpacity.addEventListener('input', (e) => {
       const val = parseFloat(e.target.value);
@@ -140,7 +199,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Signature Feature: Synchronized PACS Crosshair Inspector ──────
+  if (imgContrast) {
+    imgContrast.addEventListener('input', (e) => {
+      contrastVal.textContent = `${e.target.value}%`;
+      applyImageFilters();
+    });
+  }
+
+  if (imgBrightness) {
+    imgBrightness.addEventListener('input', (e) => {
+      brightnessVal.textContent = `${e.target.value}%`;
+      applyImageFilters();
+    });
+  }
+
+  if (btnZoomIn) {
+    btnZoomIn.addEventListener('click', () => {
+      currentZoom = Math.min(3.0, currentZoom + 0.25);
+      applyZoom();
+    });
+  }
+
+  if (btnZoomOut) {
+    btnZoomOut.addEventListener('click', () => {
+      currentZoom = Math.max(0.5, currentZoom - 0.25);
+      applyZoom();
+    });
+  }
+
+  if (btnZoomReset) {
+    btnZoomReset.addEventListener('click', () => {
+      currentZoom = 1.0;
+      applyZoom();
+    });
+  }
+
+  // ── Synchronized PACS Crosshair Inspector ─────────────────────────
   [wrapperOrig, wrapperHeat].forEach(wrapper => {
     wrapper.addEventListener('mousemove', (e) => {
       if (imgOriginal.style.display === 'none') return;
@@ -227,6 +321,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       currentScanData = data;
 
+      // Render Original Scan (especially useful if file was DICOM)
+      if (data.original_b64) {
+        imgOriginal.src = data.original_b64;
+        imgOriginal.style.display = 'block';
+        phOriginal.style.display = 'none';
+      }
+
       // Render Inferno Heatmap
       if (data.heatmap_b64) {
         imgHeatmap.src = data.heatmap_b64;
@@ -252,6 +353,19 @@ document.addEventListener('DOMContentLoaded', () => {
       updateMeter('meningioma', probs['Meningioma'] || 0);
       updateMeter('notumor', probs['No Tumor'] || 0);
       updateMeter('pituitary', probs['Pituitary'] || 0);
+
+      // Update Quantitative ROI Lesion Metrics
+      const metrics = data.tumor_metrics || {};
+      if (metricTumorArea) metricTumorArea.textContent = isTumor ? `${metrics.tumor_area_pct || 0}%` : '0.0% (No Mass)';
+      if (metricPeakSal) metricPeakSal.textContent = `${metrics.peak_saliency || 0.0}`;
+      if (metricBbox) {
+        const b = metrics.bbox;
+        metricBbox.textContent = b ? `X:${b.x} Y:${b.y} (${b.w}x${b.h})` : (isTumor ? 'Diffuse ROI' : 'None');
+      }
+      if (metricCenter) {
+        const c = metrics.center;
+        metricCenter.textContent = c ? `X:${c.x} Y:${c.y}` : 'N/A';
+      }
 
       btnExportReport.disabled = false;
 
@@ -280,6 +394,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function resetMeters() {
     ['glioma', 'meningioma', 'notumor', 'pituitary'].forEach(k => updateMeter(k, 0));
+  }
+
+  function resetRoiMetrics() {
+    if (metricTumorArea) metricTumorArea.textContent = '--';
+    if (metricPeakSal) metricPeakSal.textContent = '--';
+    if (metricBbox) metricBbox.textContent = '--';
+    if (metricCenter) metricCenter.textContent = '--';
   }
 
   // ── Load Telemetry Stats ──────────────────────────────────────────
@@ -328,11 +449,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnRefreshHistory) btnRefreshHistory.addEventListener('click', loadHistory);
 
-  // ── Medical Diagnostic Report Modal ───────────────────────────────
+  if (btnClearHistory) {
+    btnClearHistory.addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to clear the scan audit log?')) return;
+      try {
+        await fetch('/api/scans/clear', { method: 'POST' });
+        loadHistory();
+        loadStats();
+      } catch (err) {
+        console.error('Failed to clear log:', err);
+      }
+    });
+  }
+
+  // ── Medical Diagnostic Report Modal & Certified PDF Download ──────
   if (btnExportReport) {
     btnExportReport.addEventListener('click', () => {
       if (!currentScanData) return;
-      document.getElementById('rep-id').textContent = `NEURO-${Math.floor(100000 + Math.random() * 900000)}`;
+      document.getElementById('rep-id').textContent = currentScanData.patient_id || `NEURO-${Math.floor(100000 + Math.random() * 900000)}`;
       document.getElementById('rep-date').textContent = new Date().toLocaleString();
       document.getElementById('rep-file').textContent = currentScanData.filename;
 
@@ -345,6 +479,57 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('rep-img-heat').src = currentScanData.heatmap_b64;
 
       reportModal.style.display = 'flex';
+    });
+  }
+
+  if (btnDownloadPdf) {
+    btnDownloadPdf.addEventListener('click', async () => {
+      if (!currentScanData) return;
+      btnDownloadPdf.disabled = true;
+      btnDownloadPdf.innerHTML = 'Generating PDF...';
+
+      try {
+        const payload = {
+          patient_id: currentScanData.patient_id || 'NEURO-2026',
+          patient_name: currentScanData.patient_name || 'Anonymous / De-identified',
+          filename: currentScanData.filename,
+          label: currentScanData.label,
+          confidence: currentScanData.confidence,
+          probabilities: currentScanData.probabilities,
+          tumor_metrics: currentScanData.tumor_metrics || {},
+          original_b64: currentScanData.original_b64,
+          heatmap_b64: currentScanData.heatmap_b64,
+          notes: 'Automated diagnostic report generated via Brain Health Monitor PACS Workstation.'
+        };
+
+        const res = await fetch('/api/report/pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error('PDF generation failed on server');
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `BHM_Radiology_Report_${currentScanData.filename.replace(/\.[^/.]+$/, '')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } catch (err) {
+        alert(`Failed to download PDF report: ${err.message}`);
+      } finally {
+        btnDownloadPdf.disabled = false;
+        btnDownloadPdf.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Certified PDF Report
+        `;
+      }
     });
   }
 

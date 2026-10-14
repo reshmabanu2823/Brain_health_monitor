@@ -78,8 +78,8 @@
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
           </svg>
           <span class="drop-text">Select or Drag MRI Scan File</span>
-          <span class="drop-sub">DICOM / NIfTI / JPEG / PNG</span>
-          <input type="file" id="file-input" accept="image/*" style="display: none;" />
+          <span class="drop-sub">DICOM (.dcm) / JPEG / PNG / WebP</span>
+          <input type="file" id="file-input" accept="image/*,.dcm,.dicom" style="display: none;" />
         </div>
 
         <div id="file-badge" class="file-badge" style="display: none;">
@@ -111,6 +111,17 @@
           <div class="meta-row"><span>File Size:</span> <strong id="meta-size">0 KB</strong></div>
           <div class="meta-row"><span>Inference Latency:</span> <strong id="meta-time">-- ms</strong></div>
           <div class="meta-row"><span>Colormap:</span> <strong>Inferno (Perceptually Uniform)</strong></div>
+        </div>
+      </section>
+
+      <!-- Lesion Quantification (ROI) -->
+      <section class="sidebar-section">
+        <div class="section-header">LESION QUANTIFICATION (ROI)</div>
+        <div class="meta-table">
+          <div class="meta-row"><span>Tumor Area Ratio:</span> <strong id="metric-tumor-area" class="mono-readout">--</strong></div>
+          <div class="meta-row"><span>Peak Saliency:</span> <strong id="metric-peak-sal" class="mono-readout">--</strong></div>
+          <div class="meta-row"><span>ROI Bounding Box:</span> <strong id="metric-bbox" class="mono-readout">--</strong></div>
+          <div class="meta-row"><span>Lesion Center:</span> <strong id="metric-center" class="mono-readout">--</strong></div>
         </div>
       </section>
 
@@ -149,6 +160,25 @@
           <label for="heatmap-opacity" class="tool-label">SALIENCY OPACITY:</label>
           <input type="range" id="heatmap-opacity" min="0.1" max="1.0" step="0.05" value="0.9" class="pacs-slider" />
           <span id="opacity-val" class="slider-readout">90%</span>
+        </div>
+
+        <div class="toolbar-group">
+          <label for="img-contrast" class="tool-label">CONTRAST:</label>
+          <input type="range" id="img-contrast" min="50" max="200" step="5" value="100" class="pacs-slider" style="width: 70px;" />
+          <span id="contrast-val" class="slider-readout">100%</span>
+        </div>
+
+        <div class="toolbar-group">
+          <label for="img-brightness" class="tool-label">BRIGHTNESS:</label>
+          <input type="range" id="img-brightness" min="50" max="150" step="5" value="100" class="pacs-slider" style="width: 70px;" />
+          <span id="brightness-val" class="slider-readout">100%</span>
+        </div>
+
+        <div class="toolbar-group">
+          <span class="tool-label">ZOOM:</span>
+          <button class="btn-pacs-sm" id="btn-zoom-in" title="Zoom In">+</button>
+          <button class="btn-pacs-sm" id="btn-zoom-out" title="Zoom Out">-</button>
+          <button class="btn-pacs-sm" id="btn-zoom-reset" title="Reset Zoom">1:1</button>
         </div>
       </div>
 
@@ -262,7 +292,10 @@
       <div class="pacs-table-panel">
         <div class="table-header">
           <span>SCAN AUDIT LOG RECORD</span>
-          <button class="btn-pacs-sm" id="btn-refresh-history">Refresh Log Record</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-pacs-sm" id="btn-refresh-history">Refresh Log Record</button>
+            <button class="btn-pacs-sm" id="btn-clear-history" style="background: rgba(200, 75, 49, 0.2); border-color: var(--flag-terracotta);">Clear Audit</button>
+          </div>
         </div>
 
         <div class="table-container">
@@ -333,7 +366,13 @@
       </div>
 
       <div class="modal-footer-pacs">
-        <button class="btn-pacs" onclick="window.print()">Print Diagnostic Report</button>
+        <button class="btn-pacs" id="btn-download-pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Download Certified PDF Report
+        </button>
+        <button class="btn-pacs-secondary" onclick="window.print()">Print</button>
         <button class="btn-pacs-secondary" id="modal-close-2">Close</button>
       </div>
     </div>

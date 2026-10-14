@@ -9,8 +9,9 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLRO
 import json
 
 # ── CONFIG ────────────────────────────────────────────────────────
-DATASET_PATH  = r"C:\Users\MSEC-018-38\Desktop\brain_project\dataset\Training"
-MODEL_DIR     = r"C:\Users\MSEC-018-38\Desktop\brain_project\model"
+BASE_DIR      = os.path.dirname(os.path.abspath(__file__))
+DATASET_PATH  = os.path.join(BASE_DIR, "dataset", "Training")
+MODEL_DIR     = os.path.join(BASE_DIR, "model")
 IMG_SIZE      = (224, 224)
 BATCH_SIZE    = 16
 EPOCHS        = 30

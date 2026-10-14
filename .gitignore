@@ -12,6 +12,8 @@ ENV/
 uploads/
 *.log
 logs/
+*.db
+.pytest_cache/
 
 # IDE
 .vscode/

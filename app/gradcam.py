@@ -13,6 +13,10 @@ except ImportError:
 _cached_model = None
 _cached_model_dir = None
 
+def preload_gradcam_model(model_dir):
+    """Pre-warms and caches the Keras model in memory during server startup."""
+    return _get_keras_model(model_dir)
+
 def _get_keras_model(model_dir):
     global _cached_model, _cached_model_dir
     if _cached_model is not None and _cached_model_dir == model_dir:
@@ -32,10 +36,45 @@ def _get_keras_model(model_dir):
         print(f"[GradCAM] Keras model load error: {e}")
         return None
 
-def generate_gradcam_heatmap(image_path, model_dir):
+def extract_tumor_metrics(heatmap_raw):
+    """Calculates tumor area percentage, bounding box, and peak saliency hotspot."""
+    try:
+        if HAS_CV2:
+            heatmap_resized = cv2.resize(np.float32(heatmap_raw), (224, 224))
+        else:
+            img_h = Image.fromarray(np.float32(heatmap_raw)).resize((224, 224), Image.LANCZOS)
+            heatmap_resized = np.array(img_h)
+
+        norm_heat = np.clip(heatmap_resized, 0, 1)
+        threshold = 0.52
+        hotspot_mask = (norm_heat > threshold).astype(np.uint8)
+        tumor_pixels = int(np.sum(hotspot_mask))
+        tumor_area_pct = round((tumor_pixels / (224 * 224)) * 100, 2)
+
+        bbox = None
+        center = None
+        if HAS_CV2 and tumor_pixels > 25:
+            contours, _ = cv2.findContours(hotspot_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            if contours:
+                largest_c = max(contours, key=cv2.contourArea)
+                x, y, w, h = cv2.boundingRect(largest_c)
+                bbox = {"x": int(x), "y": int(y), "w": int(w), "h": int(h)}
+                center = {"x": int(x + w // 2), "y": int(y + h // 2)}
+
+        return {
+            "tumor_area_pct": tumor_area_pct,
+            "bbox": bbox,
+            "center": center,
+            "peak_saliency": round(float(np.max(norm_heat)), 4)
+        }
+    except Exception as e:
+        print(f"[GradCAM] Metrics extraction error: {e}")
+        return {"tumor_area_pct": 0.0, "bbox": None, "center": None, "peak_saliency": 0.0}
+
+def generate_gradcam_heatmap(image_path, model_dir, return_metrics=False):
     """
-    Generates a vibrant JET colormap heatmap overlay (Red/Yellow/Cyan) 
-    visualizing spatial diagnostic focus on the MRI scan.
+    Generates a vibrant INFERNO colormap heatmap overlay visualizing spatial
+    diagnostic focus on the MRI scan, with optional quantitative tumor metrics.
     """
     try:
         # Load and resize image to standard 224x224
@@ -85,11 +124,18 @@ def generate_gradcam_heatmap(image_path, model_dir):
             heatmap_raw = _compute_saliency_map(img_array)
 
         # 3. Apply INFERNO Colormap and Blend Overlay
-        return _apply_inferno_overlay(img_array, heatmap_raw)
+        overlay = _apply_inferno_overlay(img_array, heatmap_raw)
+        if return_metrics:
+            metrics = extract_tumor_metrics(heatmap_raw)
+            return overlay, metrics
+        return overlay
 
     except Exception as e:
         print(f"[GradCAM] General error: {e}")
-        return _fallback_colored_overlay(image_path)
+        fb = _fallback_colored_overlay(image_path)
+        if return_metrics:
+            return fb, {"tumor_area_pct": 0.0, "bbox": None, "center": None, "peak_saliency": 0.0}
+        return fb
 
 def _compute_saliency_map(img_array):
     """Computes a high-contrast spatial feature saliency activation map."""

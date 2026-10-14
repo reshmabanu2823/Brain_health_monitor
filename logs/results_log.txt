@@ -50,3 +50,5 @@
 [2026-08-09 19:08:09] | File: Y1.jpg                         | Result: Meningioma Tumor     | Confidence: 100.0% | TUMOR DETECTED
 [2026-08-09 19:08:38] | File: 1-mri-scan-of-brain-tumour-cerebellar-glioma-simon-fraserneuroradiology-deptnewcastle-general-hospitalscience-photo-library.jpg | Result: No Tumor             | Confidence:  99.6% | NORMAL
 [2026-08-09 19:09:36] | File: K0037770-Glioma_brain_tumour,_MRI_sequence.jpg | Result: No Tumor             | Confidence:  99.7% | NORMAL
+[2026-10-14 15:15:47] | File: glioma.jpg                     | Result: Meningioma Tumor     | Confidence:  47.5% | TUMOR DETECTED
+[2026-10-14 15:15:49] | File: notumor.jpg                    | Result: No Tumor             | Confidence:  47.5% | NORMAL
