@@ -255,8 +255,19 @@ def read_root():
     return HTMLResponse("<h2>Brain Health Monitor Workstation is loading...</h2>")
 
 if __name__ == "__main__":
+    import socket
+
+    def is_port_in_use(p):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            return s.connect_ex(('127.0.0.1', p)) == 0
+
+    port = int(os.environ.get("PORT", 8000))
+    if is_port_in_use(port):
+        print(f"[Notice] Port {port} is occupied by another process. Automatically switching to port 8001.")
+        port = 8001
+
     print("=" * 60)
     print("   BRAIN HEALTH MONITOR — PACS REST API & SALIENCY WORKSTATION")
-    print("   Listening at: http://localhost:8000")
+    print(f"   Listening at: http://localhost:{port}")
     print("=" * 60)
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=False)
