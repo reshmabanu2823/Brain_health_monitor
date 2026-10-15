@@ -1,0 +1,2 @@
+# Optional rendered UI checks; not required for running the application.
+playwright>=1.48,<2

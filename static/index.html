@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brain Health Monitor — T1-Weighted MRI Saliency Suite</title>
+  <title>Brain Health Monitor — MRI Research Analysis</title>
   <link rel="stylesheet" href="/static/css/style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -20,7 +17,7 @@
       </svg>
       <div class="brand-titles">
         <span class="system-title">BRAIN HEALTH MONITOR</span>
-        <span class="system-subtitle">T1-Weighted MRI Visual Analysis & Grad-CAM Saliency Engine</span>
+        <span class="system-subtitle">MRI classification research · not a clinical diagnosis</span>
       </div>
     </div>
 
@@ -28,32 +25,32 @@
     <div class="telemetry-strip" role="region" aria-label="System Telemetry">
       <div class="telem-item">
         <span class="telem-label">SYSTEM LOGS</span>
-        <span class="telem-val" id="tele-total">53</span>
+        <span class="telem-val" id="tele-total">—</span>
       </div>
       <div class="telem-divider"></div>
       <div class="telem-item">
         <span class="telem-label">POSITIVE RATE</span>
-        <span class="telem-val" id="tele-pos-rate">73.5%</span>
+        <span class="telem-val" id="tele-pos-rate">—</span>
       </div>
       <div class="telem-divider"></div>
       <div class="telem-item">
-        <span class="telem-label">VAL ACCURACY</span>
-        <span class="telem-val">96.4%</span>
+        <span class="telem-label">TEST ACCURACY</span>
+        <span class="telem-val" id="tele-accuracy">Not evaluated</span>
       </div>
       <div class="telem-divider"></div>
       <div class="telem-item">
         <span class="telem-label">MODEL BACKBONE</span>
-        <span class="telem-val">MobileNetV2 (TFLite)</span>
+        <span class="telem-val">MRI classifier (TFLite)</span>
       </div>
       <div class="telem-divider"></div>
       <div class="telem-status">
         <span class="status-indicator"></span>
-        <span>ENGINE READY</span>
+        <span id="engine-status">CHECKING ENGINE</span>
       </div>
     </div>
 
-    <div class="header-actions">
-      <button class="btn-pacs" id="btn-export-report" disabled aria-label="Generate Diagnostic PDF Report">
+    <div class="header-actions"><a href="/eeg" class="btn-pacs-secondary">EEG workspace</a>
+      <button class="btn-pacs" id="btn-export-report" disabled aria-label="Generate Research PDF Report">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
           <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
@@ -98,7 +95,7 @@
         </div>
 
         <button class="btn-execute" id="btn-analyse" disabled>
-          Execute Diagnostic Analysis
+          Run Model Analysis
         </button>
       </section>
 
@@ -116,12 +113,12 @@
 
       <!-- Lesion Quantification (ROI) -->
       <section class="sidebar-section">
-        <div class="section-header">LESION QUANTIFICATION (ROI)</div>
+        <div class="section-header">SALIENCY COVERAGE (NOT LESION SIZE)</div>
         <div class="meta-table">
-          <div class="meta-row"><span>Tumor Area Ratio:</span> <strong id="metric-tumor-area" class="mono-readout">--</strong></div>
+          <div class="meta-row"><span>Saliency coverage:</span> <strong id="metric-tumor-area" class="mono-readout">--</strong></div>
           <div class="meta-row"><span>Peak Saliency:</span> <strong id="metric-peak-sal" class="mono-readout">--</strong></div>
           <div class="meta-row"><span>ROI Bounding Box:</span> <strong id="metric-bbox" class="mono-readout">--</strong></div>
-          <div class="meta-row"><span>Lesion Center:</span> <strong id="metric-center" class="mono-readout">--</strong></div>
+          <div class="meta-row"><span>Saliency center:</span> <strong id="metric-center" class="mono-readout">--</strong></div>
         </div>
       </section>
 
@@ -187,13 +184,13 @@
 
         <!-- Viewer 1: Original MRI Scan -->
         <div class="pacs-frame" id="frame-orig">
-          <div class="hud hud-tl">SERIES: T1_AXIAL_POST</div>
+          <div class="hud hud-tl">SERIES: NOT VERIFIED</div>
           <div class="hud hud-tr">MATRIX: 224x224</div>
           <div class="hud hud-bl">ORIGINAL ANATOMICAL SCAN</div>
           <div class="hud hud-br" id="hud-coords-orig">X:0 Y:0</div>
 
           <div class="frame-canvas-wrapper" id="wrapper-orig">
-            <img id="img-original" style="display: none;" alt="Original T1 MRI Anatomical Scan" />
+            <img id="img-original" style="display: none;" alt="Uploaded MRI image" />
             <div class="crosshair-h" id="ch-orig-h" style="display: none;"></div>
             <div class="crosshair-v" id="ch-orig-v" style="display: none;"></div>
             <div class="pacs-placeholder" id="ph-original">
@@ -214,7 +211,7 @@
             <div class="crosshair-h" id="ch-heat-h" style="display: none;"></div>
             <div class="crosshair-v" id="ch-heat-v" style="display: none;"></div>
             <div class="pacs-placeholder" id="ph-heatmap">
-              <span>Inferno activation map will display following diagnostic analysis</span>
+              <span>Inferno activation map will display following model analysis</span>
             </div>
           </div>
         </div>
@@ -226,7 +223,7 @@
         
         <div class="outcome-header">
           <div class="outcome-title-block">
-            <span class="panel-tag">DIAGNOSTIC OUTCOME FINDINGS</span>
+            <span class="panel-tag">EXPERIMENTAL MODEL OUTPUT</span>
             <h2 id="result-label" class="outcome-heading">AWAITING SEQUENCE</h2>
           </div>
 
@@ -243,7 +240,7 @@
           <div class="class-readout-row">
             <div class="class-info">
               <span class="class-name">Glioma Tumor</span>
-              <span class="class-code">ICD-O 9380/3</span>
+              <span class="class-code">Research class</span>
             </div>
             <div class="meter-track">
               <div class="meter-fill fill-terracotta pattern-striped" id="bar-glioma"></div>
@@ -254,7 +251,7 @@
           <div class="class-readout-row">
             <div class="class-info">
               <span class="class-name">Meningioma Tumor</span>
-              <span class="class-code">ICD-O 9530/0</span>
+              <span class="class-code">Research class</span>
             </div>
             <div class="meter-track">
               <div class="meter-fill fill-amber pattern-dots" id="bar-meningioma"></div>
@@ -264,8 +261,8 @@
 
           <div class="class-readout-row">
             <div class="class-info">
-              <span class="class-name">No Tumor (Healthy)</span>
-              <span class="class-code">NOR-0000</span>
+              <span class="class-name">No Tumor (model class)</span>
+              <span class="class-code">Research class</span>
             </div>
             <div class="meter-track">
               <div class="meter-fill fill-sage pattern-solid" id="bar-notumor"></div>
@@ -276,7 +273,7 @@
           <div class="class-readout-row">
             <div class="class-info">
               <span class="class-name">Pituitary Tumor</span>
-              <span class="class-code">ICD-O 8272/0</span>
+              <span class="class-code">Research class</span>
             </div>
             <div class="meter-track">
               <div class="meter-fill fill-slate pattern-crosshatch" id="bar-pituitary"></div>
@@ -327,28 +324,28 @@
     <div class="modal-dialog">
       <div class="modal-header-pacs">
         <div>
-          <h3>RADIOLOGY DIAGNOSTIC FINDINGS REPORT</h3>
-          <span class="modal-sub">Brain Health Monitor System &bull; Confidential Clinical Summary</span>
+          <h3>RESEARCH MODEL ANALYSIS REPORT</h3>
+          <span class="modal-sub">Brain Health Monitor System &bull; Experimental classifier output · no clinical certification</span>
         </div>
         <button class="modal-close-btn" id="modal-close" aria-label="Close Report Modal">&times;</button>
       </div>
 
       <div class="modal-body-pacs" id="modal-body">
         <div class="report-meta-grid">
-          <div><span class="lbl">Report ID:</span> <strong id="rep-id">NEURO-2026-9912</strong></div>
+          <div><span class="lbl">Report ID:</span> <strong id="rep-id">—</strong></div>
           <div><span class="lbl">Scan Timestamp:</span> <strong id="rep-date">--</strong></div>
           <div><span class="lbl">Source Sequence:</span> <strong id="rep-file">--</strong></div>
         </div>
 
         <div class="report-box-findings">
-          <span class="lbl">DIAGNOSTIC CLASSIFICATION OUTCOME</span>
+          <span class="lbl">MODEL CLASSIFICATION OUTPUT</span>
           <div class="report-outcome-title" id="rep-outcome">AWAITING EVALUATION</div>
           <div class="report-confidence">Primary Class Confidence: <strong id="rep-conf">0.0%</strong></div>
         </div>
 
         <div class="report-images-grid">
           <div class="rep-img-box">
-            <span class="img-lbl">T1 MRI Anatomical Scan</span>
+            <span class="img-lbl">Uploaded MRI image</span>
             <img id="rep-img-orig" alt="MRI Scan" />
           </div>
           <div class="rep-img-box">
@@ -359,8 +356,8 @@
 
         <div class="report-signature-block">
           <div class="sig-line">
-            <span>Attending Radiologist Authorization: ______________________</span>
-            <span>Date: ____________</span>
+            <span>Experimental output. Review with a qualified professional.</span>
+            <span>No clinical endorsement implied.</span>
           </div>
         </div>
       </div>
@@ -370,7 +367,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          Download Certified PDF Report
+          Download Research PDF Report
         </button>
         <button class="btn-pacs-secondary" onclick="window.print()">Print</button>
         <button class="btn-pacs-secondary" id="modal-close-2">Close</button>
@@ -380,7 +377,7 @@
 
   <!-- Footer -->
   <footer class="pacs-footer">
-    Brain Health Monitor System &bull; Clinical Diagnostic Instrument v2.5 &bull; For Clinical Research & Evaluation
+    Brain Health Monitor System &bull; Research workstation &bull; Not for clinical diagnosis
   </footer>
 
   <script src="/static/js/app.js"></script>

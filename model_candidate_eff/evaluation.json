@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "model_sha256": "11850027a606e930386521e48302a49f9224c8144e9d4e358b5c9843a9cdae90",
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "preprocessing": "mobilenet_v2",
+  "seed": 42,
+  "split_counts": {
+    "train": 2170,
+    "validation": 543,
+    "test": 314
+  },
+  "excluded": {
+    "training_duplicates": 74,
+    "testing_duplicates": 80,
+    "test_overlap": 83,
+    "extra_near_test_duplicates": 0
+  },
+  "limitation": "Hash-disjoint image splits; patient identifiers are unavailable, so patient-disjoint evaluation cannot be established.",
+  "training_provenance": "Candidate trained on recorded train/validation manifest; test images excluded.",
+  "dependencies": {
+    "python": "3.11.16",
+    "tensorflow": "2.21.0",
+    "keras": "3.15.1",
+    "numpy": "2.4.6",
+    "Pillow": "12.3.0",
+    "pydicom": "3.0.2"
+  },
+  "tflite": {
+    "sample_count": 314,
+    "accuracy": 0.7292993630573248,
+    "macro_f1": 0.7033510055120795,
+    "per_class": {
+      "glioma_tumor": {
+        "precision": 0.7608695652173914,
+        "recall": 0.4166666666666667,
+        "f1": 0.5384615384615384,
+        "support": 84
+      },
+      "meningioma_tumor": {
+        "precision": 0.7463768115942029,
+        "recall": 0.911504424778761,
+        "f1": 0.8207171314741034,
+        "support": 113
+      },
+      "no_tumor": {
+        "precision": 0.6947368421052632,
+        "recall": 0.8148148148148148,
+        "f1": 0.7500000000000001,
+        "support": 81
+      },
+      "pituitary_tumor": {
+        "precision": 0.7142857142857143,
+        "recall": 0.6944444444444444,
+        "f1": 0.7042253521126761,
+        "support": 36
+      }
+    },
+    "confusion_matrix": [
+      [
+        35,
+        30,
+        17,
+        2
+      ],
+      [
+        5,
+        103,
+        3,
+        2
+      ],
+      [
+        6,
+        3,
+        66,
+        6
+      ],
+      [
+        0,
+        2,
+        9,
+        25
+      ]
+    ]
+  },
+  "keras_model_sha256": "69bb3ba86101614512a75f591464fe5ca5edfd91e17eeaeeed348fc718171168",
+  "keras": {
+    "sample_count": 314,
+    "accuracy": 0.7261146496815286,
+    "macro_f1": 0.6953207538723252,
+    "per_class": {
+      "glioma_tumor": {
+        "precision": 0.8055555555555556,
+        "recall": 0.34523809523809523,
+        "f1": 0.48333333333333345,
+        "support": 84
+      },
+      "meningioma_tumor": {
+        "precision": 0.7253521126760564,
+        "recall": 0.911504424778761,
+        "f1": 0.807843137254902,
+        "support": 113
+      },
+      "no_tumor": {
+        "precision": 0.7070707070707071,
+        "recall": 0.8641975308641975,
+        "f1": 0.7777777777777777,
+        "support": 81
+      },
+      "pituitary_tumor": {
+        "precision": 0.7027027027027027,
+        "recall": 0.7222222222222222,
+        "f1": 0.7123287671232876,
+        "support": 36
+      }
+    },
+    "confusion_matrix": [
+      [
+        29,
+        36,
+        17,
+        2
+      ],
+      [
+        4,
+        103,
+        3,
+        3
+      ],
+      [
+        3,
+        2,
+        70,
+        6
+      ],
+      [
+        0,
+        1,
+        9,
+        26
+      ]
+    ]
+  },
+  "export_parity": {
+    "prediction_agreement": 0.9426751592356688,
+    "mean_absolute_probability_difference": 0.03058663383126259,
+    "max_absolute_probability_difference": 0.488433301448822
+  }
+}

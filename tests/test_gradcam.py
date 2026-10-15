@@ -2,7 +2,6 @@ import os
 import sys
 import numpy as np
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'app'))
 from gradcam import generate_gradcam_heatmap, extract_tumor_metrics
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,3 +26,10 @@ def test_generate_gradcam_heatmap_with_metrics():
     assert isinstance(metrics, dict)
     assert 'tumor_area_pct' in metrics
     assert 'peak_saliency' in metrics
+
+def test_gradcam_unavailable_has_no_fabricated_overlay(monkeypatch):
+    import gradcam
+    monkeypatch.setattr(gradcam, '_get_keras_model', lambda _: None)
+    overlay, metrics = gradcam.generate_gradcam_heatmap(os.path.join(SAMPLE_DIR, 'glioma.jpg'), MODEL_DIR, return_metrics=True)
+    assert overlay is None
+    assert metrics == {}

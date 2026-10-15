@@ -3,7 +3,6 @@ import sys
 import numpy as np
 from PIL import Image
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'app'))
 from inference import BrainTumorModel, CLASS_LABELS, read_mri_file
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

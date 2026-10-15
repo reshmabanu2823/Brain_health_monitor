@@ -15,7 +15,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from inference       import BrainTumorModel, CLASS_COLORS
 from usb_monitor     import USBMonitor, get_usb_drives, get_images_from_drive
 from gradcam         import generate_gradcam_heatmap
-from gpio_controller import alert_no_tumor, alert_tumor_detected, reset_gpio, cleanup
 from logger          import log_result, get_log_path
 
 # ── Theme ─────────────────────────────────────────────────────────
@@ -301,8 +300,7 @@ class BrainTumorApp(ctk.CTk):
         self.status_label.pack(side="left", padx=12)
 
         # Platform indicator
-        from gpio_controller import IS_RPI
-        platform_text = "🔧 Raspberry Pi Mode" if IS_RPI else "💻 PC Mode"
+        platform_text = "Laptop MRI research mode"
         ctk.CTkLabel(status, text=platform_text, font=("Arial", 10),
                      text_color=TEXT_GRAY).pack(side="right", padx=12)
 
@@ -403,7 +401,6 @@ class BrainTumorApp(ctk.CTk):
         self.result_label.configure(text="READY TO ANALYSE", text_color=ACCENT)
         self.confidence_label.configure(text=f"Selected: {os.path.basename(image_path)}")
         self._reset_prob_bars()
-        reset_gpio()
         self._set_status(f"Selected: {os.path.basename(image_path)} — Click ANALYSE")
 
     def _display_original(self, image_path):
@@ -446,26 +443,23 @@ class BrainTumorApp(ctk.CTk):
     def _analysis_thread(self):
         try:
             # Run inference
-            label, confidence, probs, _ = self.model.predict(self.selected_image)
+            label, confidence, probs, _, _ = self.model.predict(self.selected_image)
+            distribution = {name: float(probs[i]) * 100 for i, name in enumerate(self.model.probability_labels)}
 
-            # Generate heatmap
-            heatmap = generate_gradcam_heatmap(self.selected_image, MODEL_DIR)
+            # Generate heatmap (None when Grad-CAM is unavailable)
+            heatmap = generate_gradcam_heatmap(self.selected_image, MODEL_DIR, class_index=self.model.labels.index(label))
 
             # Log result
-            log_result(self.selected_image, label, confidence, probs)
+            log_result(self.selected_image, label, confidence, distribution)
 
-            # GPIO alert
-            if self.model.is_tumor(label):
-                alert_tumor_detected()
-            else:
-                alert_no_tumor()
 
             # Update UI on main thread
             self.after(0, lambda: self._update_results(label, confidence, probs, heatmap))
 
         except Exception as e:
             print(f"[Analysis] Error: {e}")
-            self.after(0, lambda: self._analysis_error(str(e)))
+            message = str(e)
+            self.after(0, lambda: self._analysis_error(message))
 
     def _update_results(self, label, confidence, probs, heatmap):
         is_tumor = label != 'No Tumor'
@@ -481,8 +475,7 @@ class BrainTumorApp(ctk.CTk):
         )
 
         # Update probability bars
-        bar_keys = ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary']
-        for i, key in enumerate(bar_keys):
+        for i, key in enumerate(self.model.probability_labels):
             if key in self.prob_bars:
                 bar, pct = self.prob_bars[key]
                 val = float(probs[i])
@@ -492,6 +485,9 @@ class BrainTumorApp(ctk.CTk):
         # Display heatmap
         if heatmap is not None:
             self._display_heatmap(heatmap)
+        else:
+            self.heatmap_label.configure(image=None, text="Explanation unavailable\nfor this prediction")
+            self.heatmap_label._image = None
 
         self.analyse_btn.configure(state="normal", text="▶  ANALYSE")
         self._set_status(f"Analysis complete — {label} ({confidence:.1f}% confidence)")
@@ -525,7 +521,6 @@ class BrainTumorApp(ctk.CTk):
     def _on_close(self):
         if self.usb_monitor:
             self.usb_monitor.stop()
-        cleanup()
         self.destroy()
 
 def launch():

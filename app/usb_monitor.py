@@ -27,7 +27,7 @@ def get_usb_drives():
             print(f"[USB] Windows drive detection error: {e}")
 
     else:
-        # Linux / Raspberry Pi
+        # Linux
         media_paths = ['/media', '/media/pi', '/mnt']
         for base in media_paths:
             if os.path.exists(base):
