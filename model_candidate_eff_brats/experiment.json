@@ -1,0 +1,25 @@
+{
+  "settings": {
+    "dataset_dir": "/home/vinay/Documents/brain_health_monitor/dataset",
+    "output_dir": "/home/vinay/Documents/brain_health_monitor/model_candidate_eff_brats",
+    "seed": 42,
+    "batch_size": 16,
+    "head_epochs": 10,
+    "fine_tune_epochs": 30,
+    "fine_tune_layers": 0,
+    "fine_tune_lr": 5e-05,
+    "label_smoothing": 0.1,
+    "extra_no_tumor_dir": null,
+    "extra_class_dir": null,
+    "pooled": false,
+    "cluster_validation": true,
+    "backbone": "efficientnetv2s",
+    "limit_per_class": null,
+    "no_pretrained": false
+  },
+  "manifest_sha256": "22c5f0bb40975c4b3fadaf5eaf3facdcd9e16b9532117dd466eec1081f9bf0d0",
+  "audit": "/home/vinay/Documents/brain_health_monitor/logs/brats_training_audit.json",
+  "baseline": "/home/vinay/Documents/brain_health_monitor/model_candidate_eff_clustered",
+  "change": "Append screened BraTS glioma cases to training; original validation/test fixed",
+  "promoted": false
+}

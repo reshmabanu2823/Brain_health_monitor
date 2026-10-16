@@ -82,7 +82,7 @@ Serial failures clear current estimates, interrupt active recording and retry up
 
 ## MRI evaluation and CUDA training
 
-MRI data are four class image folders. Existing original Testing protocol contains **314 deduplicated images**. Bundled TFLite report: **74.52% accuracy, 0.693 macro F1**; bundled training overlap is uncertain. Earlier candidate: **72.93% accuracy**. Completed EfficientNetV2-S GPU candidate (`model_candidate_eff_full`): **78.98% accuracy, 0.777 macro F1** on the same 314-image Testing-folder protocol. Glioma recall remains **38.10%**. The 90% minimum and 95% target are unmet. Candidate weights and evaluation are saved separately; no model promotion or training job is active. See [evaluation](model_candidate_eff_full/evaluation.json) and [HANDOFF.md](HANDOFF.md). Validation accuracy is not final test accuracy. A 95% target is aspirational, not a reported result. Patient IDs are absent; no patient-disjoint or clinical validation can be claimed. Pooled scores are optimistic and not comparable with original Testing-folder scores.
+MRI data are four class image folders. Existing original Testing protocol contains **314 deduplicated images**. Bundled TFLite report: **74.52% accuracy, 0.693 macro F1**; bundled training overlap is uncertain. Previous EfficientNetV2-S GPU candidate (`model_candidate_eff_full`): **78.98% accuracy, 0.777 macro F1**. Completed grouped-validation candidate (`model_candidate_eff_clustered`): **80.89% accuracy (254/314), 0.802 macro F1** on the same Testing-folder protocol. Glioma recall improves from **38.10% to 50.00%**. No-tumor recall falls from **93.83% to 85.19%**. The 90% minimum and 95% target remain unmet. Both candidates are saved separately; neither has been promoted. Completed BraTS candidate (`model_candidate_eff_brats`): **81.21% test accuracy (255/314)**, glioma recall **60.71%**, macro F1 **0.8007**. This improves overall accuracy by one image, with lower meningioma recall. No training remains running or queued; no model promoted. See [handoff](HANDOFF.md). See [latest evaluation](model_candidate_eff_clustered/evaluation.json) and [HANDOFF.md](HANDOFF.md). Validation accuracy is not final test accuracy. A 95% target is aspirational, not a reported test result. Patient IDs are absent from the original dataset; no patient-disjoint or clinical validation can be claimed. Pooled scores are optimistic and not comparable with original Testing-folder scores.
 
 ```bash
 .venv/bin/python evaluate_model.py --model-dir model --output evaluation/bundled-evaluation.json --tflite-only
@@ -99,6 +99,23 @@ export LD_LIBRARY_PATH="$BHM_CUDA_LIBS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 ```
 
 Never train on the original Testing folder or tune hyperparameters against it. Review evaluation before changing `BHM_MODEL_DIR`; candidates never overwrite `model/` automatically. Shared MRI preprocessing and hash/class-order contracts remain in `app/preprocessing.py` and `app/artifacts.py`.
+
+#External data acquired on 2026-10-15: UCSF-PDGM T1c scans and tumor masks from 495 patients (1.44 GiB). Core-guided preparation and conservative overlap screening leave 528 additional glioma slices from 148 patients. UCSF remains separate. The completed BraTS experiment added 2,224 screened training slices while preserving validation/test splits; resulting test accuracy is 81.21%. See [acquisition details](docs/DATA_ACQUISITION.md) for exclusions, patient provenance, source attribution and BraTS access requirements.
+
+## Grouped training/validation experiment
+
+The previous candidate reached 99.32% validation accuracy while testing at 78.98%. An audit found 482 of its 1,182 validation images had a training image within three bits of a 64-bit perceptual difference hash. This is evidence of image similarity, not proof that all pairs are duplicate scans or the same patient.
+
+`--cluster-validation` keeps connected components of similar images (hash distance at most three) and supplied patient IDs together across training/validation, including links across class labels. It preserves the original Testing folder and training pool. Whole groups take precedence over exact validation proportions; every class must remain in both splits or training fails. The manifest records cluster IDs, grouping parameters and class counts. Perceptual hashing is heuristic and does not establish patient independence or eliminate every possible leak. The flag cannot be combined with `--pooled`.
+
+```bash
+~/venvs/bhm-gpu/bin/python train_model.py --backbone efficientnetv2s --extra-class-dir "$HOME/datasets_extra/cheng/images" --extra-no-tumor-dir dataset/brain_tumor_dataset/no --head-epochs 10 --fine-tune-epochs 30 --fine-tune-layers 0 --fine-tune-lr 5e-5 --label-smoothing 0.1 --cluster-validation --output-dir model_candidate_eff_clustered
+~/venvs/bhm-gpu/bin/python evaluate_model.py --model-dir model_candidate_eff_clustered --manifest model_candidate_eff_clustered/manifest.json --output model_candidate_eff_clustered/evaluation.json --tflite-only
+```
+
+Set the CUDA library path as above. This experiment tests more credible checkpoint selection; an accuracy gain is not guaranteed. Repeated results on the same Testing folder are development benchmarks, not independent external validation.
+
+Completed on 2026-10-15 at 16:29 IST: 10 head epochs, 21 fine-tuning epochs with early stopping, successful TFLite export and evaluation. The validation-loss-selected checkpoint has 95.38% grouped validation accuracy and **80.89% test accuracy**, a **1.91 percentage-point** test improvement. Actual-data audit confirms identical test records, unchanged training pool and zero cross-split pairs at the declared three-bit hash threshold. Verification: 79 tests passed, two optional browser tests skipped. Candidate remains separate because class tradeoffs require review before deployment.
 
 ## Tests and optional deployment
 

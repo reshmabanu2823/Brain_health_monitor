@@ -25,7 +25,7 @@ def perceptual_hash(path):
     return int(''.join('1' if bit else '0' for bit in (small[:, 1:] > small[:, :-1]).flatten()), 2)
 
 
-def build_manifest(dataset_dir, seed=42, validation_fraction=.2, extra_no_tumor_dir=None, extra_class_dir=None):
+def build_manifest(dataset_dir, seed=42, validation_fraction=.2, extra_no_tumor_dir=None, extra_class_dir=None, cluster_validation=False):
     if not 0 < validation_fraction < 1:
         raise ValueError('Validation fraction must be between zero and one')
     root = Path(dataset_dir).resolve()
@@ -83,9 +83,19 @@ def build_manifest(dataset_dir, seed=42, validation_fraction=.2, extra_no_tumor_
             excluded_records.extend(dict(r, reason='testing_duplicate') for r in testing[1:])
             excluded_records.extend(dict(r, reason='test_overlap') for r in train)
         else:
-            training.append(train[0])
+            retained = train[0]
+            if cluster_validation:
+                # Exact copies can carry additional patient IDs or aliases.
+                # Preserve every link even when the retained original has none.
+                patient_ids = sorted({r['patient'] for r in train if r.get('patient')})
+                if patient_ids:
+                    retained = dict(retained, patients=patient_ids)
+            training.append(retained)
             excluded['training_duplicates'] += len(train) - 1
             excluded_records.extend(dict(r, reason='training_duplicate') for r in train[1:])
+    if cluster_validation:
+        train, validation, grouping = _clustered_validation_split(training, root, seed, validation_fraction)
+        return {'schema_version': 1, 'dataset_dir': str(root), 'seed': seed, 'validation_fraction': validation_fraction, 'classes': CLASS_NAMES, 'train': train, 'validation': validation, 'test': sorted(test, key=lambda r: r['path']), 'excluded': excluded, 'excluded_records': excluded_records, 'validation_grouping': grouping, 'limitation': 'Training/validation keep perceptually similar images and supplied patient IDs together. Test folder unchanged. Perceptual hashing is heuristic; absent patient IDs prevent establishing patient-disjoint evaluation.'}
     train, validation = [], []
     rng = random.Random(seed)
     for index in range(4):
@@ -123,6 +133,96 @@ def _near_duplicate_pairs(hashes, max_bits=NEAR_DUPLICATE_BITS):
         bits = np.unpackbits((values[i] ^ values[i + 1:]).view(np.uint8).reshape(-1, 8), axis=1).sum(axis=1)
         for j in np.nonzero(bits <= max_bits)[0]:
             yield i, i + 1 + int(j)
+
+
+def _clustered_validation_split(records, root, seed, fraction):
+    """Hold out whole connected components, including links across class labels.
+
+    Hash distance is an image-similarity heuristic, not patient identification.
+    Test images are deliberately absent from grouping and split selection.
+    """
+    records = sorted(records, key=lambda r: r['path'])
+    parent = list(range(len(records)))
+
+    def find(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+
+    def union(i, j):
+        parent[find(i)] = find(j)
+
+    patients = {}
+    for i, record in enumerate(records):
+        patient_ids = set(record.get('patients', []))
+        if record.get('patient'):
+            patient_ids.add(record['patient'])
+        for patient in sorted(patient_ids):
+            union(i, patients.setdefault(patient, i))
+    hashes = [perceptual_hash(root / r['path']) for r in records]
+    for i, j in _near_duplicate_pairs(hashes, CLUSTER_BITS):
+        union(i, j)
+    groups = defaultdict(list)
+    for i, record in enumerate(records):
+        groups[find(i)].append(record)
+    clusters = list(groups.values())
+    random.Random(seed).shuffle(clusters)
+    totals = Counter(r['class_index'] for r in records)
+    targets = {c: max(1, round(totals[c] * fraction)) for c in range(len(CLASS_NAMES))}
+    counts = [Counter(r['class_index'] for r in group) for group in clusters]
+    held_out = Counter()
+    selected = set()
+
+    def can_hold_out(count, current=None):
+        current = held_out if current is None else current
+        return all(current[c] + count[c] < totals[c] for c in totals)
+
+    def cost(count):
+        return sum(((count[c] - targets[c]) / targets[c]) ** 2 for c in targets)
+
+    def cover_classes(chosen, current):
+        missing = [c for c in totals if not current[c]]
+        if not missing:
+            return chosen, current
+        c = min(missing, key=lambda c: sum(count[c] > 0 and can_hold_out(count, current) for count in counts))
+        candidates = [i for i, count in enumerate(counts) if count[c] and can_hold_out(count, current)]
+        tried_supports = set()
+        for i in sorted(candidates, key=lambda i: cost(current + counts[i])):
+            # Components with the same class support are interchangeable for
+            # feasibility. Try the best cost first; at most 15 supports exist.
+            support = frozenset(counts[i])
+            if support in tried_supports:
+                continue
+            tried_supports.add(support)
+            result = cover_classes(chosen | {i}, current + counts[i])
+            if result is not None:
+                return result
+        return None
+
+    # Backtrack to cover every class without exhausting any training class.
+    # Whole components take precedence over exact split sizes.
+    coverage = cover_classes(set(), Counter())
+    if coverage is None:
+        raise ValueError('Cannot create class-complete train/validation splits without breaking clusters')
+    selected, held_out = coverage
+    for i, count in enumerate(counts):
+        if i not in selected and can_hold_out(count) and cost(held_out + count) < cost(held_out):
+            selected.add(i)
+            held_out.update(count)
+    train, validation = [], []
+    for i, group in enumerate(clusters):
+        cluster_id = min(r['sha256'] for r in group)
+        destination = validation if i in selected else train
+        destination.extend(dict(r, validation_cluster=cluster_id) for r in group)
+    if any({r['class_index'] for r in split} != set(range(len(CLASS_NAMES))) for split in (train, validation)):
+        raise ValueError('Insufficient class coverage after cluster split')
+    summary = {'method': 'connected_components_dhash_and_patient', 'max_hash_distance': CLUSTER_BITS,
+               'clusters': len(clusters), 'largest_cluster': max(map(len, clusters)),
+               'cross_label_clusters': sum(len(count) > 1 for count in counts),
+               'class_counts': {s: {CLASS_NAMES[c]: sum(r['class_index'] == c for r in rows) for c in targets}
+                                for s, rows in (('train', train), ('validation', validation))}}
+    return sorted(train, key=lambda r: r['path']), sorted(validation, key=lambda r: r['path']), summary
 
 
 def build_pooled_manifest(dataset_dir, seed=42, test_fraction=.15, validation_fraction=.15, extra_no_tumor_dir=None, extra_class_dir=None):

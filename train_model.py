@@ -32,10 +32,14 @@ def parse_args(argv=None):
     parser.add_argument('--extra-no-tumor-dir', type=Path, default=None, help='Extra certain-label no-tumor images added to the training pool only')
     parser.add_argument('--extra-class-dir', type=Path, default=None, help='External class-folder dataset (with optional index.json of patient ids) added to the training pool only')
     parser.add_argument('--pooled', action='store_true', help='Pool all sources and hold out whole clusters (optimistic; see manifest limitation)')
+    parser.add_argument('--cluster-validation', action='store_true', help='Keep perceptually similar training images and supplied patient IDs together in train/validation; preserve original Testing folder')
     parser.add_argument('--backbone', choices=['mobilenetv2', 'efficientnetv2s'], default='mobilenetv2')
     parser.add_argument('--limit-per-class', type=int, default=None, help='Cap examples per class and split (smoke runs)')
     parser.add_argument('--no-pretrained', action='store_true', help='Skip ImageNet weights (offline smoke runs)')
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.pooled and args.cluster_validation:
+        parser.error('--cluster-validation cannot be combined with --pooled')
+    return args
 
 
 def limit_records(records, per_class):
@@ -164,6 +168,7 @@ def export(model, output_dir, manifest, args, best_val_loss):
             'fine_tune_layers': args.fine_tune_layers,
             'fine_tune_lr': args.fine_tune_lr,
             'label_smoothing': args.label_smoothing,
+            'validation_grouping': manifest.get('validation_grouping'),
             'best_validation_loss': best_val_loss,
             'split_counts': {s: len(manifest[s]) for s in ('train', 'validation', 'test')},
             'tensorflow': tf.__version__,
@@ -180,7 +185,8 @@ def train(args):
     tf.keras.utils.set_random_seed(args.seed)
     tf.config.experimental.enable_op_determinism()
     builder = build_pooled_manifest if args.pooled else build_manifest
-    manifest = builder(args.dataset_dir, args.seed, extra_no_tumor_dir=args.extra_no_tumor_dir, extra_class_dir=args.extra_class_dir)
+    split_options = {'cluster_validation': True} if args.cluster_validation else {}
+    manifest = builder(args.dataset_dir, args.seed, extra_no_tumor_dir=args.extra_no_tumor_dir, extra_class_dir=args.extra_class_dir, **split_options)
     for split in ('train', 'validation'):
         manifest[split] = limit_records(manifest[split], args.limit_per_class)
     root = Path(manifest['dataset_dir'])
@@ -188,6 +194,8 @@ def train(args):
     val_ds = make_dataset(manifest['validation'], root, args.batch_size)
     weights = balanced_class_weights([r['class_index'] for r in manifest['train']])
     print(f"Train {len(manifest['train'])} | validation {len(manifest['validation'])} | excluded {manifest['excluded']}")
+    if 'validation_grouping' in manifest:
+        print('Validation grouping:', json.dumps(manifest['validation_grouping']))
 
     model, base = build_model(pretrained=not args.no_pretrained, backbone=args.backbone)
     tracker = best_weights_tracker()

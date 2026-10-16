@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "preprocessing": "mobilenet_v2",
+  "image_size": [
+    224,
+    224
+  ],
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "output": "probabilities",
+  "artifact_hashes": {
+    "brain_tumor_model.tflite": "f122f7178b82759d08c259374652d27da9317f55d8de62deffaec4c99e0926e2",
+    "best_model.h5": "fefa1713809bb43f1990e7ceeb71e41542457b31c0770678c64f17c5f227c0aa"
+  },
+  "training": {
+    "created": "2026-10-15T15:17:26.433658+00:00",
+    "seed": 42,
+    "backbone": "efficientnetv2s",
+    "fine_tune_layers": 0,
+    "fine_tune_lr": 5e-05,
+    "label_smoothing": 0.1,
+    "validation_grouping": {
+      "method": "connected_components_dhash_and_patient",
+      "max_hash_distance": 3,
+      "clusters": 1496,
+      "largest_cluster": 134,
+      "cross_label_clusters": 4,
+      "class_counts": {
+        "train": {
+          "glioma_tumor": 1763,
+          "meningioma_tumor": 1209,
+          "no_tumor": 285,
+          "pituitary_tumor": 1381
+        },
+        "validation": {
+          "glioma_tumor": 448,
+          "meningioma_tumor": 302,
+          "no_tumor": 73,
+          "pituitary_tumor": 345
+        }
+      },
+      "extension": "Original grouped validation/test kept identical; screened BraTS patients appended only to training"
+    },
+    "best_validation_loss": 0.45626094937324524,
+    "split_counts": {
+      "train": 6862,
+      "validation": 1168,
+      "test": 314
+    },
+    "tensorflow": "2.21.0"
+  }
+}
