@@ -35,6 +35,7 @@ def parse_args(argv=None):
     parser.add_argument('--cluster-validation', action='store_true', help='Keep perceptually similar training images and supplied patient IDs together in train/validation; preserve original Testing folder')
     parser.add_argument('--backbone', choices=['mobilenetv2', 'efficientnetv2s'], default='mobilenetv2')
     parser.add_argument('--limit-per-class', type=int, default=None, help='Cap examples per class and split (smoke runs)')
+    parser.add_argument('--glioma-boost', type=float, default=1.0, help='Extra multiplier on the glioma class weight')
     parser.add_argument('--no-pretrained', action='store_true', help='Skip ImageNet weights (offline smoke runs)')
     args = parser.parse_args(argv)
     if args.pooled and args.cluster_validation:
@@ -168,6 +169,7 @@ def export(model, output_dir, manifest, args, best_val_loss):
             'fine_tune_layers': args.fine_tune_layers,
             'fine_tune_lr': args.fine_tune_lr,
             'label_smoothing': args.label_smoothing,
+            'glioma_boost': args.glioma_boost,
             'validation_grouping': manifest.get('validation_grouping'),
             'best_validation_loss': best_val_loss,
             'split_counts': {s: len(manifest[s]) for s in ('train', 'validation', 'test')},
@@ -193,6 +195,12 @@ def train(args):
     train_ds = make_dataset(manifest['train'], root, args.batch_size, args.seed, augment=True)
     val_ds = make_dataset(manifest['validation'], root, args.batch_size)
     weights = balanced_class_weights([r['class_index'] for r in manifest['train']])
+    glioma_index = CLASS_NAMES.index('glioma_tumor')
+    if isinstance(weights, dict):
+        weights[glioma_index] *= args.glioma_boost
+    else:
+        weights[glioma_index] *= args.glioma_boost
+    print(f"Class weights (glioma_boost={args.glioma_boost}): {weights}")
     print(f"Train {len(manifest['train'])} | validation {len(manifest['validation'])} | excluded {manifest['excluded']}")
     if 'validation_grouping' in manifest:
         print('Validation grouping:', json.dumps(manifest['validation_grouping']))
