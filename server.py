@@ -294,7 +294,22 @@ def eeg_workspace():
 def read_root():
     return FileResponse(os.path.join(STATIC_DIR, 'index.html'))
 
-
 if __name__ == '__main__':
+    import socket
     import uvicorn
-    uvicorn.run('server:app', host=os.getenv('BHM_HOST', '127.0.0.1'), port=int(os.getenv('BHM_PORT', 8000)))
+
+    def is_port_in_use(p):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            return s.connect_ex(('127.0.0.1', p)) == 0
+
+    port = int(os.environ.get('BHM_PORT', os.environ.get('PORT', 8000)))
+    if is_port_in_use(port):
+        print(f"[Notice] Port {port} is occupied by another process. Automatically switching to port 8001.")
+        port = 8001
+
+    host = os.environ.get('BHM_HOST', '0.0.0.0')
+    print('=' * 60)
+    print('   BRAIN HEALTH MONITOR — PACS REST API & SALIENCY WORKSTATION')
+    print(f'   Listening at: http://{host}:{port}')
+    print('=' * 60)
+    uvicorn.run('server:app', host=host, port=port, reload=False)
