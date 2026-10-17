@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brain Health Monitor — EEG Research</title>
+<link rel="stylesheet" href="/static/css/eeg.css">
+<script defer src="/static/js/eeg.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to monitoring</a>
+<header><a class="brand" href="/eeg">Brain Health Monitor <span>Research workspace</span></a><nav aria-label="Workspaces"><a href="/eeg" aria-current="page">EEG monitoring</a><a href="/">MRI analysis</a><a href="/docs">API reference</a></nav></header>
+<main id="main">
+<div class="intro"><div><p class="eyebrow">SINGLE CHANNEL · BIOAMP EXG PILL / MAKER UNO</p><h1>Signal before interpretation.</h1><p>Inspect acquisition, timing and spectral content. Experimental measurements; no diagnosis or mental-health score.</p></div><span id="backend" class="pill">Connecting to backend</span></div>
+<p id="notice" role="status" aria-live="polite" class="notice">No source selected. Connect hardware or explicitly start simulation.</p>
+<p id="error" role="alert" class="error" hidden></p>
+<section class="card controls" aria-labelledby="source-heading"><div><h2 id="source-heading">Acquisition source</h2><p>One analog channel · A0 · 115200 baud · raw ADC counts</p></div>
+<div class="fields"><label for="source">Data source<select id="source"><option value="serial">Maker UNO · USB serial</option><option value="simulated">Simulated signal · DEMO</option></select></label>
+<label for="port">Serial port<select id="port"><option value="">Loading available ports…</option></select></label>
+<button id="refresh-ports" class="secondary">Refresh ports</button><button id="connect">Connect</button><button id="disconnect" class="secondary" disabled>Disconnect</button></div></section>
+<div class="readouts" aria-label="Acquisition status"><div class="card"><span>CONNECTION</span><strong id="connection">Disconnected</strong></div><div class="card"><span>MEASURED / CONFIGURED RATE</span><strong id="rate">—</strong></div><div class="card"><span>WINDOW QUALITY</span><strong id="quality">No analysis</strong></div><div class="card"><span>RECORDING</span><strong id="recording">Idle</strong></div></div>
+<div class="analysis-grid"><section class="card waveform" aria-labelledby="wave-heading"><div class="card-heading"><div><h2 id="wave-heading">Incoming waveform</h2><p>Raw ADC counts, uncalibrated · latest buffer</p></div><span id="source-badge" class="pill">No source</span></div><div class="chart"><canvas id="wave" role="img" aria-label="Raw single-channel signal plotted against device time"></canvas><p id="wave-empty" class="empty">Waiting for samples</p></div><p id="sample-info" class="caption">No samples received.</p><div class="actions"><button id="record" disabled>Start recording</button><button id="stop-record" class="secondary" disabled>Stop recording</button></div></section>
+<section class="card" aria-labelledby="bands-heading"><h2 id="bands-heading">Relative band power</h2><p>Share of configured passband power · not a mental-state score</p><div id="bands" class="bands"><p class="empty-inline">A valid analysis window is required.</p></div><p class="caption">Delta 1–4 · theta 4–8 · alpha 8–13 · beta 13–30 · partial gamma 30–40 Hz. Upper band can contain muscle activity.</p></section>
+<section class="card" aria-labelledby="psd-heading"><h2 id="psd-heading">Power spectral density</h2><p>Welch estimate · ADC counts²/Hz · linear scale</p><div class="chart small"><canvas id="psd" role="img" aria-label="Power spectral density by frequency in hertz"></canvas><p id="psd-empty" class="empty">No valid spectral estimate</p></div><p id="window-info" class="caption">Processing waits for full window plus filter edge guards.</p></section>
+<section class="card" aria-labelledby="model-heading"><h2 id="model-heading">Experimental classifier</h2><p id="model-info">Checking EEG model availability…</p><strong id="prediction" class="prediction">No prediction</strong><p id="prediction-detail" class="caption">No labeled EEG dataset is bundled. MRI model does not process EEG.</p><p class="caption">Band power cannot establish intelligence, stress, psychiatric illness or neurological disease. Quality checks cannot prove EEG origin.</p></section></div>
+<section class="card history" aria-labelledby="history-heading"><div class="card-heading"><div><h2 id="history-heading">Recording history</h2><p>Local sessions · UTC timestamps · source labels preserved in exports</p></div><button id="refresh-history" class="secondary">Refresh history</button></div><div class="table-wrap"><table><thead><tr><th scope="col">Started (UTC)</th><th scope="col">Source</th><th scope="col">Duration</th><th scope="col">Samples</th><th scope="col">Status</th><th scope="col">Export</th></tr></thead><tbody id="history"><tr><td colspan="6">Loading recordings…</td></tr></tbody></table></div></section>
+<footer>Research and education only. Uncalibrated single-channel acquisition. No clinical validation established.</footer>
+</main></body></html>

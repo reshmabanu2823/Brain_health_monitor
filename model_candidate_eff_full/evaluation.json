@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "model_sha256": "4947b914911bf84695f9acb53ff66e18798da9cc5c9367af821ca3f8730d1365",
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "preprocessing": "mobilenet_v2",
+  "seed": 42,
+  "split_counts": {
+    "train": 2170,
+    "validation": 543,
+    "test": 314
+  },
+  "excluded": {
+    "training_duplicates": 74,
+    "testing_duplicates": 80,
+    "test_overlap": 83,
+    "extra_near_test_duplicates": 0
+  },
+  "limitation": "Hash-disjoint image splits; patient identifiers are unavailable, so patient-disjoint evaluation cannot be established.",
+  "training_provenance": "Candidate trained on recorded train/validation manifest; test images excluded.",
+  "dependencies": {
+    "python": "3.11.16",
+    "tensorflow": "2.21.0",
+    "keras": "3.15.1",
+    "numpy": "2.4.6",
+    "Pillow": "12.3.0",
+    "pydicom": "3.0.2"
+  },
+  "tflite": {
+    "sample_count": 314,
+    "accuracy": 0.7898089171974523,
+    "macro_f1": 0.7768225238813474,
+    "per_class": {
+      "glioma_tumor": {
+        "precision": 0.8888888888888888,
+        "recall": 0.38095238095238093,
+        "f1": 0.5333333333333333,
+        "support": 84
+      },
+      "meningioma_tumor": {
+        "precision": 0.7044025157232704,
+        "recall": 0.9911504424778761,
+        "f1": 0.8235294117647058,
+        "support": 113
+      },
+      "no_tumor": {
+        "precision": 0.8444444444444444,
+        "recall": 0.9382716049382716,
+        "f1": 0.888888888888889,
+        "support": 81
+      },
+      "pituitary_tumor": {
+        "precision": 0.9655172413793104,
+        "recall": 0.7777777777777778,
+        "f1": 0.8615384615384615,
+        "support": 36
+      }
+    },
+    "confusion_matrix": [
+      [
+        32,
+        40,
+        12,
+        0
+      ],
+      [
+        1,
+        112,
+        0,
+        0
+      ],
+      [
+        3,
+        1,
+        76,
+        1
+      ],
+      [
+        0,
+        6,
+        2,
+        28
+      ]
+    ]
+  }
+}

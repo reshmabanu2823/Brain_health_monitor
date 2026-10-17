@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (isDcm) {
       // For DICOM files, show an indicator preview until server renders the windowed RGB
-      phOriginal.innerHTML = `<span>DICOM Medical Scan Loaded (${file.name})<br/>Click "Execute Diagnostic Analysis" to parse pixel array</span>`;
+      phOriginal.textContent = `DICOM file loaded (${file.name}). Run model analysis to decode image.`;
       phOriginal.style.display = 'block';
       imgOriginal.style.display = 'none';
       metaRes.textContent = 'DICOM Matrix';
@@ -334,6 +334,11 @@ document.addEventListener('DOMContentLoaded', () => {
         imgHeatmap.style.display = 'block';
         imgHeatmap.style.opacity = heatmapOpacity ? heatmapOpacity.value : '0.9';
         phHeatmap.style.display = 'none';
+      } else {
+        imgHeatmap.removeAttribute('src');
+        imgHeatmap.style.display = 'none';
+        phHeatmap.style.display = '';
+        phHeatmap.textContent = (data.explanation && data.explanation.reason) || 'Explanation unavailable for this scan';
       }
 
       // Render Outcome Findings
@@ -343,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Dual-Encoded Accessibility Badge (Icon + Pattern Fill + Text)
       badgeIcon.textContent = isTumor ? '[+] ' : '[O] ';
-      badgeText.textContent = isTumor ? 'POS - TUMOR DETECTED' : 'NEG - NORMAL SCAN';
+      badgeText.textContent = isTumor ? 'MODEL: TUMOR CLASS' : 'MODEL: NO TUMOR CLASS';
       resultBadge.className = `outcome-status-badge ${isTumor ? 'flag-positive' : 'flag-negative'}`;
       resultBadge.style.display = 'inline-flex';
 
@@ -374,12 +379,12 @@ document.addEventListener('DOMContentLoaded', () => {
       loadHistory();
 
     } catch (err) {
-      alert(`Diagnostic Error: ${err.message}`);
+      alert(`Analysis error: ${err.message}`);
       resultLabel.textContent = 'EXECUTION FAILURE';
       resultLabel.style.color = 'var(--flag-terracotta)';
     } finally {
       btnAnalyse.disabled = false;
-      btnAnalyse.innerHTML = 'Execute Diagnostic Analysis';
+      btnAnalyse.innerHTML = 'Run Model Analysis';
     }
   });
 
@@ -407,16 +412,24 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadStats() {
     try {
       const res = await fetch('/api/stats');
+      if (!res.ok) throw new Error('Statistics unavailable');
       const data = await res.json();
+      document.getElementById('tele-accuracy').textContent = data.model_accuracy || 'Not evaluated';
       if (teleTotal) teleTotal.textContent = data.total_scans || 0;
+      if (telePosRate) telePosRate.textContent = '—';
       if (telePosRate && data.total_scans > 0) {
         const rate = ((data.tumors_detected / data.total_scans) * 100).toFixed(1);
         telePosRate.textContent = `${rate}%`;
       }
     } catch (e) {
+      if (teleTotal) teleTotal.textContent = 'Unavailable';
+      if (telePosRate) telePosRate.textContent = '—';
+      document.getElementById('tele-accuracy').textContent = 'Unavailable';
       console.error('Telemetry load error:', e);
     }
   }
+
+  const escapeHtml = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   // ── Load Audit Log Table ──────────────────────────────────────────
   async function loadHistory() {
@@ -431,9 +444,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       historyTbody.innerHTML = data.map(item => `
         <tr>
-          <td style="font-family: var(--font-mono);">${item.timestamp}</td>
-          <td style="font-family: var(--font-mono); font-weight: 600;">${item.filename}</td>
-          <td style="font-weight: 600; color: ${item.is_tumor ? '#ff6b52' : '#4ade80'};">${item.result}</td>
+          <td style="font-family: var(--font-mono);">${escapeHtml(item.timestamp)}</td>
+          <td style="font-family: var(--font-mono); font-weight: 600;">${escapeHtml(item.filename)}</td>
+          <td style="font-weight: 600; color: ${item.is_tumor ? '#ff6b52' : '#4ade80'};">${escapeHtml(item.result)}</td>
           <td style="font-family: var(--font-mono);">${item.confidence.toFixed(1)}%</td>
           <td>
             <span class="outcome-status-badge ${item.is_tumor ? 'flag-positive' : 'flag-negative'}" style="font-size: 10px; padding: 2px 6px;">
@@ -453,7 +466,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnClearHistory.addEventListener('click', async () => {
       if (!confirm('Are you sure you want to clear the scan audit log?')) return;
       try {
-        await fetch('/api/scans/clear', { method: 'POST' });
+        const response = await fetch('/api/scans/clear', { method: 'POST' });
+        if (!response.ok) throw new Error('History could not be cleared');
         loadHistory();
         loadStats();
       } catch (err) {
@@ -462,11 +476,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Medical Diagnostic Report Modal & Certified PDF Download ──────
+  // ── Research report modal and PDF download ──────
   if (btnExportReport) {
     btnExportReport.addEventListener('click', () => {
       if (!currentScanData) return;
-      document.getElementById('rep-id').textContent = currentScanData.patient_id || `NEURO-${Math.floor(100000 + Math.random() * 900000)}`;
+      document.getElementById('rep-id').textContent = currentScanData.patient_id || 'ANON';
       document.getElementById('rep-date').textContent = new Date().toLocaleString();
       document.getElementById('rep-file').textContent = currentScanData.filename;
 
@@ -476,7 +490,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       document.getElementById('rep-conf').textContent = `${currentScanData.confidence}%`;
       document.getElementById('rep-img-orig').src = currentScanData.original_b64;
-      document.getElementById('rep-img-heat').src = currentScanData.heatmap_b64;
+      const repHeat = document.getElementById('rep-img-heat');
+      if (currentScanData.heatmap_b64) {
+        repHeat.src = currentScanData.heatmap_b64;
+        repHeat.style.display = '';
+      } else {
+        repHeat.removeAttribute('src');
+        repHeat.style.display = 'none';
+      }
 
       reportModal.style.display = 'flex';
     });
@@ -490,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const payload = {
-          patient_id: currentScanData.patient_id || 'NEURO-2026',
+          patient_id: currentScanData.patient_id || 'ANON',
           patient_name: currentScanData.patient_name || 'Anonymous / De-identified',
           filename: currentScanData.filename,
           label: currentScanData.label,
@@ -527,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
-          Download Certified PDF Report
+          Download Research PDF Report
         `;
       }
     });
@@ -542,3 +563,5 @@ document.addEventListener('DOMContentLoaded', () => {
   loadStats();
   loadHistory();
 });
+
+fetch('/api/health').then(r => r.json()).then(data => {document.getElementById('engine-status').textContent = data.model_loaded ? 'MRI ENGINE LOADED' : 'MRI ENGINE UNAVAILABLE';}).catch(() => {document.getElementById('engine-status').textContent = 'BACKEND UNAVAILABLE';});

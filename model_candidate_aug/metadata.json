@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "preprocessing": "mobilenet_v2",
+  "image_size": [
+    224,
+    224
+  ],
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "output": "probabilities",
+  "artifact_hashes": {
+    "brain_tumor_model.tflite": "e72ae387afa1c826604bebe8176e6b91ba4c7f399ebd4ce18e3f4e58debc1d12",
+    "best_model.h5": "16cfe3076908f5c1a4d6c5ce489bdad13317e2cb563f370c5ee06adf1301bb45"
+  },
+  "training": {
+    "created": "2026-10-14T22:58:49.165545+00:00",
+    "seed": 42,
+    "best_validation_loss": 0.3390345871448517,
+    "split_counts": {
+      "train": 2239,
+      "validation": 561,
+      "test": 314
+    },
+    "tensorflow": "2.21.0"
+  }
+}

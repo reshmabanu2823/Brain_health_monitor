@@ -1,217 +1,226 @@
-import os
-import numpy as np
-import tensorflow as tf
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout, BatchNormalization
-from tensorflow.keras.models import Model
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+"""Train a candidate MobileNetV2 classifier from a hash-disjoint manifest.
+
+Writes a self-contained candidate directory (Keras model, TFLite export,
+class mapping, metadata and manifest). The bundled ``model/`` directory is
+never modified; promote a candidate only after ``evaluate_model.py`` review.
+"""
+import argparse
 import json
+import os
+from datetime import datetime, timezone
+from pathlib import Path
 
-# ── CONFIG ────────────────────────────────────────────────────────
-BASE_DIR      = os.path.dirname(os.path.abspath(__file__))
-DATASET_PATH  = os.path.join(BASE_DIR, "dataset", "Training")
-MODEL_DIR     = os.path.join(BASE_DIR, "model")
-IMG_SIZE      = (224, 224)
-BATCH_SIZE    = 32   # Larger batch = more stable gradients
-PHASE1_EPOCHS = 25
-PHASE2_EPOCHS = 40
-NUM_CLASSES   = 4
+from app.artifacts import CLASS_NAMES, sha256_file
+from app.dataset import balanced_class_weights, build_manifest, build_pooled_manifest
+from app.preprocessing import IMG_SIZE, preprocess_image
 
-print("=" * 65)
-print("   BRAIN HEALTH MONITOR — RETRAIN WITH CORRECT PREPROCESSING")
-print("   Backbone: MobileNetV2 | Proper RGB (no grayscale CLAHE bug)")
-print("=" * 65)
-print(f"\n Dataset : {DATASET_PATH}")
-print(f" Model   : {MODEL_DIR}\n")
+PREPROCESSING = 'mobilenet_v2'
+ROOT = Path(__file__).resolve().parent
 
-os.makedirs(MODEL_DIR, exist_ok=True)
 
-# ── DATA GENERATORS ───────────────────────────────────────────────
-# KEY DIFFERENCE FROM OLD MODEL: MobileNetV2 preprocessing is applied
-# (scales to [-1, 1]) instead of simple /255.0. This matches what the
-# backbone was pre-trained with, giving it proper feature activations.
-print("[1/5] Setting up data generators with MobileNetV2 preprocessing...")
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--dataset-dir', type=Path, default=ROOT / 'dataset')
+    parser.add_argument('--output-dir', type=Path, default=ROOT / 'model_candidate')
+    parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--batch-size', type=int, default=16)
+    parser.add_argument('--head-epochs', type=int, default=15)
+    parser.add_argument('--fine-tune-epochs', type=int, default=15)
+    parser.add_argument('--fine-tune-layers', type=int, default=30, help='Unfreeze this many backbone layers for fine-tuning (0 = all)')
+    parser.add_argument('--fine-tune-lr', type=float, default=1e-4)
+    parser.add_argument('--label-smoothing', type=float, default=0.0)
+    parser.add_argument('--extra-no-tumor-dir', type=Path, default=None, help='Extra certain-label no-tumor images added to the training pool only')
+    parser.add_argument('--extra-class-dir', type=Path, default=None, help='External class-folder dataset (with optional index.json of patient ids) added to the training pool only')
+    parser.add_argument('--pooled', action='store_true', help='Pool all sources and hold out whole clusters (optimistic; see manifest limitation)')
+    parser.add_argument('--cluster-validation', action='store_true', help='Keep perceptually similar training images and supplied patient IDs together in train/validation; preserve original Testing folder')
+    parser.add_argument('--backbone', choices=['mobilenetv2', 'efficientnetv2s'], default='mobilenetv2')
+    parser.add_argument('--limit-per-class', type=int, default=None, help='Cap examples per class and split (smoke runs)')
+    parser.add_argument('--no-pretrained', action='store_true', help='Skip ImageNet weights (offline smoke runs)')
+    args = parser.parse_args(argv)
+    if args.pooled and args.cluster_validation:
+        parser.error('--cluster-validation cannot be combined with --pooled')
+    return args
 
-# MobileNetV2 expects input in [-1, 1] range
-def mobilenet_preprocess(x):
-    return tf.keras.applications.mobilenet_v2.preprocess_input(x)
 
-train_datagen = ImageDataGenerator(
-    preprocessing_function=mobilenet_preprocess,
-    rotation_range=20,
-    width_shift_range=0.1,
-    height_shift_range=0.1,
-    shear_range=0.1,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    fill_mode='nearest',
-    validation_split=0.2
-)
+def limit_records(records, per_class):
+    if per_class is None:
+        return records
+    return [r for index in range(len(CLASS_NAMES)) for r in [r for r in records if r['class_index'] == index][:per_class]]
 
-val_datagen = ImageDataGenerator(
-    preprocessing_function=mobilenet_preprocess,
-    validation_split=0.2
-)
 
-train_generator = train_datagen.flow_from_directory(
-    DATASET_PATH,
-    target_size=IMG_SIZE,
-    batch_size=BATCH_SIZE,
-    class_mode='categorical',
-    subset='training',
-    shuffle=True
-)
+def make_dataset(records, root, batch_size, seed=None, augment=False):
+    import numpy as np
+    import tensorflow as tf
 
-val_generator = val_datagen.flow_from_directory(
-    DATASET_PATH,
-    target_size=IMG_SIZE,
-    batch_size=BATCH_SIZE,
-    class_mode='categorical',
-    subset='validation',
-    shuffle=False
-)
+    def generate():
+        for record in records:
+            tensor, _ = preprocess_image(root / record['path'], PREPROCESSING)
+            yield tensor[0], np.eye(len(CLASS_NAMES), dtype=np.float32)[record['class_index']]
 
-print(f" Training   : {train_generator.samples} images")
-print(f" Validation : {val_generator.samples} images")
-print(f" Classes    : {train_generator.class_indices}\n")
+    signature = (tf.TensorSpec((*IMG_SIZE, 3), tf.float32), tf.TensorSpec((len(CLASS_NAMES),), tf.float32))
+    dataset = tf.data.Dataset.from_generator(generate, output_signature=signature).cache()
+    if augment:
+        dataset = dataset.shuffle(len(records), seed=seed, reshuffle_each_iteration=True).enumerate()
+        dataset = dataset.map(lambda i, example: _augment(example, tf.stack([tf.constant(seed, tf.int64), i]), tf), num_parallel_calls=1, deterministic=True)
+    return dataset.batch(batch_size).prefetch(tf.data.AUTOTUNE)
 
-# Save class indices
-with open(os.path.join(MODEL_DIR, "class_indices.json"), 'w') as f:
-    json.dump(train_generator.class_indices, f)
 
-# ── CLASS WEIGHTS (mild — don't over-penalise) ────────────────────
-# Computed from dataset: glioma=826, meningioma=822, no_tumor=395, pituitary=827
-# Total=2870, num_classes=4 → balanced = total/(num_classes * count)
-total = 826 + 822 + 395 + 827
-class_weights = {
-    0: total / (4 * 826),   # glioma      ~0.87
-    1: total / (4 * 822),   # meningioma  ~0.87
-    2: total / (4 * 395),   # no_tumor    ~1.82
-    3: total / (4 * 827),   # pituitary   ~0.87
-}
-print(f" Class weights: {class_weights}\n")
+def _augment(example, seed, tf):
+    """Stateless, seed-derived augmentation: identical across runs.
 
-# ── BUILD MODEL ───────────────────────────────────────────────────
-print("[2/5] Building MobileNetV2 model...")
+    Wide brightness/gamma/contrast and crop/aspect jitter make the classifier
+    robust to scanner and export differences between image sources.
+    """
+    image, label = example
+    s = tf.random.experimental.stateless_split(seed, 6)
+    image = tf.image.stateless_random_flip_left_right(image, s[0])
+    begin, size, _ = tf.image.stateless_sample_distorted_bounding_box(
+        tf.shape(image), tf.zeros((1, 0, 4)), seed=s[1], area_range=(0.55, 1.0), aspect_ratio_range=(0.8, 1.25), use_image_if_no_bounding_boxes=True)
+    image = tf.image.resize(tf.slice(image, begin, size), IMG_SIZE)
+    x = (image + 1.0) / 2.0
+    gamma = tf.exp(tf.random.stateless_uniform((), s[2], -0.5, 0.5))
+    gain = tf.random.stateless_uniform((), s[3], 0.6, 1.9)
+    contrast = tf.random.stateless_uniform((), s[4], 0.7, 1.4)
+    x = tf.pow(tf.clip_by_value(x, 0.0, 1.0), gamma) * gain
+    mean = tf.reduce_mean(x)
+    x = (x - mean) * contrast + mean
+    x = x + tf.random.stateless_normal(tf.shape(x), s[5], stddev=0.02)
+    return tf.clip_by_value(x, 0.0, 1.0) * 2.0 - 1.0, label
 
-base_model = MobileNetV2(
-    input_shape=(224, 224, 3),
-    include_top=False,
-    weights='imagenet'
-)
-base_model.trainable = False
 
-x = base_model.output
-x = GlobalAveragePooling2D()(x)
-x = Dense(256, activation='relu')(x)
-x = Dropout(0.5)(x)
-x = Dense(128, activation='relu')(x)
-x = Dropout(0.3)(x)
-output = Dense(NUM_CLASSES, activation='softmax')(x)
+def build_model(pretrained=True, backbone='mobilenetv2'):
+    import tensorflow as tf
+    from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D, Input, Rescaling
 
-model = Model(inputs=base_model.input, outputs=output)
+    weights = 'imagenet' if pretrained else None
+    if backbone == 'mobilenetv2':
+        base = tf.keras.applications.MobileNetV2(input_shape=(*IMG_SIZE, 3), include_top=False, weights=weights)
+        inputs = base.input
+    elif backbone == 'efficientnetv2s':
+        # The input contract is [-1, 1]; EfficientNetV2 expects [0, 255], so rescale inside the model.
+        inputs = Input((*IMG_SIZE, 3))
+        base = tf.keras.applications.EfficientNetV2S(include_top=False, weights=weights, input_tensor=Rescaling(127.5, offset=127.5)(inputs))
+    else:
+        raise ValueError(f'Unknown backbone: {backbone}')
+    base.trainable = False
+    x = GlobalAveragePooling2D()(base.output)
+    x = Dropout(0.4)(x)
+    x = Dense(128, activation='relu')(x)
+    x = Dropout(0.3)(x)
+    output = Dense(len(CLASS_NAMES), activation='softmax')(x)
+    return tf.keras.Model(inputs, output), base
 
-model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3),
-    loss='categorical_crossentropy',
-    metrics=['accuracy']
-)
 
-print(f" Parameters : {model.count_params():,}")
-print(f" Trainable  : {sum(tf.size(v).numpy() for v in model.trainable_variables):,}\n")
+def compile_model(model, learning_rate, label_smoothing=0.0):
+    import tensorflow as tf
+    loss = tf.keras.losses.CategoricalCrossentropy(label_smoothing=label_smoothing)
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate), loss=loss, metrics=['accuracy'])
 
-# ── CALLBACKS ─────────────────────────────────────────────────────
-print("[3/5] Setting up callbacks...")
 
-checkpoint = ModelCheckpoint(
-    filepath=os.path.join(MODEL_DIR, 'best_model.h5'),
-    monitor='val_accuracy',
-    save_best_only=True,
-    verbose=1
-)
-early_stop = EarlyStopping(
-    monitor='val_accuracy',
-    patience=8,
-    restore_best_weights=True,
-    verbose=1
-)
-reduce_lr = ReduceLROnPlateau(
-    monitor='val_loss',
-    factor=0.5,
-    patience=4,
-    min_lr=1e-7,
-    verbose=1
-)
+def freeze_batch_norm(model):
+    import tensorflow as tf
+    for layer in model.layers:
+        if isinstance(layer, tf.keras.layers.BatchNormalization):
+            layer.trainable = False
 
-# ── PHASE 1: Train head only ───────────────────────────────────────
-print("[4/5] Phase 1 — Training classification head (frozen backbone)...")
-print("-" * 65)
 
-history1 = model.fit(
-    train_generator,
-    epochs=PHASE1_EPOCHS,
-    validation_data=val_generator,
-    callbacks=[checkpoint, early_stop, reduce_lr],
-    class_weight=class_weights,
-    verbose=1
-)
+def best_weights_tracker():
+    import tensorflow as tf
 
-best_p1 = max(history1.history.get('val_accuracy', [0]))
-print(f"\n Phase 1 Best Val Accuracy: {best_p1:.2%}\n")
+    class BestWeights(tf.keras.callbacks.Callback):
+        """Keeps the lowest validation loss seen across all training phases."""
 
-# ── PHASE 2: Fine-tune top layers ─────────────────────────────────
-print("[5/5] Phase 2 — Fine-tuning top 50 MobileNetV2 layers...")
-print("-" * 65)
+        def __init__(self):
+            super().__init__()
+            self.loss = float('inf')
+            self.weights = None
 
-# Unfreeze top 50 layers
-base_model.trainable = True
-for layer in base_model.layers[:-50]:
-    layer.trainable = False
+        def on_epoch_end(self, epoch, logs=None):
+            if logs['val_loss'] < self.loss:
+                self.loss = logs['val_loss']
+                self.weights = self.model.get_weights()
 
-model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
-    loss='categorical_crossentropy',
-    metrics=['accuracy']
-)
+    return BestWeights()
 
-early_stop2 = EarlyStopping(
-    monitor='val_accuracy',
-    patience=10,
-    restore_best_weights=True,
-    verbose=1
-)
 
-history2 = model.fit(
-    train_generator,
-    epochs=PHASE2_EPOCHS,
-    validation_data=val_generator,
-    callbacks=[checkpoint, early_stop2, reduce_lr],
-    class_weight=class_weights,
-    verbose=1
-)
+def export(model, output_dir, manifest, args, best_val_loss):
+    import tensorflow as tf
+    output_dir.mkdir(parents=True, exist_ok=True)
+    h5_path = output_dir / 'best_model.h5'
+    tflite_path = output_dir / 'brain_tumor_model.tflite'
+    model.save(h5_path, include_optimizer=False)
+    converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    converter.optimizations = [tf.lite.Optimize.DEFAULT]
+    tflite_path.write_bytes(converter.convert())
+    (output_dir / 'class_indices.json').write_text(json.dumps({name: i for i, name in enumerate(CLASS_NAMES)}))
+    (output_dir / 'manifest.json').write_text(json.dumps(manifest, indent=2))
+    metadata = {
+        'schema_version': 1,
+        'preprocessing': PREPROCESSING,
+        'image_size': list(IMG_SIZE),
+        'classes': CLASS_NAMES,
+        'output': 'probabilities',
+        'artifact_hashes': {'brain_tumor_model.tflite': sha256_file(tflite_path), 'best_model.h5': sha256_file(h5_path)},
+        'training': {
+            'created': datetime.now(timezone.utc).isoformat(),
+            'seed': args.seed,
+            'backbone': args.backbone,
+            'fine_tune_layers': args.fine_tune_layers,
+            'fine_tune_lr': args.fine_tune_lr,
+            'label_smoothing': args.label_smoothing,
+            'validation_grouping': manifest.get('validation_grouping'),
+            'best_validation_loss': best_val_loss,
+            'split_counts': {s: len(manifest[s]) for s in ('train', 'validation', 'test')},
+            'tensorflow': tf.__version__,
+        },
+    }
+    (output_dir / 'metadata.json').write_text(json.dumps(metadata, indent=2))
+    return metadata
 
-best_p2 = max(history2.history.get('val_accuracy', [0]))
 
-# ── EXPORT TFLite ─────────────────────────────────────────────────
-print("\n Converting to TFLite...")
+def train(args):
+    import tensorflow as tf
+    from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
-model.load_weights(os.path.join(MODEL_DIR, 'best_model.h5'))
+    tf.keras.utils.set_random_seed(args.seed)
+    tf.config.experimental.enable_op_determinism()
+    builder = build_pooled_manifest if args.pooled else build_manifest
+    split_options = {'cluster_validation': True} if args.cluster_validation else {}
+    manifest = builder(args.dataset_dir, args.seed, extra_no_tumor_dir=args.extra_no_tumor_dir, extra_class_dir=args.extra_class_dir, **split_options)
+    for split in ('train', 'validation'):
+        manifest[split] = limit_records(manifest[split], args.limit_per_class)
+    root = Path(manifest['dataset_dir'])
+    train_ds = make_dataset(manifest['train'], root, args.batch_size, args.seed, augment=True)
+    val_ds = make_dataset(manifest['validation'], root, args.batch_size)
+    weights = balanced_class_weights([r['class_index'] for r in manifest['train']])
+    print(f"Train {len(manifest['train'])} | validation {len(manifest['validation'])} | excluded {manifest['excluded']}")
+    if 'validation_grouping' in manifest:
+        print('Validation grouping:', json.dumps(manifest['validation_grouping']))
 
-converter = tf.lite.TFLiteConverter.from_keras_model(model)
-converter.optimizations = [tf.lite.Optimize.DEFAULT]
-converter.target_spec.supported_types = [tf.float16]
-tflite_model = converter.convert()
+    model, base = build_model(pretrained=not args.no_pretrained, backbone=args.backbone)
+    tracker = best_weights_tracker()
 
-tflite_path = os.path.join(MODEL_DIR, 'brain_tumor_model.tflite')
-with open(tflite_path, 'wb') as f:
-    f.write(tflite_model)
+    def callbacks():
+        return [tracker, EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True), ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2, min_lr=1e-7)]
 
-print(f"\n{'=' * 65}")
-print(f"   TRAINING COMPLETE!")
-print(f"{'=' * 65}")
-print(f" Phase 1 Val Accuracy : {best_p1:.2%}")
-print(f" Phase 2 Val Accuracy : {max(best_p1, best_p2):.2%}")
-print(f" Model saved          : {tflite_path}")
-print(f" TFLite size          : {os.path.getsize(tflite_path)/1024/1024:.2f} MB")
-print(f"{'=' * 65}\n")
+    compile_model(model, 1e-3, args.label_smoothing)
+    model.fit(train_ds, epochs=args.head_epochs, validation_data=val_ds, callbacks=callbacks(), class_weight=weights, verbose=2)
+
+    base.trainable = True
+    if args.fine_tune_layers:
+        for layer in base.layers[:-args.fine_tune_layers]:
+            layer.trainable = False
+    freeze_batch_norm(model)
+    compile_model(model, args.fine_tune_lr, args.label_smoothing)
+    model.fit(train_ds, epochs=args.fine_tune_epochs, validation_data=val_ds, callbacks=callbacks(), class_weight=weights, verbose=2)
+
+    model.set_weights(tracker.weights)
+    metadata = export(model, args.output_dir, manifest, args, tracker.loss)
+    print(f'Candidate written to {args.output_dir} (best validation loss {tracker.loss:.4f})')
+    print(f'Evaluate: python evaluate_model.py --model-dir {args.output_dir} --output {args.output_dir}/evaluation.json')
+    return metadata
+
+
+if __name__ == '__main__':
+    os.environ.setdefault('TF_CPP_MIN_LOG_LEVEL', '2')
+    train(parse_args())
