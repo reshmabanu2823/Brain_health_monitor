@@ -2,7 +2,7 @@ import os
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout, BatchNormalization
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
@@ -13,25 +13,32 @@ BASE_DIR      = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH  = os.path.join(BASE_DIR, "dataset", "Training")
 MODEL_DIR     = os.path.join(BASE_DIR, "model")
 IMG_SIZE      = (224, 224)
-BATCH_SIZE    = 16
-EPOCHS        = 30
+BATCH_SIZE    = 32   # Larger batch = more stable gradients
+PHASE1_EPOCHS = 25
+PHASE2_EPOCHS = 40
 NUM_CLASSES   = 4
 
-CLASS_NAMES = ['glioma_tumor', 'meningioma_tumor', 'no_tumor', 'pituitary_tumor']
-
-print("=" * 60)
-print("   BRAIN TUMOR DETECTION — MODEL TRAINING")
-print("=" * 60)
+print("=" * 65)
+print("   BRAIN HEALTH MONITOR — RETRAIN WITH CORRECT PREPROCESSING")
+print("   Backbone: MobileNetV2 | Proper RGB (no grayscale CLAHE bug)")
+print("=" * 65)
 print(f"\n Dataset : {DATASET_PATH}")
-print(f" Model   : {MODEL_DIR}")
-print(f" Epochs  : {EPOCHS}")
-print(f" Classes : {CLASS_NAMES}\n")
+print(f" Model   : {MODEL_DIR}\n")
+
+os.makedirs(MODEL_DIR, exist_ok=True)
 
 # ── DATA GENERATORS ───────────────────────────────────────────────
-print("[1/5] Setting up data generators...")
+# KEY DIFFERENCE FROM OLD MODEL: MobileNetV2 preprocessing is applied
+# (scales to [-1, 1]) instead of simple /255.0. This matches what the
+# backbone was pre-trained with, giving it proper feature activations.
+print("[1/5] Setting up data generators with MobileNetV2 preprocessing...")
+
+# MobileNetV2 expects input in [-1, 1] range
+def mobilenet_preprocess(x):
+    return tf.keras.applications.mobilenet_v2.preprocess_input(x)
 
 train_datagen = ImageDataGenerator(
-    rescale=1./255,
+    preprocessing_function=mobilenet_preprocess,
     rotation_range=20,
     width_shift_range=0.1,
     height_shift_range=0.1,
@@ -39,6 +46,11 @@ train_datagen = ImageDataGenerator(
     zoom_range=0.2,
     horizontal_flip=True,
     fill_mode='nearest',
+    validation_split=0.2
+)
+
+val_datagen = ImageDataGenerator(
+    preprocessing_function=mobilenet_preprocess,
     validation_split=0.2
 )
 
@@ -51,7 +63,7 @@ train_generator = train_datagen.flow_from_directory(
     shuffle=True
 )
 
-val_generator = train_datagen.flow_from_directory(
+val_generator = val_datagen.flow_from_directory(
     DATASET_PATH,
     target_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
@@ -60,15 +72,25 @@ val_generator = train_datagen.flow_from_directory(
     shuffle=False
 )
 
-print(f" Training samples   : {train_generator.samples}")
-print(f" Validation samples : {val_generator.samples}")
-print(f" Class indices      : {train_generator.class_indices}\n")
+print(f" Training   : {train_generator.samples} images")
+print(f" Validation : {val_generator.samples} images")
+print(f" Classes    : {train_generator.class_indices}\n")
 
-# Save class indices for the app
-class_indices_path = os.path.join(MODEL_DIR, "class_indices.json")
-with open(class_indices_path, 'w') as f:
+# Save class indices
+with open(os.path.join(MODEL_DIR, "class_indices.json"), 'w') as f:
     json.dump(train_generator.class_indices, f)
-print(f" Class indices saved to {class_indices_path}\n")
+
+# ── CLASS WEIGHTS (mild — don't over-penalise) ────────────────────
+# Computed from dataset: glioma=826, meningioma=822, no_tumor=395, pituitary=827
+# Total=2870, num_classes=4 → balanced = total/(num_classes * count)
+total = 826 + 822 + 395 + 827
+class_weights = {
+    0: total / (4 * 826),   # glioma      ~0.87
+    1: total / (4 * 822),   # meningioma  ~0.87
+    2: total / (4 * 395),   # no_tumor    ~1.82
+    3: total / (4 * 827),   # pituitary   ~0.87
+}
+print(f" Class weights: {class_weights}\n")
 
 # ── BUILD MODEL ───────────────────────────────────────────────────
 print("[2/5] Building MobileNetV2 model...")
@@ -78,11 +100,12 @@ base_model = MobileNetV2(
     include_top=False,
     weights='imagenet'
 )
-base_model.trainable = False  # Freeze base first
+base_model.trainable = False
 
 x = base_model.output
 x = GlobalAveragePooling2D()(x)
-x = Dropout(0.4)(x)
+x = Dense(256, activation='relu')(x)
+x = Dropout(0.5)(x)
 x = Dense(128, activation='relu')(x)
 x = Dropout(0.3)(x)
 output = Dense(NUM_CLASSES, activation='softmax')(x)
@@ -90,16 +113,16 @@ output = Dense(NUM_CLASSES, activation='softmax')(x)
 model = Model(inputs=base_model.input, outputs=output)
 
 model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3),
     loss='categorical_crossentropy',
     metrics=['accuracy']
 )
 
-print(f" Model built successfully")
-print(f" Total parameters : {model.count_params():,}\n")
+print(f" Parameters : {model.count_params():,}")
+print(f" Trainable  : {sum(tf.size(v).numpy() for v in model.trainable_variables):,}\n")
 
 # ── CALLBACKS ─────────────────────────────────────────────────────
-print("[3/5] Setting up training callbacks...")
+print("[3/5] Setting up callbacks...")
 
 checkpoint = ModelCheckpoint(
     filepath=os.path.join(MODEL_DIR, 'best_model.h5'),
@@ -107,73 +130,88 @@ checkpoint = ModelCheckpoint(
     save_best_only=True,
     verbose=1
 )
-
 early_stop = EarlyStopping(
     monitor='val_accuracy',
-    patience=7,
+    patience=8,
     restore_best_weights=True,
     verbose=1
 )
-
 reduce_lr = ReduceLROnPlateau(
     monitor='val_loss',
     factor=0.5,
-    patience=3,
+    patience=4,
     min_lr=1e-7,
     verbose=1
 )
 
-print(" Callbacks ready\n")
+# ── PHASE 1: Train head only ───────────────────────────────────────
+print("[4/5] Phase 1 — Training classification head (frozen backbone)...")
+print("-" * 65)
 
-# ── TRAIN PHASE 1 (frozen base) ───────────────────────────────────
-print("[4/5] Training Phase 1 — Top layers only...")
-print("-" * 60)
-
-class_weights = {0: 2.0, 1: 6.0, 2: 4.0, 3: 2.0}
-history = model.fit(
+history1 = model.fit(
     train_generator,
-    epochs=15,
+    epochs=PHASE1_EPOCHS,
     validation_data=val_generator,
     callbacks=[checkpoint, early_stop, reduce_lr],
     class_weight=class_weights,
     verbose=1
 )
-# ── TRAIN PHASE 2 (fine-tuning) ───────────────────────────────────
-print("\n Fine-tuning — Unfreezing top layers of base model...")
 
+best_p1 = max(history1.history.get('val_accuracy', [0]))
+print(f"\n Phase 1 Best Val Accuracy: {best_p1:.2%}\n")
+
+# ── PHASE 2: Fine-tune top layers ─────────────────────────────────
+print("[5/5] Phase 2 — Fine-tuning top 50 MobileNetV2 layers...")
+print("-" * 65)
+
+# Unfreeze top 50 layers
 base_model.trainable = True
-for layer in base_model.layers[:-30]:
+for layer in base_model.layers[:-50]:
     layer.trainable = False
 
 model.compile(
-    optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
     loss='categorical_crossentropy',
     metrics=['accuracy']
 )
 
-history2 = model.fit(
-    train_generator,
-    epochs=EPOCHS,
-    validation_data=val_generator,
-    callbacks=[checkpoint, early_stop, reduce_lr],
+early_stop2 = EarlyStopping(
+    monitor='val_accuracy',
+    patience=10,
+    restore_best_weights=True,
     verbose=1
 )
 
-# ── CONVERT TO TFLITE ─────────────────────────────────────────────
-print("\n[5/5] Converting to TFLite format...")
+history2 = model.fit(
+    train_generator,
+    epochs=PHASE2_EPOCHS,
+    validation_data=val_generator,
+    callbacks=[checkpoint, early_stop2, reduce_lr],
+    class_weight=class_weights,
+    verbose=1
+)
+
+best_p2 = max(history2.history.get('val_accuracy', [0]))
+
+# ── EXPORT TFLite ─────────────────────────────────────────────────
+print("\n Converting to TFLite...")
+
+model.load_weights(os.path.join(MODEL_DIR, 'best_model.h5'))
 
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
+converter.target_spec.supported_types = [tf.float16]
 tflite_model = converter.convert()
 
 tflite_path = os.path.join(MODEL_DIR, 'brain_tumor_model.tflite')
 with open(tflite_path, 'wb') as f:
     f.write(tflite_model)
 
-print(f"\n{'=' * 60}")
+print(f"\n{'=' * 65}")
 print(f"   TRAINING COMPLETE!")
-print(f"{'=' * 60}")
-print(f" Model saved  : {tflite_path}")
-print(f" Size         : {os.path.getsize(tflite_path) / (1024*1024):.2f} MB")
-print(f"\n Final Validation Accuracy : {max(history2.history['val_accuracy']):.2%}")
-print(f"{'=' * 60}\n")
+print(f"{'=' * 65}")
+print(f" Phase 1 Val Accuracy : {best_p1:.2%}")
+print(f" Phase 2 Val Accuracy : {max(best_p1, best_p2):.2%}")
+print(f" Model saved          : {tflite_path}")
+print(f" TFLite size          : {os.path.getsize(tflite_path)/1024/1024:.2f} MB")
+print(f"{'=' * 65}\n")
