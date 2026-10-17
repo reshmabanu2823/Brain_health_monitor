@@ -220,3 +220,22 @@ def test_clustered_validation_backtracks_for_feasible_class_coverage(tmp_path):
     assert {r['class_index'] for r in train} == {0, 1, 2, 3}
     assert {r['class_index'] for r in validation} == {0, 1, 2, 3}
     assert not {r['patient'] for r in train} & {r['patient'] for r in validation}
+
+
+def test_glioma_boost_flag_and_weighting():
+    from train_model import parse_args
+    from app.artifacts import CLASS_NAMES
+    from app.dataset import balanced_class_weights
+
+    default_args = parse_args([])
+    assert default_args.glioma_boost == 1.0
+
+    custom_args = parse_args(['--glioma-boost', '1.5'])
+    assert custom_args.glioma_boost == 1.5
+
+    labels = [0, 0, 1, 2, 3]
+    weights = balanced_class_weights(labels)
+    glioma_index = CLASS_NAMES.index('glioma_tumor')
+    base_glioma = weights[glioma_index]
+    weights[glioma_index] *= custom_args.glioma_boost
+    assert weights[glioma_index] == pytest.approx(base_glioma * 1.5)

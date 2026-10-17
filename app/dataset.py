@@ -43,12 +43,12 @@ def build_manifest(dataset_dir, seed=42, validation_fraction=.2, extra_no_tumor_
             if not files:
                 raise ValueError(f'Missing images for {split}/{name}')
             for path in files:
-                records.append({'path': str(path.relative_to(root)), 'class_name': name, 'class_index': index, 'sha256': sha256_file(path), 'source_split': split})
+                records.append({'path': path.relative_to(root).as_posix(), 'class_name': name, 'class_index': index, 'sha256': sha256_file(path), 'source_split': split})
     if extra_no_tumor_dir is not None:
         # Certain-label supplementary images: training pool only, never the test partition.
         extra_dir = Path(extra_no_tumor_dir).resolve()
         for path in sorted(p for p in extra_dir.rglob('*') if p.is_file() and p.suffix.lower() in IMAGE_SUFFIXES):
-            records.append({'path': str(path.relative_to(root)) if path.is_relative_to(root) else str(path), 'class_name': 'no_tumor', 'class_index': CLASS_NAMES.index('no_tumor'), 'sha256': sha256_file(path), 'source_split': 'Extra'})
+            records.append({'path': path.relative_to(root).as_posix() if path.is_relative_to(root) else str(path), 'class_name': 'no_tumor', 'class_index': CLASS_NAMES.index('no_tumor'), 'sha256': sha256_file(path), 'source_split': 'Extra'})
     near_duplicates = 0
     if extra_class_dir is not None:
         # External labelled slices (class folders + optional index.json of patient ids): training pool only.
@@ -236,7 +236,7 @@ def build_pooled_manifest(dataset_dir, seed=42, test_fraction=.15, validation_fr
     for split in ('Training', 'Testing'):
         for index, name in enumerate(CLASS_NAMES):
             for path in _image_files(root / split / name):
-                records.append({'path': str(path.relative_to(root)), 'class_name': name, 'class_index': index, 'source_split': split, 'patient': None})
+                records.append({'path': path.relative_to(root).as_posix(), 'class_name': name, 'class_index': index, 'source_split': split, 'patient': None})
     if extra_no_tumor_dir is not None:
         for path in _image_files(extra_no_tumor_dir):
             records.append({'path': str(path.resolve()), 'class_name': 'no_tumor', 'class_index': CLASS_NAMES.index('no_tumor'), 'source_split': 'Extra', 'patient': None})
