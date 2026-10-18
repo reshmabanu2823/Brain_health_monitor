@@ -95,3 +95,59 @@ def test_stale_input_and_discontinuity_clear_prediction_and_recording(tmp_path):
     s._accept([(22,.088,515)],discontinuity=True)
     assert s.store.get(rid)['status']=='interrupted'
     assert s.snapshot()['analysis'] is None and len(s.snapshot()['samples'])==1
+
+
+def test_serial_unplug_during_active_recording_interrupts_and_recovers(tmp_path):
+    class MockDevice:
+        def __init__(self):
+            self.unplugged = False
+            self.seq = 0
+        def read(self, n):
+            if self.unplugged:
+                raise OSError('Device unplugged during acquisition')
+            time.sleep(0.01)
+            self.seq += 1
+            return f'{self.seq},{self.seq * 4000},512\n'.encode()
+        def close(self):
+            pass
+
+    device = MockDevice()
+    store = RecordingStore(tmp_path / 'eeg.db')
+    s = EEGService(store, SignalConfig(), serial_factory=lambda *a, **k: device, retry_seconds=0.02, max_retries=3)
+    s.connect('serial', 'COM3')
+
+    for _ in range(50):
+        if s.state == 'connected':
+            break
+        time.sleep(0.01)
+    assert s.state == 'connected'
+
+    rid = s.start_recording()
+    assert s.recording == rid
+
+    # Trigger unplug during active recording
+    device.unplugged = True
+
+    # Wait for the unplug OSError to mark recording as interrupted
+    for _ in range(50):
+        if store.get(rid)['status'] == 'interrupted':
+            break
+        time.sleep(0.01)
+
+    assert store.get(rid)['status'] == 'interrupted'
+    assert s.recording is None
+    assert s.snapshot()['analysis'] is None
+
+    # Plug device back in
+    device.unplugged = False
+
+    # Wait for reconnection with fresh buffer
+    for _ in range(50):
+        if s.state == 'connected':
+            break
+        time.sleep(0.01)
+
+    assert s.state == 'connected'
+    assert s.recording is None  # Does not auto-resume old recording
+    assert len(s.snapshot()['samples']) > 0
+    s.disconnect()
