@@ -4,322 +4,428 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brain Health Monitor — MRI Research Analysis</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="/static/css/common.css" />
   <link rel="stylesheet" href="/static/css/style.css" />
 </head>
 <body>
+  <a class="skip" href="#main">Skip to analysis</a>
 
-  <!-- Top Instrument Telemetry Rail & Header -->
-  <header class="pacs-header">
-    <div class="header-brand">
-      <svg class="pacs-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93"/>
-        <circle cx="12" cy="12" r="9"/>
-      </svg>
-      <div class="brand-titles">
-        <span class="system-title">BRAIN HEALTH MONITOR</span>
-        <span class="system-subtitle">MRI classification research · not a clinical diagnosis</span>
-      </div>
-    </div>
+  <div class="neuro-app">
 
-    <!-- Header Telemetry Strip (Denser Single Strip) -->
-    <div class="telemetry-strip" role="region" aria-label="System Telemetry">
-      <div class="telem-item">
-        <span class="telem-label">SYSTEM LOGS</span>
-        <span class="telem-val" id="tele-total">—</span>
-      </div>
-      <div class="telem-divider"></div>
-      <div class="telem-item">
-        <span class="telem-label">POSITIVE RATE</span>
-        <span class="telem-val" id="tele-pos-rate">—</span>
-      </div>
-      <div class="telem-divider"></div>
-      <div class="telem-item">
-        <span class="telem-label">TEST ACCURACY</span>
-        <span class="telem-val" id="tele-accuracy">Not evaluated</span>
-      </div>
-      <div class="telem-divider"></div>
-      <div class="telem-item">
-        <span class="telem-label">MODEL BACKBONE</span>
-        <span class="telem-val">MRI classifier (TFLite)</span>
-      </div>
-      <div class="telem-divider"></div>
-      <div class="telem-status">
-        <span class="status-indicator"></span>
-        <span id="engine-status">CHECKING ENGINE</span>
-      </div>
-    </div>
-
-    <div class="header-actions"><a href="/eeg" class="btn-pacs-secondary">EEG workspace</a>
-      <button class="btn-pacs" id="btn-export-report" disabled aria-label="Generate Research PDF Report">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+    <!-- Slim Icon-Only Left Sidebar Rail -->
+    <aside class="neuro-rail" aria-label="Main Navigation">
+      <a href="/" class="rail-brand" title="Brain Health Monitor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
         </svg>
-        Generate Report
-      </button>
-    </div>
-  </header>
+      </a>
 
-  <!-- Main Diagnostic Workspace -->
-  <div class="pacs-workspace">
-
-    <!-- Left Controls Sidebar -->
-    <aside class="pacs-sidebar">
-
-      <!-- Scan Load Section -->
-      <section class="sidebar-section">
-        <div class="section-header">INPUT MRI SCAN SEQUENCE</div>
-        
-        <div class="drop-target" id="drop-zone" tabindex="0" role="button" aria-label="Drop MRI scan file here or click to select file">
-          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+      <nav class="rail-nav" aria-label="Workspaces">
+        <!-- MRI Analysis (Active) -->
+        <a href="/" class="rail-item active" aria-label="MRI analysis" title="MRI analysis" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 3a9 9 0 0 0 0 18M12 3v18M3 12h18" />
           </svg>
-          <span class="drop-text">Select or Drag MRI Scan File</span>
-          <span class="drop-sub">DICOM (.dcm) / JPEG / PNG / WebP</span>
-          <input type="file" id="file-input" accept="image/*,.dcm,.dicom" style="display: none;" />
-        </div>
+          <span class="rail-tooltip">MRI Analysis</span>
+        </a>
 
-        <div id="file-badge" class="file-badge" style="display: none;">
-          <span id="selected-filename">FILE: -</span>
-        </div>
+        <!-- EEG Monitoring -->
+        <a href="/eeg" class="rail-item" aria-label="EEG monitoring" title="EEG monitoring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4" />
+          </svg>
+          <span class="rail-tooltip">EEG Monitoring</span>
+        </a>
 
-        <!-- Quick Calibration Samples -->
-        <div class="samples-panel">
-          <span class="panel-label">CALIBRATION SAMPLES</span>
-          <div class="samples-buttons">
-            <button class="btn-sample" data-sample="/static/samples/glioma.jpg">Glioma</button>
-            <button class="btn-sample" data-sample="/static/samples/meningioma.jpg">Meningioma</button>
-            <button class="btn-sample" data-sample="/static/samples/notumor.jpg">No Tumor</button>
-            <button class="btn-sample" data-sample="/static/samples/pituitary.jpg">Pituitary</button>
-          </div>
-        </div>
+        <!-- API Reference -->
+        <a href="/docs" class="rail-item" aria-label="API reference" title="API reference" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          <span class="rail-tooltip">API Docs</span>
+        </a>
+      </nav>
 
-        <button class="btn-execute" id="btn-analyse" disabled>
-          Run Model Analysis
-        </button>
-      </section>
-
-      <!-- Scan Telemetry & Acquisition Info -->
-      <section class="sidebar-section">
-        <div class="section-header">ACQUISITION METADATA</div>
-        <div class="meta-table">
-          <div class="meta-row"><span>Matrix Dim:</span> <strong id="meta-res">224 x 224 px</strong></div>
-          <div class="meta-row"><span>Color Space:</span> <strong id="meta-type">RGB (8-bit)</strong></div>
-          <div class="meta-row"><span>File Size:</span> <strong id="meta-size">0 KB</strong></div>
-          <div class="meta-row"><span>Inference Latency:</span> <strong id="meta-time">-- ms</strong></div>
-          <div class="meta-row"><span>Colormap:</span> <strong>Inferno (Perceptually Uniform)</strong></div>
-        </div>
-      </section>
-
-      <!-- Lesion Quantification (ROI) -->
-      <section class="sidebar-section">
-        <div class="section-header">SALIENCY COVERAGE (NOT LESION SIZE)</div>
-        <div class="meta-table">
-          <div class="meta-row"><span>Saliency coverage:</span> <strong id="metric-tumor-area" class="mono-readout">--</strong></div>
-          <div class="meta-row"><span>Peak Saliency:</span> <strong id="metric-peak-sal" class="mono-readout">--</strong></div>
-          <div class="meta-row"><span>ROI Bounding Box:</span> <strong id="metric-bbox" class="mono-readout">--</strong></div>
-          <div class="meta-row"><span>Saliency center:</span> <strong id="metric-center" class="mono-readout">--</strong></div>
-        </div>
-      </section>
-
-      <!-- Crosshair Telemetry Inspector (Signature PACS Instrument) -->
-      <section class="sidebar-section">
-        <div class="section-header">CROSSHAIR SALIENCY INSPECTOR</div>
-        <div class="inspector-box">
-          <div class="insp-row">
-            <span>Pixel Coordinates:</span>
-            <strong id="insp-coords" class="mono-readout">X: -- Y: --</strong>
-          </div>
-          <div class="insp-row">
-            <span>Saliency Index:</span>
-            <strong id="insp-val" class="mono-readout">0.0000</strong>
-          </div>
-          <div class="insp-row">
-            <span>Activation Zone:</span>
-            <strong id="insp-zone" class="mono-readout">QUIESCENT</strong>
-          </div>
-        </div>
-      </section>
-
+      <div class="rail-footer">
+        <span class="status-indicator" title="System Active"></span>
+      </div>
     </aside>
 
-    <!-- Main PACS Viewer Area -->
-    <main class="pacs-main">
+    <!-- Main Workspace Content -->
+    <main id="main" class="neuro-content">
 
-      <!-- Viewer Toolbar Controls -->
-      <div class="viewer-toolbar">
-        <div class="toolbar-group">
-          <span class="tool-label">VIEWPORT MODE:</span>
-          <span class="tool-val">DUAL SYNCHRONIZED PACS CANVAS</span>
+      <!-- Header with Glowing Holographic Brain Graphic -->
+      <header class="neuro-header">
+        <div class="header-meta">
+          <div class="brand-title">
+            BRAIN HEALTH MONITOR
+            <span class="brand-badge">RESEARCH WORKSPACE</span>
+          </div>
+          <span class="brand-subtitle">MRI classification research &amp; Grad-CAM saliency · not a clinical diagnosis</span>
         </div>
 
-        <div class="toolbar-group">
-          <label for="heatmap-opacity" class="tool-label">SALIENCY OPACITY:</label>
-          <input type="range" id="heatmap-opacity" min="0.1" max="1.0" step="0.05" value="0.9" class="pacs-slider" />
-          <span id="opacity-val" class="slider-readout">90%</span>
+        <!-- Decorative Glowing Holographic SVG Brain -->
+        <div class="header-graphic-wrap" aria-hidden="true">
+          <svg class="neuro-brain-graphic" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="glow-purple" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <linearGradient id="grad-neural" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#bae6fd" stop-opacity="0.95" />
+                <stop offset="50%" stop-color="#7dd3fc" stop-opacity="0.85" />
+                <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.95" />
+              </linearGradient>
+            </defs>
+            <path d="M96 22 C72 21 52 32 42 50 C32 68 35 88 45 106 C55 124 75 133 96 136" stroke="url(#grad-neural)" stroke-width="2.2" stroke-linecap="round" filter="url(#glow-cyan)" />
+            <path d="M104 22 C128 21 148 32 158 50 C168 68 165 88 155 106 C145 124 125 133 104 136" stroke="url(#grad-neural)" stroke-width="2.2" stroke-linecap="round" filter="url(#glow-purple)" />
+            <path d="M96 38 C78 43 68 56 70 73 C72 90 84 98 96 110" stroke="#7dd3fc" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3" opacity="0.8" />
+            <path d="M104 38 C122 43 132 56 130 73 C128 90 116 98 104 110" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3" opacity="0.8" />
+            <circle cx="42" cy="50" r="3.5" fill="#bae6fd" filter="url(#glow-cyan)" />
+            <circle cx="158" cy="50" r="3.5" fill="#7dd3fc" filter="url(#glow-purple)" />
+            <circle cx="70" cy="73" r="3" fill="#38bdf8" />
+            <circle cx="130" cy="73" r="3" fill="#7dd3fc" />
+            <circle cx="45" cy="106" r="3.5" fill="#bae6fd" />
+            <circle cx="155" cy="106" r="3.5" fill="#38bdf8" />
+            <circle cx="100" cy="82" r="4" fill="#bae6fd" filter="url(#glow-cyan)" />
+            <line x1="70" y1="73" x2="100" y2="82" stroke="#7dd3fc" stroke-width="1.2" opacity="0.6" />
+            <line x1="130" y1="73" x2="100" y2="82" stroke="#38bdf8" stroke-width="1.2" opacity="0.6" />
+            <line x1="42" y1="50" x2="70" y2="73" stroke="#7dd3fc" stroke-width="1" opacity="0.5" />
+            <line x1="158" y1="50" x2="130" y2="73" stroke="#38bdf8" stroke-width="1" opacity="0.5" />
+          </svg>
         </div>
 
-        <div class="toolbar-group">
-          <label for="img-contrast" class="tool-label">CONTRAST:</label>
-          <input type="range" id="img-contrast" min="50" max="200" step="5" value="100" class="pacs-slider" style="width: 70px;" />
-          <span id="contrast-val" class="slider-readout">100%</span>
-        </div>
+        <div class="header-actions">
+          <div class="neuro-pill">
+            <span class="status-indicator"></span>
+            <span id="engine-status">CHECKING ENGINE</span>
+          </div>
 
-        <div class="toolbar-group">
-          <label for="img-brightness" class="tool-label">BRIGHTNESS:</label>
-          <input type="range" id="img-brightness" min="50" max="150" step="5" value="100" class="pacs-slider" style="width: 70px;" />
-          <span id="brightness-val" class="slider-readout">100%</span>
-        </div>
+          <a href="/eeg" class="btn-pacs-secondary">EEG workspace</a>
 
-        <div class="toolbar-group">
-          <span class="tool-label">ZOOM:</span>
-          <button class="btn-pacs-sm" id="btn-zoom-in" title="Zoom In">+</button>
-          <button class="btn-pacs-sm" id="btn-zoom-out" title="Zoom Out">-</button>
-          <button class="btn-pacs-sm" id="btn-zoom-reset" title="Reset Zoom">1:1</button>
+          <button class="btn-pacs" id="btn-export-report" disabled aria-label="Generate Research PDF Report">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+            Generate Report
+          </button>
+        </div>
+      </header>
+
+      <!-- Top Row: 4 Frosted Glass Stat Cards -->
+      <div class="readouts telemetry-strip" role="region" aria-label="System Telemetry">
+        <div class="card stat-card">
+          <span class="stat-label">SYSTEM LOGS</span>
+          <strong class="stat-value" id="tele-total">—</strong>
+          <div class="stat-glow cyan"></div>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label">POSITIVE RATE</span>
+          <strong class="stat-value" id="tele-pos-rate">—</strong>
+          <div class="stat-glow purple"></div>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label">TEST ACCURACY</span>
+          <strong class="stat-value" id="tele-accuracy">Not evaluated</strong>
+          <div class="stat-glow green"></div>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label">MODEL BACKBONE</span>
+          <strong class="stat-value" id="model-backbone" style="font-size: 18px;">MRI classifier (TFLite)</strong>
+          <div class="stat-glow blue"></div>
         </div>
       </div>
 
-      <!-- Dual Image Canvas Pane -->
-      <div class="canvas-viewport" id="canvas-viewport">
+      <!-- Main Diagnostic Workspace Grid -->
+      <div class="pacs-workspace">
 
-        <!-- Viewer 1: Original MRI Scan -->
-        <div class="pacs-frame" id="frame-orig">
-          <div class="hud hud-tl">SERIES: NOT VERIFIED</div>
-          <div class="hud hud-tr">MATRIX: 224x224</div>
-          <div class="hud hud-bl">ORIGINAL ANATOMICAL SCAN</div>
-          <div class="hud hud-br" id="hud-coords-orig">X:0 Y:0</div>
+        <!-- Left Controls Sidebar -->
+        <aside class="pacs-sidebar">
 
-          <div class="frame-canvas-wrapper" id="wrapper-orig">
-            <img id="img-original" style="display: none;" alt="Uploaded MRI image" />
-            <div class="crosshair-h" id="ch-orig-h" style="display: none;"></div>
-            <div class="crosshair-v" id="ch-orig-v" style="display: none;"></div>
-            <div class="pacs-placeholder" id="ph-original">
-              <span>Select an MRI scan file to load anatomical view</span>
+          <!-- Scan Load Section -->
+          <section class="sidebar-section">
+            <div class="section-header">INPUT MRI SCAN SEQUENCE</div>
+            
+            <div class="drop-target" id="drop-zone" tabindex="0" role="button" aria-label="Drop MRI scan file here or click to select file">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              <span class="drop-text">Select or Drag MRI Scan File</span>
+              <span class="drop-sub">DICOM (.dcm) / JPEG / PNG / WebP</span>
+              <input type="file" id="file-input" accept="image/*,.dcm,.dicom" style="display: none;" />
+            </div>
+
+            <div id="file-badge" class="file-badge" style="display: none;">
+              <span id="selected-filename">FILE: -</span>
+            </div>
+
+            <!-- Quick Calibration Samples -->
+            <div class="samples-panel">
+              <span class="panel-label">CALIBRATION SAMPLES</span>
+              <div class="samples-buttons">
+                <button class="btn-sample" data-sample="/static/samples/glioma.jpg">Glioma</button>
+                <button class="btn-sample" data-sample="/static/samples/meningioma.jpg">Meningioma</button>
+                <button class="btn-sample" data-sample="/static/samples/notumor.jpg">No Tumor</button>
+                <button class="btn-sample" data-sample="/static/samples/pituitary.jpg">Pituitary</button>
+              </div>
+            </div>
+
+            <button class="btn-execute" id="btn-analyse" disabled>
+              Run Model Analysis
+            </button>
+          </section>
+
+          <!-- Acquisition Metadata -->
+          <section class="sidebar-section">
+            <div class="section-header">ACQUISITION METADATA</div>
+            <div class="meta-table">
+              <div class="meta-row"><span>Matrix Dim:</span> <strong id="meta-res">224 x 224 px</strong></div>
+              <div class="meta-row"><span>Color Space:</span> <strong id="meta-type">RGB (8-bit)</strong></div>
+              <div class="meta-row"><span>File Size:</span> <strong id="meta-size">0 KB</strong></div>
+              <div class="meta-row"><span>Inference Latency:</span> <strong id="meta-time">-- ms</strong></div>
+              <div class="meta-row"><span>Colormap:</span> <strong>Inferno (Perceptually Uniform)</strong></div>
+            </div>
+          </section>
+
+          <!-- Saliency Coverage -->
+          <section class="sidebar-section">
+            <div class="section-header">SALIENCY COVERAGE (NOT LESION SIZE)</div>
+            <div class="meta-table">
+              <div class="meta-row"><span>Saliency coverage:</span> <strong id="metric-tumor-area" class="mono-readout">--</strong></div>
+              <div class="meta-row"><span>Peak Saliency:</span> <strong id="metric-peak-sal" class="mono-readout">--</strong></div>
+              <div class="meta-row"><span>ROI Bounding Box:</span> <strong id="metric-bbox" class="mono-readout">--</strong></div>
+              <div class="meta-row"><span>Saliency center:</span> <strong id="metric-center" class="mono-readout">--</strong></div>
+            </div>
+          </section>
+
+          <!-- Crosshair Telemetry Inspector -->
+          <section class="sidebar-section">
+            <div class="section-header">CROSSHAIR SALIENCY INSPECTOR</div>
+            <div class="inspector-box">
+              <div class="insp-row">
+                <span>Pixel Coordinates:</span>
+                <strong id="insp-coords" class="mono-readout">X: -- Y: --</strong>
+              </div>
+              <div class="insp-row">
+                <span>Saliency Index:</span>
+                <strong id="insp-val" class="mono-readout">0.0000</strong>
+              </div>
+              <div class="insp-row">
+                <span>Activation Zone:</span>
+                <strong id="insp-zone" class="mono-readout">QUIESCENT</strong>
+              </div>
+            </div>
+          </section>
+
+        </aside>
+
+        <!-- Main PACS Viewport & Findings Area -->
+        <section class="pacs-main">
+
+          <!-- Frosted Glass Viewport Toolbar -->
+          <div class="viewer-toolbar">
+            <div class="toolbar-group">
+              <span class="tool-label">VIEWPORT MODE:</span>
+              <span class="tool-val">DUAL SYNCHRONIZED PACS CANVAS</span>
+            </div>
+
+            <div class="toolbar-group">
+              <label for="heatmap-opacity" class="tool-label" style="display: inline; margin: 0; font-weight: normal;">SALIENCY OPACITY:</label>
+              <input type="range" id="heatmap-opacity" min="0.1" max="1.0" step="0.05" value="0.9" class="pacs-slider" />
+              <span id="opacity-val" class="slider-readout">90%</span>
+            </div>
+
+            <div class="toolbar-group">
+              <label for="img-contrast" class="tool-label" style="display: inline; margin: 0; font-weight: normal;">CONTRAST:</label>
+              <input type="range" id="img-contrast" min="50" max="200" step="5" value="100" class="pacs-slider" style="width: 70px;" />
+              <span id="contrast-val" class="slider-readout">100%</span>
+            </div>
+
+            <div class="toolbar-group">
+              <label for="img-brightness" class="tool-label" style="display: inline; margin: 0; font-weight: normal;">BRIGHTNESS:</label>
+              <input type="range" id="img-brightness" min="50" max="150" step="5" value="100" class="pacs-slider" style="width: 70px;" />
+              <span id="brightness-val" class="slider-readout">100%</span>
+            </div>
+
+            <div class="toolbar-group">
+              <span class="tool-label">ZOOM:</span>
+              <button class="btn-pacs-sm" id="btn-zoom-in" title="Zoom In">+</button>
+              <button class="btn-pacs-sm" id="btn-zoom-out" title="Zoom Out">-</button>
+              <button class="btn-pacs-sm" id="btn-zoom-reset" title="Reset Zoom">1:1</button>
             </div>
           </div>
-        </div>
 
-        <!-- Viewer 2: Grad-CAM Inferno Heatmap -->
-        <div class="pacs-frame" id="frame-heat">
-          <div class="hud hud-tl">MAP: GRAD-CAM INFERNO</div>
-          <div class="hud hud-tr">RANGE: [0.0 - 1.0]</div>
-          <div class="hud hud-bl">PERCEPTUALLY UNIFORM SALIENCY</div>
-          <div class="hud hud-br" id="hud-coords-heat">X:0 Y:0</div>
+          <!-- Dual Viewports (Scan Viewports Kept Dark for Maximum Contrast) -->
+          <div class="canvas-viewport" id="canvas-viewport">
 
-          <div class="frame-canvas-wrapper" id="wrapper-heat">
-            <img id="img-heatmap" style="display: none;" alt="Grad-CAM Inferno Saliency Overlay" />
-            <div class="crosshair-h" id="ch-heat-h" style="display: none;"></div>
-            <div class="crosshair-v" id="ch-heat-v" style="display: none;"></div>
-            <div class="pacs-placeholder" id="ph-heatmap">
-              <span>Inferno activation map will display following model analysis</span>
+            <!-- Viewer 1: Original Scan -->
+            <div class="pacs-frame" id="frame-orig">
+              <div class="hud hud-tl">SERIES: NOT VERIFIED</div>
+              <div class="hud hud-tr">MATRIX: 224x224</div>
+              <div class="hud hud-bl">ORIGINAL ANATOMICAL SCAN</div>
+              <div class="hud hud-br" id="hud-coords-orig">X:0 Y:0</div>
+
+              <div class="frame-canvas-wrapper" id="wrapper-orig">
+                <img id="img-original" style="display: none;" alt="Uploaded MRI image" />
+                <div class="crosshair-h" id="ch-orig-h" style="display: none;"></div>
+                <div class="crosshair-v" id="ch-orig-v" style="display: none;"></div>
+                <div class="pacs-placeholder" id="ph-original">
+                  <span>Select an MRI scan file to load anatomical view</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Viewer 2: Grad-CAM Inferno Heatmap -->
+            <div class="pacs-frame" id="frame-heat">
+              <div class="hud hud-tl">MAP: GRAD-CAM INFERNO</div>
+              <div class="hud hud-tr">RANGE: [0.0 - 1.0]</div>
+              <div class="hud hud-bl">PERCEPTUALLY UNIFORM SALIENCY</div>
+              <div class="hud hud-br" id="hud-coords-heat">X:0 Y:0</div>
+
+              <div class="frame-canvas-wrapper" id="wrapper-heat">
+                <img id="img-heatmap" style="display: none;" alt="Grad-CAM Inferno Saliency Overlay" />
+                <div class="crosshair-h" id="ch-heat-h" style="display: none;"></div>
+                <div class="crosshair-v" id="ch-heat-v" style="display: none;"></div>
+                <div class="pacs-placeholder" id="ph-heatmap">
+                  <span>Inferno activation map will display following model analysis</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Diagnostic Outcome & Probability Instrumentation -->
+          <div class="instrumentation-panel">
+            
+            <div class="outcome-header">
+              <div class="outcome-title-block">
+                <span class="panel-tag">EXPERIMENTAL MODEL OUTPUT</span>
+                <h2 id="result-label" class="outcome-heading">AWAITING SEQUENCE</h2>
+              </div>
+
+              <!-- Dual-Encoded WCAG Status Badge -->
+              <div class="outcome-status-badge" id="result-badge" style="display: none;">
+                <span class="badge-icon" id="badge-icon"></span>
+                <span class="badge-text" id="badge-text">UNCERTIFIED</span>
+              </div>
+            </div>
+
+            <!-- Glowing Probability Distribution Meters -->
+            <div class="probability-instrument" aria-label="Class Confidence Probability Distribution">
+              
+              <div class="class-readout-row">
+                <div class="class-info">
+                  <span class="class-name">Glioma Tumor</span>
+                  <span class="class-code">Research class</span>
+                </div>
+                <div class="meter-track">
+                  <div class="meter-fill fill-terracotta pattern-striped" id="bar-glioma"></div>
+                </div>
+                <span class="meter-val" id="pct-glioma">0.0%</span>
+              </div>
+
+              <div class="class-readout-row">
+                <div class="class-info">
+                  <span class="class-name">Meningioma Tumor</span>
+                  <span class="class-code">Research class</span>
+                </div>
+                <div class="meter-track">
+                  <div class="meter-fill fill-amber pattern-dots" id="bar-meningioma"></div>
+                </div>
+                <span class="meter-val" id="pct-meningioma">0.0%</span>
+              </div>
+
+              <div class="class-readout-row">
+                <div class="class-info">
+                  <span class="class-name">No Tumor (model class)</span>
+                  <span class="class-code">Research class</span>
+                </div>
+                <div class="meter-track">
+                  <div class="meter-fill fill-sage pattern-solid" id="bar-notumor"></div>
+                </div>
+                <span class="meter-val" id="pct-notumor">0.0%</span>
+              </div>
+
+              <div class="class-readout-row">
+                <div class="class-info">
+                  <span class="class-name">Pituitary Tumor</span>
+                  <span class="class-code">Research class</span>
+                </div>
+                <div class="meter-track">
+                  <div class="meter-fill fill-slate pattern-crosshatch" id="bar-pituitary"></div>
+                </div>
+                <span class="meter-val" id="pct-pituitary">0.0%</span>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Audit Scan Record History Table -->
+          <div class="pacs-table-panel">
+            <div class="table-header">
+              <span>SCAN AUDIT LOG RECORD</span>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-pacs-sm" id="btn-refresh-history">Refresh Log Record</button>
+                <button class="btn-pacs-sm" id="btn-clear-history" style="background: rgba(255, 82, 82, 0.12); border-color: rgba(255, 82, 82, 0.35); color: #ff8a80;">Clear Audit</button>
+              </div>
+            </div>
+
+            <div class="table-container">
+              <table class="pacs-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">File Identifier</th>
+                    <th scope="col">Classification Finding</th>
+                    <th scope="col">Confidence Index</th>
+                    <th scope="col">Diagnostic Flag</th>
+                  </tr>
+                </thead>
+                <tbody id="history-tbody">
+                  <tr>
+                    <td colspan="5" class="table-empty">No scan log entries recorded in session audit log.</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
+
+        </section>
 
       </div>
 
-      <!-- Diagnostic Outcome & Class Probabilities Instrumentation -->
-      <div class="instrumentation-panel">
-        
-        <div class="outcome-header">
-          <div class="outcome-title-block">
-            <span class="panel-tag">EXPERIMENTAL MODEL OUTPUT</span>
-            <h2 id="result-label" class="outcome-heading">AWAITING SEQUENCE</h2>
-          </div>
-
-          <!-- Dual-Encoded WCAG AA Status Badge (Icon + Pattern Fill + Text Label) -->
-          <div class="outcome-status-badge" id="result-badge" style="display: none;">
-            <span class="badge-icon" id="badge-icon"></span>
-            <span class="badge-text" id="badge-text">UNCERTIFIED</span>
-          </div>
-        </div>
-
-        <!-- Calibrated Diagnostic Class Probability Scale with Texture Pattern Indicators -->
-        <div class="probability-instrument" aria-label="Class Confidence Probability Distribution">
-          
-          <div class="class-readout-row">
-            <div class="class-info">
-              <span class="class-name">Glioma Tumor</span>
-              <span class="class-code">Research class</span>
-            </div>
-            <div class="meter-track">
-              <div class="meter-fill fill-terracotta pattern-striped" id="bar-glioma"></div>
-            </div>
-            <span class="meter-val" id="pct-glioma">0.0%</span>
-          </div>
-
-          <div class="class-readout-row">
-            <div class="class-info">
-              <span class="class-name">Meningioma Tumor</span>
-              <span class="class-code">Research class</span>
-            </div>
-            <div class="meter-track">
-              <div class="meter-fill fill-amber pattern-dots" id="bar-meningioma"></div>
-            </div>
-            <span class="meter-val" id="pct-meningioma">0.0%</span>
-          </div>
-
-          <div class="class-readout-row">
-            <div class="class-info">
-              <span class="class-name">No Tumor (model class)</span>
-              <span class="class-code">Research class</span>
-            </div>
-            <div class="meter-track">
-              <div class="meter-fill fill-sage pattern-solid" id="bar-notumor"></div>
-            </div>
-            <span class="meter-val" id="pct-notumor">0.0%</span>
-          </div>
-
-          <div class="class-readout-row">
-            <div class="class-info">
-              <span class="class-name">Pituitary Tumor</span>
-              <span class="class-code">Research class</span>
-            </div>
-            <div class="meter-track">
-              <div class="meter-fill fill-slate pattern-crosshatch" id="bar-pituitary"></div>
-            </div>
-            <span class="meter-val" id="pct-pituitary">0.0%</span>
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- Audit Scan Record History Table -->
-      <div class="pacs-table-panel">
-        <div class="table-header">
-          <span>SCAN AUDIT LOG RECORD</span>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn-pacs-sm" id="btn-refresh-history">Refresh Log Record</button>
-            <button class="btn-pacs-sm" id="btn-clear-history" style="background: rgba(200, 75, 49, 0.2); border-color: var(--flag-terracotta);">Clear Audit</button>
-          </div>
-        </div>
-
-        <div class="table-container">
-          <table class="pacs-table">
-            <thead>
-              <tr>
-                <th scope="col">Timestamp</th>
-                <th scope="col">File Identifier</th>
-                <th scope="col">Classification Finding</th>
-                <th scope="col">Confidence Index</th>
-                <th scope="col">Diagnostic Flag</th>
-              </tr>
-            </thead>
-            <tbody id="history-tbody">
-              <tr>
-                <td colspan="5" class="table-empty">No scan log entries recorded in session audit log.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
+      <!-- Footer -->
+      <footer class="pacs-footer">
+        Brain Health Monitor System &bull; Research workstation &bull; Not for clinical diagnosis
+      </footer>
     </main>
 
   </div>
 
-  <!-- Medical Diagnostic Report Modal -->
+  <!-- Medical Diagnostic Report Modal (Dark Glass) -->
   <div class="modal-backdrop" id="report-modal" style="display: none;" role="dialog" aria-modal="true">
     <div class="modal-dialog">
       <div class="modal-header-pacs">
@@ -364,8 +470,10 @@
 
       <div class="modal-footer-pacs">
         <button class="btn-pacs" id="btn-download-pdf">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
           Download Research PDF Report
         </button>
@@ -374,11 +482,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Footer -->
-  <footer class="pacs-footer">
-    Brain Health Monitor System &bull; Research workstation &bull; Not for clinical diagnosis
-  </footer>
 
   <script src="/static/js/app.js"></script>
 </body>
