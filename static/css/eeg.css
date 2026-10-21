@@ -1,1 +1,206 @@
-:root{color-scheme:light;--ink:#182f3c;--muted:#526975;--line:#d5e0e5;--accent:#12615e;--bg:#f3f6f7}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,sans-serif}a{color:var(--accent)}header{background:#fff;border-bottom:1px solid var(--line);padding:20px max(24px,calc((100vw - 1360px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:700;text-decoration:none;color:var(--ink);font-size:18px}.brand span{display:block;font-size:12px;letter-spacing:.08em;font-weight:500;color:var(--muted)}nav{display:flex;gap:22px;flex-wrap:wrap}nav a{text-decoration:none;font-size:14px}nav [aria-current]{font-weight:700;border-bottom:2px solid var(--accent)}main{max-width:1408px;margin:auto;padding:34px 24px}h1{font-size:clamp(26px,3vw,38px);letter-spacing:-.035em;line-height:1.2;margin:8px 0 14px}h2{font-size:17px;line-height:1.4;margin:0 0 5px}p{margin:0;color:var(--muted)}.intro{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:25px}.eyebrow{font-size:11px;font-weight:700;letter-spacing:.13em;color:var(--accent)}.pill{display:inline-block;padding:5px 11px;border:1px solid var(--line);background:#fff;border-radius:4px;font-size:12px;white-space:nowrap}.notice{padding:12px 16px;background:#e7f1f0;border-left:3px solid var(--accent);margin-bottom:18px;color:#204b48}.notice.demo{background:#fff0cb;border-color:#90641b;color:#62420b}.error{background:#fff1f1;border:1px solid #d9a2a2;padding:12px 16px;margin-bottom:18px;color:#8b2222}.card{background:#fff;border:1px solid var(--line);border-radius:7px;padding:22px}.controls{margin-bottom:18px}.controls p,.card>p,.card-heading p{font-size:13px}.fields{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:16px}label{font-size:12px;font-weight:600;display:flex;flex-direction:column;gap:6px}select,button{font:inherit;border-radius:4px;min-height:42px;padding:8px 13px;border:1px solid #a9bdc6}select{background:#fff;max-width:100%;min-width:210px;color:var(--ink)}button{cursor:pointer;background:var(--accent);color:#fff;border-color:var(--accent);font-size:13px;font-weight:600}.secondary{background:#fff;color:var(--ink);border-color:#a9bdc6}button:disabled{opacity:.5;cursor:default}:focus-visible{outline:3px solid #338dbe;outline-offset:3px}.readouts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}.readouts .card{padding:17px 20px}.readouts span{display:block;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.07em}.readouts strong{display:block;font-size:18px;margin-top:7px}.analysis-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:18px}.card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.chart{height:245px;position:relative;margin:18px 0 8px}.chart.small{height:190px}canvas{width:100%;height:100%;display:block}.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;pointer-events:none}.empty[hidden]{display:none}.caption{font-size:12px!important;color:var(--muted);margin-top:12px}.actions{display:flex;gap:12px;margin-top:16px}.bands{min-height:218px;padding-top:17px}.band{display:grid;grid-template-columns:105px 1fr 48px;gap:10px;align-items:center;margin:13px 0;font-size:12px}.band progress{width:100%;height:10px;accent-color:var(--accent)}.prediction{display:block;font-size:23px;font-weight:600;margin:20px 0 8px}.history{margin-top:18px}.table-wrap{overflow:auto;margin-top:20px}table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap;text-align:left}td,th{padding:13px 15px;border-bottom:1px solid var(--line)}th{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:600;background:#f8fafb}footer{font-size:12px;color:var(--muted);padding:24px 0}.skip{position:absolute;top:-100px;background:white;padding:12px;z-index:10}.skip:focus{top:0}@media(max-width:850px){header{align-items:flex-start;flex-direction:column}.intro{flex-direction:column}.readouts{grid-template-columns:repeat(2,1fr)}.analysis-grid{grid-template-columns:1fr}.fields{align-items:stretch}.fields label{flex:1}main{padding:25px 16px}.card{padding:18px}.card-heading{flex-wrap:wrap}}@media(max-width:420px){.readouts{gap:9px}.readouts .card{padding:12px}.readouts strong{font-size:16px}select{min-width:0;width:100%}.fields label{flex-basis:100%}nav{gap:15px}header{padding:18px 16px}.band{grid-template-columns:100px 1fr 40px}}
+@import "common.css";
+
+/* ── EEG Workspace — Transparent Frosted Glass Styling ───────────── */
+
+.controls {
+  margin-bottom: 22px;
+}
+
+.controls p,
+.card > p,
+.card-heading p {
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+.fields {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 22px;
+}
+
+.chart {
+  height: 250px;
+  position: relative;
+  margin: 18px 0 10px;
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.chart.small {
+  height: 195px;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  pointer-events: none;
+  color: var(--text-muted);
+}
+
+.empty[hidden] {
+  display: none;
+}
+
+.empty-inline {
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 18px 0;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+#record:not(:disabled) {
+  background: linear-gradient(135deg, #ff5252 0%, #dc2626 100%);
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 82, 82, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+#record:not(:disabled):hover {
+  box-shadow: 0 0 28px rgba(255, 82, 82, 0.75);
+  transform: translateY(-1px);
+}
+
+/* Frequency Bands */
+.bands {
+  min-height: 218px;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.band {
+  display: grid;
+  grid-template-columns: 110px 1fr 50px;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.band progress {
+  width: 100%;
+  height: 10px;
+  accent-color: var(--cyan-primary);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.band progress::-webkit-progress-bar {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+}
+
+.band progress::-webkit-progress-value {
+  background: linear-gradient(90deg, #38bdf8, #7dd3fc);
+  border-radius: 6px;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+}
+
+.prediction {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 18px 0 8px;
+  color: var(--cyan-primary);
+  text-shadow: 0 0 20px rgba(0, 229, 255, 0.55);
+}
+
+.history {
+  margin-top: 22px;
+}
+
+.table-wrap {
+  overflow: auto;
+  margin-top: 18px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  white-space: nowrap;
+  text-align: left;
+}
+
+td,
+th {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+th {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--cyan-primary);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+}
+
+td {
+  color: var(--text-main);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 900px) {
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+  .fields {
+    align-items: stretch;
+  }
+  .fields label {
+    flex: 1;
+  }
+  .card-heading {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  select {
+    min-width: 0;
+    width: 100%;
+  }
+  .fields label {
+    flex-basis: 100%;
+  }
+  .band {
+    grid-template-columns: 90px 1fr 40px;
+  }
+}

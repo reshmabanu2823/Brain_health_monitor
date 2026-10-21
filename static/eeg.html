@@ -1,27 +1,269 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Brain Health Monitor — EEG Research</title>
-<link rel="stylesheet" href="/static/css/eeg.css">
-<script defer src="/static/js/eeg.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Brain Health Monitor — EEG Research</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="/static/css/common.css" />
+  <link rel="stylesheet" href="/static/css/eeg.css" />
+  <script defer src="/static/js/eeg.js"></script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to monitoring</a>
-<header><a class="brand" href="/eeg">Brain Health Monitor <span>Research workspace</span></a><nav aria-label="Workspaces"><a href="/eeg" aria-current="page">EEG monitoring</a><a href="/">MRI analysis</a><a href="/docs">API reference</a></nav></header>
-<main id="main">
-<div class="intro"><div><p class="eyebrow">SINGLE CHANNEL · BIOAMP EXG PILL / MAKER UNO</p><h1>Signal before interpretation.</h1><p>Inspect acquisition, timing and spectral content. Experimental measurements; no diagnosis or mental-health score.</p></div><span id="backend" class="pill">Connecting to backend</span></div>
-<p id="notice" role="status" aria-live="polite" class="notice">No source selected. Connect hardware or explicitly start simulation.</p>
-<p id="error" role="alert" class="error" hidden></p>
-<section class="card controls" aria-labelledby="source-heading"><div><h2 id="source-heading">Acquisition source</h2><p>One analog channel · A0 · 115200 baud · raw ADC counts</p></div>
-<div class="fields"><label for="source">Data source<select id="source"><option value="serial">Maker UNO · USB serial</option><option value="simulated">Simulated signal · DEMO</option></select></label>
-<label for="port">Serial port<select id="port"><option value="">Loading available ports…</option></select></label>
-<button id="refresh-ports" class="secondary">Refresh ports</button><button id="connect">Connect</button><button id="disconnect" class="secondary" disabled>Disconnect</button></div></section>
-<div class="readouts" aria-label="Acquisition status"><div class="card"><span>CONNECTION</span><strong id="connection">Disconnected</strong></div><div class="card"><span>MEASURED / CONFIGURED RATE</span><strong id="rate">—</strong></div><div class="card"><span>WINDOW QUALITY</span><strong id="quality">No analysis</strong></div><div class="card"><span>RECORDING</span><strong id="recording">Idle</strong></div></div>
-<div class="analysis-grid"><section class="card waveform" aria-labelledby="wave-heading"><div class="card-heading"><div><h2 id="wave-heading">Incoming waveform</h2><p>Raw ADC counts, uncalibrated · latest buffer</p></div><span id="source-badge" class="pill">No source</span></div><div class="chart"><canvas id="wave" role="img" aria-label="Raw single-channel signal plotted against device time"></canvas><p id="wave-empty" class="empty">Waiting for samples</p></div><p id="sample-info" class="caption">No samples received.</p><div class="actions"><button id="record" disabled>Start recording</button><button id="stop-record" class="secondary" disabled>Stop recording</button></div></section>
-<section class="card" aria-labelledby="bands-heading"><h2 id="bands-heading">Relative band power</h2><p>Share of configured passband power · not a mental-state score</p><div id="bands" class="bands"><p class="empty-inline">A valid analysis window is required.</p></div><p class="caption">Delta 1–4 · theta 4–8 · alpha 8–13 · beta 13–30 · partial gamma 30–40 Hz. Upper band can contain muscle activity.</p></section>
-<section class="card" aria-labelledby="psd-heading"><h2 id="psd-heading">Power spectral density</h2><p>Welch estimate · ADC counts²/Hz · linear scale</p><div class="chart small"><canvas id="psd" role="img" aria-label="Power spectral density by frequency in hertz"></canvas><p id="psd-empty" class="empty">No valid spectral estimate</p></div><p id="window-info" class="caption">Processing waits for full window plus filter edge guards.</p></section>
-<section class="card" aria-labelledby="model-heading"><h2 id="model-heading">Experimental classifier</h2><p id="model-info">Checking EEG model availability…</p><strong id="prediction" class="prediction">No prediction</strong><p id="prediction-detail" class="caption">No labeled EEG dataset is bundled. MRI model does not process EEG.</p><p class="caption">Band power cannot establish intelligence, stress, psychiatric illness or neurological disease. Quality checks cannot prove EEG origin.</p></section></div>
-<section class="card history" aria-labelledby="history-heading"><div class="card-heading"><div><h2 id="history-heading">Recording history</h2><p>Local sessions · UTC timestamps · source labels preserved in exports</p></div><button id="refresh-history" class="secondary">Refresh history</button></div><div class="table-wrap"><table><thead><tr><th scope="col">Started (UTC)</th><th scope="col">Source</th><th scope="col">Duration</th><th scope="col">Samples</th><th scope="col">Status</th><th scope="col">Export</th></tr></thead><tbody id="history"><tr><td colspan="6">Loading recordings…</td></tr></tbody></table></div></section>
-<footer>Research and education only. Uncalibrated single-channel acquisition. No clinical validation established.</footer>
-</main></body></html>
+  <a class="skip" href="#main">Skip to monitoring</a>
+
+  <div class="neuro-app">
+
+    <!-- Slim Icon-Only Left Sidebar Rail -->
+    <aside class="neuro-rail" aria-label="Main Navigation">
+      <a href="/eeg" class="rail-brand" title="Brain Health Monitor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+        </svg>
+      </a>
+
+      <nav class="rail-nav" aria-label="Workspaces">
+        <!-- MRI Analysis -->
+        <a href="/" class="rail-item" aria-label="MRI analysis" title="MRI analysis">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 3a9 9 0 0 0 0 18M12 3v18M3 12h18" />
+          </svg>
+          <span class="rail-tooltip">MRI Analysis</span>
+        </a>
+
+        <!-- EEG Monitoring (Active) -->
+        <a href="/eeg" class="rail-item active" aria-label="EEG monitoring" title="EEG monitoring" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4" />
+          </svg>
+          <span class="rail-tooltip">EEG Monitoring</span>
+        </a>
+
+        <!-- API Reference -->
+        <a href="/docs" class="rail-item" aria-label="API reference" title="API reference" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          <span class="rail-tooltip">API Docs</span>
+        </a>
+      </nav>
+
+      <div class="rail-footer">
+        <span class="status-indicator" title="System Active"></span>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <main id="main" class="neuro-content">
+
+      <!-- Header with Glowing Holographic Brain Graphic -->
+      <header class="neuro-header">
+        <div class="header-meta">
+          <div class="brand-title">
+            BRAIN HEALTH MONITOR
+            <span class="brand-badge">EEG RESEARCH</span>
+          </div>
+          <span class="brand-subtitle">Single channel · BioAmp EXG Pill / Maker UNO · Signal before interpretation</span>
+        </div>
+
+        <!-- Decorative Glowing Holographic SVG Brain -->
+        <div class="header-graphic-wrap" aria-hidden="true">
+          <svg class="neuro-brain-graphic" viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="glow-cyan-eeg" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <filter id="glow-purple-eeg" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <linearGradient id="grad-neural-eeg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#bae6fd" stop-opacity="0.95" />
+                <stop offset="50%" stop-color="#7dd3fc" stop-opacity="0.85" />
+                <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.95" />
+              </linearGradient>
+            </defs>
+            <path d="M96 22 C72 21 52 32 42 50 C32 68 35 88 45 106 C55 124 75 133 96 136" stroke="url(#grad-neural-eeg)" stroke-width="2.2" stroke-linecap="round" filter="url(#glow-cyan-eeg)" />
+            <path d="M104 22 C128 21 148 32 158 50 C168 68 165 88 155 106 C145 124 125 133 104 136" stroke="url(#grad-neural-eeg)" stroke-width="2.2" stroke-linecap="round" filter="url(#glow-purple-eeg)" />
+            <path d="M96 38 C78 43 68 56 70 73 C72 90 84 98 96 110" stroke="#7dd3fc" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3" opacity="0.8" />
+            <path d="M104 38 C122 43 132 56 130 73 C128 90 116 98 104 110" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 3" opacity="0.8" />
+            <circle cx="42" cy="50" r="3.5" fill="#bae6fd" filter="url(#glow-cyan-eeg)" />
+            <circle cx="158" cy="50" r="3.5" fill="#7dd3fc" filter="url(#glow-purple-eeg)" />
+            <circle cx="70" cy="73" r="3" fill="#38bdf8" />
+            <circle cx="130" cy="73" r="3" fill="#7dd3fc" />
+            <circle cx="45" cy="106" r="3.5" fill="#bae6fd" />
+            <circle cx="155" cy="106" r="3.5" fill="#38bdf8" />
+            <circle cx="100" cy="82" r="4" fill="#bae6fd" filter="url(#glow-cyan-eeg)" />
+            <line x1="70" y1="73" x2="100" y2="82" stroke="#7dd3fc" stroke-width="1.2" opacity="0.6" />
+            <line x1="130" y1="73" x2="100" y2="82" stroke="#38bdf8" stroke-width="1.2" opacity="0.6" />
+            <line x1="42" y1="50" x2="70" y2="73" stroke="#7dd3fc" stroke-width="1" opacity="0.5" />
+            <line x1="158" y1="50" x2="130" y2="73" stroke="#38bdf8" stroke-width="1" opacity="0.5" />
+          </svg>
+        </div>
+
+        <div class="header-actions">
+          <span id="backend" class="pill">Connecting to backend</span>
+          <a href="/" class="btn-pacs-secondary">MRI workspace</a>
+        </div>
+      </header>
+
+      <!-- System Notices -->
+      <p id="notice" role="status" aria-live="polite" class="notice">No source selected. Connect hardware or explicitly start simulation.</p>
+      <p id="error" role="alert" class="error" hidden></p>
+
+      <!-- Top Row: 4 Frosted Glass Stat Cards -->
+      <div class="readouts" aria-label="Acquisition status">
+        <div class="card stat-card">
+          <span class="stat-label">CONNECTION</span>
+          <strong class="stat-value" id="connection">Disconnected</strong>
+          <div class="stat-glow cyan"></div>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label">MEASURED / CONFIGURED RATE</span>
+          <strong class="stat-value" id="rate">—</strong>
+          <div class="stat-glow purple"></div>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label">WINDOW QUALITY</span>
+          <strong class="stat-value" id="quality">No analysis</strong>
+          <div class="stat-glow green"></div>
+        </div>
+        <div class="card stat-card">
+          <span class="stat-label">RECORDING</span>
+          <strong class="stat-value" id="recording">Idle</strong>
+          <div class="stat-glow blue"></div>
+        </div>
+      </div>
+
+      <!-- Acquisition Source Controls -->
+      <section class="card controls" aria-labelledby="source-heading">
+        <div class="card-heading">
+          <div>
+            <h2 id="source-heading">Acquisition source</h2>
+            <p>One analog channel · A0 · 115200 baud · raw ADC counts</p>
+          </div>
+        </div>
+        <div class="fields">
+          <label for="source">Data source
+            <select id="source">
+              <option value="serial">Maker UNO · USB serial</option>
+              <option value="simulated">Simulated signal · DEMO</option>
+            </select>
+          </label>
+          <label for="port">Serial port
+            <select id="port">
+              <option value="">Loading available ports…</option>
+            </select>
+          </label>
+          <button id="refresh-ports" class="secondary">Refresh ports</button>
+          <button id="connect">Connect</button>
+          <button id="disconnect" class="secondary" disabled>Disconnect</button>
+        </div>
+      </section>
+
+      <!-- Analysis Grid -->
+      <div class="analysis-grid">
+
+        <!-- Waveform Card -->
+        <section class="card waveform" aria-labelledby="wave-heading">
+          <div class="card-heading">
+            <div>
+              <h2 id="wave-heading">Incoming waveform</h2>
+              <p>Raw ADC counts, uncalibrated · latest buffer</p>
+            </div>
+            <span id="source-badge" class="pill">No source</span>
+          </div>
+          <div class="chart">
+            <canvas id="wave" role="img" aria-label="Raw single-channel signal plotted against device time"></canvas>
+            <p id="wave-empty" class="empty">Waiting for samples</p>
+          </div>
+          <p id="sample-info" class="caption">No samples received.</p>
+          <div class="actions">
+            <button id="record" disabled>Start recording</button>
+            <button id="stop-record" class="secondary" disabled>Stop recording</button>
+          </div>
+        </section>
+
+        <!-- Relative Band Power Card -->
+        <section class="card" aria-labelledby="bands-heading">
+          <h2 id="bands-heading">Relative band power</h2>
+          <p>Share of configured passband power · not a mental-state score</p>
+          <div id="bands" class="bands">
+            <p class="empty-inline">A valid analysis window is required.</p>
+          </div>
+          <p class="caption">Delta 1–4 · theta 4–8 · alpha 8–13 · beta 13–30 · partial gamma 30–40 Hz. Upper band can contain muscle activity.</p>
+        </section>
+
+        <!-- Power Spectral Density Card -->
+        <section class="card" aria-labelledby="psd-heading">
+          <h2 id="psd-heading">Power spectral density</h2>
+          <p>Welch estimate · ADC counts²/Hz · linear scale</p>
+          <div class="chart small">
+            <canvas id="psd" role="img" aria-label="Power spectral density by frequency in hertz"></canvas>
+            <p id="psd-empty" class="empty">No valid spectral estimate</p>
+          </div>
+          <p id="window-info" class="caption">Processing waits for full window plus filter edge guards.</p>
+        </section>
+
+        <!-- Classifier Card -->
+        <section class="card" aria-labelledby="model-heading">
+          <h2 id="model-heading">Experimental classifier</h2>
+          <p id="model-info">Checking EEG model availability…</p>
+          <strong id="prediction" class="prediction">No prediction</strong>
+          <p id="prediction-detail" class="caption">No labeled EEG dataset is bundled. MRI model does not process EEG.</p>
+          <p class="caption">Band power cannot establish intelligence, stress, psychiatric illness or neurological disease. Quality checks cannot prove EEG origin.</p>
+        </section>
+
+      </div>
+
+      <!-- Recording History Card -->
+      <section class="card history" aria-labelledby="history-heading">
+        <div class="card-heading">
+          <div>
+            <h2 id="history-heading">Recording history</h2>
+            <p>Local sessions · UTC timestamps · source labels preserved in exports</p>
+          </div>
+          <button id="refresh-history" class="secondary">Refresh history</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Started (UTC)</th>
+                <th scope="col">Source</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Samples</th>
+                <th scope="col">Status</th>
+                <th scope="col">Export</th>
+              </tr>
+            </thead>
+            <tbody id="history">
+              <tr>
+                <td colspan="6">Loading recordings…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        Research and education only. Uncalibrated single-channel acquisition. No clinical validation established.
+      </footer>
+    </main>
+
+  </div>
+</body>
+</html>

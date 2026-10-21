@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "preprocessing": "mobilenet_v2",
+  "image_size": [
+    224,
+    224
+  ],
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "output": "probabilities",
+  "artifact_hashes": {
+    "brain_tumor_model.tflite": "4cc2ebc516e7f89cd8200efa546c197efafa90e858bc6e84af4e1e7b620043f1",
+    "best_model.h5": "35c04dd928c85a69ac1255b12c84fef26bbff43a7abce19e3bc9a0d6d173d52d"
+  },
+  "training": {
+    "created": "2026-10-20T10:52:33.285990+00:00",
+    "seed": 42,
+    "backbone": "efficientnetv2s",
+    "fine_tune_layers": 0,
+    "fine_tune_lr": 5e-05,
+    "label_smoothing": 0.1,
+    "glioma_boost": 1.5,
+    "validation_grouping": {
+      "method": "connected_components_dhash_and_patient",
+      "max_hash_distance": 3,
+      "clusters": 2625,
+      "largest_cluster": 16,
+      "cross_label_clusters": 2,
+      "class_counts": {
+        "train": {
+          "glioma_tumor": 654,
+          "meningioma_tumor": 651,
+          "no_tumor": 285,
+          "pituitary_tumor": 648
+        },
+        "validation": {
+          "glioma_tumor": 164,
+          "meningioma_tumor": 163,
+          "no_tumor": 73,
+          "pituitary_tumor": 162
+        }
+      }
+    },
+    "best_validation_loss": 0.3989839255809784,
+    "split_counts": {
+      "train": 2238,
+      "validation": 562,
+      "test": 314
+    },
+    "tensorflow": "2.20.0"
+  }
+}

@@ -40,7 +40,7 @@
     const ctx = canvas.getContext('2d'); ctx.scale(ratio,ratio);
     ctx.clearRect(0,0,w,h);
     const left=55, right=w-15, top=12, bottom=h-30;
-    ctx.font='11px system-ui'; ctx.fillStyle='#526975'; ctx.strokeStyle='#e0e8ec'; ctx.lineWidth=1;
+    ctx.font='11px system-ui'; ctx.fillStyle='#bae6fd'; ctx.strokeStyle='rgba(186,230,253,0.10)'; ctx.lineWidth=1;
     const xmin = xs[0] || 0, xmax = xs[xs.length-1] || 1;
     let ymin=0,ymax=1;
     if (ys.length) {ymin=Math.min(...ys); ymax=Math.max(...ys);}
@@ -55,7 +55,7 @@
     ctx.fillText(ylabel,left,10);ctx.fillText(xlabel,Math.max(left,right-120),h-3);
     if (!xs.length) return;
     ctx.fillText(xmin.toFixed(1),left,bottom+16); ctx.fillText(xmax.toFixed(1),right-30,bottom+16);
-    ctx.strokeStyle='#12615e';ctx.lineWidth=1.4;ctx.beginPath();
+    ctx.strokeStyle='#38bdf8';ctx.lineWidth=1.8;ctx.beginPath();
     ys.forEach((value,i) => {
       const x=left+(xs[i]-xmin)/Math.max(xmax-xmin,1e-9)*(right-left);
       const y=bottom-(value-ymin)/(ymax-ymin)*(bottom-top);
