@@ -40,6 +40,98 @@
       opacity: 0 !important;
     }
   </style>
+
+  <style>
+    .ai-workspace-layout {
+      display: flex !important;
+      justify-content: center !important;
+      max-width: 1040px !important;
+      margin: 16px auto 32px auto !important;
+      width: 100% !important;
+      height: calc(100vh - 120px) !important;
+    }
+    .ai-chat-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: 1 !important;
+    }
+    .ai-sidebar-card {
+      display: none !important;
+    }
+    .header-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-top-history {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      padding: 8px 16px !important;
+      background: var(--card, #FFFFFF) !important;
+      border: 1px solid var(--border, #DDD4CC) !important;
+      border-radius: 10px !important;
+      color: var(--ink, #1C1917) !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      text-decoration: none !important;
+      box-shadow: 0 1px 4px rgba(35, 26, 23, 0.05) !important;
+      transition: all 0.2s ease !important;
+      cursor: pointer !important;
+    }
+    .btn-top-history svg {
+      color: var(--cortia-red, #C94040) !important;
+      transition: transform 0.2s ease !important;
+    }
+    .btn-top-history:hover {
+      border-color: var(--cortia-red, #C94040) !important;
+      color: #FFFFFF !important;
+      background: var(--cortia-red, #C94040) !important;
+      box-shadow: 0 3px 10px rgba(201, 64, 64, 0.2) !important;
+      transform: translateY(-1px) !important;
+    }
+    .btn-top-history:hover svg {
+      color: #FFFFFF !important;
+      transform: scale(1.1) !important;
+    }
+    .btn-new-chat-inline {
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 7px;
+      background: var(--cortia-red, #C94040);
+      color: #FFFFFF;
+      border: 1px solid var(--cortia-red, #C94040);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-new-chat-inline:hover {
+      background: #B33232;
+      border-color: #B33232;
+    }
+    .btn-action-history-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 7px;
+      border: 1px solid var(--border, #DDD4CC);
+      background: #FFFFFF;
+      color: var(--ink, #1C1917);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-action-history-pill:hover {
+      background: var(--blush, #F0DDD8);
+      border-color: var(--cortia-red, #C94040);
+      color: var(--cortia-red, #C94040);
+    }
+    .btn-action-history-pill svg {
+      color: var(--cortia-red, #C94040);
+    }
+  </style>
 </head>
 
 <body data-page="ai">
@@ -113,12 +205,20 @@
       <header class="neuro-header" id="cortia-topbar">
         <div class="header-meta">
           <div class="brand-title">
-            <span class="topbar-title-text" id="topbar-title">MRI Analysis Dashboard</span>
-            <span class="brand-badge" id="topbar-badge">Clinical PACS</span>
+            <span class="topbar-title-text" id="topbar-title">CORTIA AI</span>
+            <span class="brand-badge" id="topbar-badge">Grounded Assistant</span>
           </div>
-          <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Not for diagnostic use</span>
+          <span class="brand-subtitle" id="topbar-subtitle">Grounded in scientific literature, verified application state, and real telemetry records</span>
         </div>
-</header>
+        <div class="header-actions-right">
+          <a href="/chats" target="_blank" class="btn-top-history btn-top-chat-history" id="btn-top-chats" title="Open Consultation Chat History in a new page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Chat History &rarr;
+          </a>
+        </div>
+      </header>
 
 
 
@@ -126,54 +226,28 @@
 
       <div class="ai-workspace-layout" style="margin-top:16px;">
 
-
-
-        <!-- Left Conversation History Sidebar -->
-
-        <aside class="ai-sidebar-card">
-
-          <div class="ai-sidebar-header">
-
-            <span style="font-weight:600;font-size:0.875rem;">Conversations</span>
-
-            <button id="new-conv-btn" class="btn-pacs-primary" style="padding:6px 10px;font-size:0.75rem;">+ New Chat</button>
-
-          </div>
-
-          <div class="ai-conv-list" id="conv-list-container">
-
-            <!-- Populated via JS -->
-
-          </div>
-
-          <div style="padding:12px;border-top:1px solid var(--md-border);background:#F8F9FA;">
-
-            <button id="clear-all-convs-btn" class="btn-pacs-secondary" style="width:100%;font-size:0.75rem;color:#D93025;">Clear All History</button>
-
-          </div>
-
-        </aside>
-
-
-
-        <!-- Main Chat Area -->
+<!-- Main Chat Area -->
 
         <section class="ai-chat-card">
 
           <!-- Chat Header -->
 
           <div class="ai-chat-header">
-
             <div style="display:flex;align-items:center;gap:10px;">
-
-              <h2 id="active-conv-title" style="font-size:1rem;font-weight:600;margin:0;">Research Inquiry</h2>
-
+              <h2 id="active-conv-title" style="font-size:1.05rem;font-weight:600;margin:0;">Research Inquiry</h2>
               <span id="active-context-badge" class="badge" style="display:none;background:var(--red-light);color:var(--red);">Context Attached</span>
-
             </div>
 
-            <button id="delete-curr-conv-btn" class="btn-pacs-secondary" style="padding:4px 8px;font-size:0.75rem;">Delete Chat</button>
-
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button id="new-conv-btn" class="btn-new-chat-inline" title="Start a new chat inquiry">+ New Chat</button>
+              <button id="delete-curr-conv-btn" class="btn-pacs-secondary" style="padding:6px 12px;font-size:0.75rem;" title="Delete current conversation">Delete Chat</button>
+              <a href="/chats" target="_blank" class="btn-action-history-pill" title="View all past consultation chats">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Chat History &rarr;
+              </a>
+            </div>
           </div>
 
 
