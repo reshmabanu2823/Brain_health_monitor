@@ -21,6 +21,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 from app.eeg.api import router as eeg_router
+from app.insights.api import router as insights_router
+from app.ai.api import router as ai_router
 from app.eeg.model import EEGModel
 from app.eeg.service import EEGService
 from app.eeg.signal import SignalConfig
@@ -50,6 +52,7 @@ PROBABILITY_NAMES = ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary']
 async def lifespan(application):
     init_db()
     Path(UPLOADS_DIR).mkdir(parents=True, exist_ok=True)
+    application.state.model_dir = MODEL_DIR
     application.state.model = None
     application.state.analysis_slots = threading.BoundedSemaphore(MAX_CONCURRENT_ANALYSES)
     try:
@@ -79,6 +82,8 @@ async def lifespan(application):
 
 app = FastAPI(title='Brain Health Monitor API', description='Single-channel EEG and separate MRI research workstation', version='3.0.0', lifespan=lifespan)
 app.include_router(eeg_router)
+app.include_router(insights_router)
+app.include_router(ai_router)
 origins = [value.strip() for value in os.getenv('BHM_CORS_ORIGINS', '').split(',') if value.strip()]
 if origins:
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=False, allow_methods=['GET', 'POST'], allow_headers=['Content-Type'])
@@ -289,6 +294,16 @@ app.mount('/static', StaticFiles(directory=STATIC_DIR), name='static')
 @app.get('/landing')
 def cortia_landing():
     return FileResponse(os.path.join(STATIC_DIR, 'cortia', 'index.html'))
+
+
+@app.get('/insights')
+def insights_workspace():
+    return FileResponse(os.path.join(STATIC_DIR, 'insights.html'))
+
+
+@app.get('/ai')
+def ai_workspace():
+    return FileResponse(os.path.join(STATIC_DIR, 'ai.html'))
 
 
 @app.get('/eeg')

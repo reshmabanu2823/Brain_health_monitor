@@ -1,0 +1,116 @@
+/* Floating CORTIA AI Assistant Trigger & Flyout Modal */
+
+.floating-assistant-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--md-blue-primary, #1A73E8);
+  color: #FFFFFF;
+  border-radius: 28px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 16px rgba(26, 115, 232, 0.35);
+  cursor: pointer;
+  z-index: 999;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.floating-assistant-btn:hover {
+  background: #1557B0;
+  box-shadow: 0 6px 20px rgba(26, 115, 232, 0.45);
+  transform: translateY(-2px);
+}
+
+/* Quick Drawer Modal */
+.cortia-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(32, 33, 36, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.cortia-drawer-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+.cortia-drawer-panel {
+  position: fixed;
+  top: 0;
+  right: -480px;
+  width: 460px;
+  max-width: 90vw;
+  height: 100vh;
+  background: #FFFFFF;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cortia-drawer-panel.active {
+  right: 0;
+}
+
+.drawer-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #DADCE0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #202124;
+}
+
+.drawer-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #5F6368;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.drawer-close-btn:hover {
+  background: #F1F3F4;
+  color: #202124;
+}
+
+.drawer-messages-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  background: #F8F9FA;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.drawer-input-bar {
+  padding: 14px 16px;
+  border-top: 1px solid #DADCE0;
+  background: #FFFFFF;
+  display: flex;
+  gap: 8px;
+}

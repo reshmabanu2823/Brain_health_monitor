@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&display=swap">
   <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev1" />
   <script defer src="/static/js/cortia.js?v=20261025_rev1"></script>
+  <link rel="stylesheet" href="/static/css/cortia-assistant.css">
 </head>
 <body>
   <!-- Cortia Cinematic Loading / Landing Screen Overlay -->
@@ -90,6 +91,25 @@
           <span class="rail-label">EEG Monitoring</span>
         </a>
 
+        <!-- CORTIA Insights -->
+        <a href="/insights" class="rail-item" aria-label="CORTIA Insights" title="CORTIA Insights">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
+          </svg>
+          <span class="rail-label">CORTIA Insights</span>
+        </a>
+
+        <!-- CORTIA AI -->
+        <a href="/ai" class="rail-item" aria-label="CORTIA AI" title="CORTIA AI Assistant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            <circle cx="9" cy="10" r="1" fill="currentColor" />
+            <circle cx="15" cy="10" r="1" fill="currentColor" />
+          </svg>
+          <span class="rail-label">CORTIA AI</span>
+        </a>
         <!-- API Reference -->
         <a href="/docs" class="rail-item" aria-label="API documentation" title="API documentation" target="_blank">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -132,7 +152,8 @@
           </div>
 
           <button type="button" class="btn-pacs-secondary" onclick="window.replayCortiaIntro()" title="Replay Cortia intro">Intro</button>
-          <a href="/cortia" class="btn-pacs-secondary">Cortia Portal</a>
+          <a href="/cortia" class="btn-pacs-secondary">Cortia Portal</a>
+
           <a href="/eeg" class="btn-pacs-secondary">EEG Workspace</a>
 
           <button class="btn-pacs" id="btn-export-report" disabled aria-label="Generate Research PDF Report">
@@ -511,5 +532,6 @@
   </div>
 
   <script src="/static/js/app.js?v=20261021_rev5"></script>
+  <script src="/static/js/cortia-assistant.js"></script>
 </body>
 </html>

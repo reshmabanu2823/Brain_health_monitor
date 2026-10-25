@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev1" />
   <link rel="stylesheet" href="/static/css/eeg.css?v=20261025_rev1" />
   <script defer src="/static/js/eeg.js?v=20261025_rev1"></script>
+  <link rel="stylesheet" href="/static/css/cortia-assistant.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to main content</a>
@@ -51,6 +52,25 @@
           <span class="rail-label">EEG Intelligence</span>
         </a>
 
+        <!-- CORTIA Insights -->
+        <a href="/insights" class="rail-item" aria-label="CORTIA Insights" title="CORTIA Insights">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
+          </svg>
+          <span class="rail-label">CORTIA Insights</span>
+        </a>
+
+        <!-- CORTIA AI -->
+        <a href="/ai" class="rail-item" aria-label="CORTIA AI" title="CORTIA AI Assistant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            <circle cx="9" cy="10" r="1" fill="currentColor" />
+            <circle cx="15" cy="10" r="1" fill="currentColor" />
+          </svg>
+          <span class="rail-label">CORTIA AI</span>
+        </a>
         <!-- API Reference -->
         <a href="/docs" class="rail-item" aria-label="API documentation" title="API documentation" target="_blank">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -91,7 +111,8 @@
             <span id="backend">Connecting...</span>
           </div>
 
-          <a href="/cortia" class="btn-pacs-secondary">Cortia Portal</a>
+          <a href="/cortia" class="btn-pacs-secondary">Cortia Portal</a>
+
           <a href="/" class="btn-pacs-secondary">MRI Workspace</a>
         </div>
       </header>
@@ -351,5 +372,6 @@
     </main>
 
   </div>
+  <script src="/static/js/cortia-assistant.js"></script>
 </body>
 </html>

@@ -320,6 +320,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       currentScanData = data;
+      const aiBtn = document.getElementById('ask-cortia-ai-btn');
+      if (aiBtn && data.scan_id) {
+        aiBtn.href = `/ai?analysis_type=mri&analysis_id=${data.scan_id}`;
+      }
 
       // Render Original Scan (especially useful if file was DICOM)
       if (data.original_b64) {

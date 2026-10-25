@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORTIA AI — Neuroscience Research Assistant</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/ai.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="neuro-app">
+
+    <!-- Navigation Sidebar -->
+    <aside class="neuro-rail" aria-label="Main Navigation">
+      <a href="/" class="rail-brand" title="Brain Health Monitor Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+        </svg>
+        <span class="rail-brand-text">CORTIA</span>
+      </a>
+
+      <nav class="rail-nav" aria-label="Workspaces">
+        <!-- Cortia Landing Portal -->
+        <a href="/cortia" class="rail-item" aria-label="Cortia landing portal" title="Cortia Landing Portal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          <span class="rail-label">Cortia Portal</span>
+        </a>
+
+        <!-- MRI Analysis -->
+        <a href="/" class="rail-item" aria-label="MRI analysis" title="MRI Analysis">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 3a9 9 0 0 0 0 18M12 3v18M3 12h18" />
+          </svg>
+          <span class="rail-label">MRI Analysis</span>
+        </a>
+
+        <!-- EEG Monitoring -->
+        <a href="/eeg" class="rail-item" aria-label="EEG monitoring" title="EEG Monitoring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4" />
+          </svg>
+          <span class="rail-label">EEG Monitoring</span>
+        </a>
+
+        <!-- CORTIA Insights -->
+        <a href="/insights" class="rail-item" aria-label="CORTIA Insights" title="CORTIA Insights">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+            <polyline points="2 17 12 22 22 17" />
+            <polyline points="2 12 12 17 22 12" />
+          </svg>
+          <span class="rail-label">CORTIA Insights</span>
+        </a>
+
+        <!-- CORTIA AI (Active) -->
+        <a href="/ai" class="rail-item active" aria-label="CORTIA AI" title="CORTIA AI Assistant" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            <circle cx="9" cy="10" r="1" fill="currentColor" />
+            <circle cx="15" cy="10" r="1" fill="currentColor" />
+          </svg>
+          <span class="rail-label">CORTIA AI</span>
+        </a>
+
+        <!-- API Reference -->
+        <a href="/docs" class="rail-item" aria-label="API documentation" title="API Documentation" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+          </svg>
+          <span class="rail-label">API Reference</span>
+        </a>
+      </nav>
+
+      <div class="rail-footer">
+        <span class="status-indicator" title="System Operational"></span>
+        <span>CORTIA AI v2.0</span>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content Area -->
+    <main id="main" class="neuro-content">
+
+      <!-- Header -->
+      <header class="neuro-header">
+        <div class="header-meta">
+          <div class="brand-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1A73E8" stroke-width="2" width="22" height="22">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              <circle cx="9" cy="10" r="1" fill="currentColor" />
+              <circle cx="15" cy="10" r="1" fill="currentColor" />
+            </svg>
+            <span>CORTIA AI</span>
+            <span class="brand-badge">Research Conversational Assistant</span>
+          </div>
+          <span class="brand-subtitle">Grounded in scientific literature, verified application state, and real telemetry records</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="neuro-pill" title="Provider status">
+            <span class="status-indicator"></span>
+            <span id="ai-provider-badge">Grounded Engine Active</span>
+          </div>
+          <a href="/insights" class="btn-pacs-secondary">Open Insights &rarr;</a>
+        </div>
+      </header>
+
+      <!-- Chat Workspace Layout -->
+      <div class="ai-workspace-layout" style="margin-top:16px;">
+
+        <!-- Left Conversation History Sidebar -->
+        <aside class="ai-sidebar-card">
+          <div class="ai-sidebar-header">
+            <span style="font-weight:600;font-size:0.875rem;">Conversations</span>
+            <button id="new-conv-btn" class="btn-pacs-primary" style="padding:6px 10px;font-size:0.75rem;">+ New Chat</button>
+          </div>
+          <div class="ai-conv-list" id="conv-list-container">
+            <!-- Populated via JS -->
+          </div>
+          <div style="padding:12px;border-top:1px solid var(--md-border);background:#F8F9FA;">
+            <button id="clear-all-convs-btn" class="btn-pacs-secondary" style="width:100%;font-size:0.75rem;color:#D93025;">Clear All History</button>
+          </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <section class="ai-chat-card">
+          <!-- Chat Header -->
+          <div class="ai-chat-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <h2 id="active-conv-title" style="font-size:1rem;font-weight:600;margin:0;">Research Inquiry</h2>
+              <span id="active-context-badge" class="badge" style="display:none;background:#E8F0FE;color:#1967D2;">Context Attached</span>
+            </div>
+            <button id="delete-curr-conv-btn" class="btn-pacs-secondary" style="padding:4px 8px;font-size:0.75rem;">Delete Chat</button>
+          </div>
+
+          <!-- Messages Stream -->
+          <div class="ai-messages-scroll" id="messages-container">
+            <!-- Welcome Message -->
+            <div class="chat-msg assistant">
+              <div class="msg-avatar ai-av">AI</div>
+              <div class="msg-body">
+                <div class="msg-bubble">
+                  <p><strong>Welcome to CORTIA AI.</strong></p>
+                  <p>I am your neuroscience research assistant grounded in peer-reviewed scientific literature and the real telemetry of your application. You can ask me to:</p>
+                  <ul style="margin:8px 0 0 18px;padding:0;line-height:1.6;">
+                    <li>Audit and summarize your latest real MRI scan or EEG biopotential session.</li>
+                    <li>Explain the mechanics of Grad-CAM saliency attention maps.</li>
+                    <li>Investigate digital signal processing filters (1-40 Hz bandpass, 50 Hz notch).</li>
+                    <li>Audit the model registry and explain single-channel BioAmp hardware boundaries.</li>
+                  </ul>
+                  <p style="margin-top:10px;font-size:0.75rem;color:var(--md-text-secondary);">
+                    <em>Note: All inferences are grounded in actual database records. No metrics or citations are fabricated.</em>
+                  </p>
+                </div>
+                <div class="msg-time">Just now</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggested Starter Prompts -->
+          <div class="suggested-prompts-bar" id="suggested-prompts-bar">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Input Field -->
+          <div class="ai-input-bar">
+            <textarea
+              id="chat-textarea"
+              class="ai-input-field"
+              placeholder="Ask a scientific or application question (e.g., 'Summarize my latest EEG recording', 'How does Grad-CAM work?')..."
+              rows="1"
+            ></textarea>
+            <button id="chat-send-btn" class="ai-send-btn" title="Send message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/static/js/ai.js"></script>
+</body>
+</html>
