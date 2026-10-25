@@ -22,11 +22,7 @@
       trigger.className = 'floating-assistant-btn';
       trigger.title = 'Open CORTIA AI Assistant';
       trigger.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          <circle cx="9" cy="10" r="1" fill="currentColor" />
-          <circle cx="15" cy="10" r="1" fill="currentColor" />
-        </svg>
+        <span style="font-size: 16px; line-height: 1;">✦</span>
         <span>Ask CORTIA AI</span>
       `;
       document.body.appendChild(trigger);
@@ -41,7 +37,7 @@
     drawerPanel.innerHTML = `
       <div class="drawer-header">
         <div class="drawer-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1A73E8" stroke-width="2" width="20" height="20">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C94040" stroke-width="2" width="20" height="20">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             <circle cx="9" cy="10" r="1" fill="currentColor" />
             <circle cx="15" cy="10" r="1" fill="currentColor" />

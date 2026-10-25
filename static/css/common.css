@@ -8,24 +8,37 @@
 :root {
   color-scheme: light;
 
-  /* CORTIA Brand Identity Color Tokens */
-  --cream:        #F5F0EB;
-  --cream-deep:   #EDE6DD;
-  --blush:        #F0DDD8;
-  --blush-mid:    #DEC5BE;
-  --cortia-red:   #C94040;
-  --cortia-red-dk:#A83232;
-  --cortia-red-lt:#F0D0D0;
-  --warm-ink:     #1C1917;
-  --warm-mid:     #6B5248;
-  --warm-sub:     #9C8880;
-  --warm-border:  #DDD4CC;
+  /* Backgrounds */
+  --cream:        #F5F0EB;   /* page background */
+  --cream-deep:   #EDE6DD;   /* subtle section tint */
+  --blush:        #F0DDD8;   /* hover states, tinted cards */
+  --blush-mid:    #DEC5BE;   /* dashed borders, dividers */
+
+  /* Brand */
+  --cortia-red:   #C94040;   /* PRIMARY accent — buttons, active states, findings */
+  --cortia-red-dk:#A83232;   /* hover on red */
+  --cortia-red-lt:#F0D0D0;   /* red tint backgrounds, badges */
+
+  /* Text */
+  --warm-ink:     #1C1917;   /* headings, primary text */
+  --warm-mid:     #6B5248;   /* secondary labels */
+  --warm-sub:     #9C8880;   /* captions, metadata */
+  --warm-border:  #DDD4CC;   /* all borders */
+
+  /* Sidebar */
   --sidebar-bg:   #231A17;
   --sidebar-hover:#2E2220;
   --sidebar-active:#3A2A26;
-  --white:        #FFFFFF;
-  --green:        #5A8A5A;
-  --amber:        #C07830;
+
+  /* Surfaces */
+  --white:        #FFFFFF;   /* cards */
+
+  /* Status */
+  --status-green: #5A8A5A;
+  --status-amber: #C07830;
+  --status-red:   #C94040;   /* same as brand */
+  --green:        var(--status-green);
+  --amber:        var(--status-amber);
   --shadow-sm:    0 1px 3px rgba(28,25,23,.08);
   --shadow-md:    0 4px 16px rgba(28,25,23,.10);
 
@@ -364,15 +377,55 @@ h1, h2, h3, h4, .page-title, .brand-name, .metric-value, .panel-title, .result-t
 }
 
 .neuro-pill, .engine-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-family: var(--font-sans);
   font-size: 11px;
   color: var(--warm-mid);
   padding: 5px 12px;
   border: 1px solid var(--warm-border);
-  border-radius: 20px;
-  background: var(--cream);
+  border-radius: 8px;
+  background: transparent;
+}
+
+.neuro-pill .status-indicator, .engine-badge .status-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-green);
+}
+
+/* ── Mode Toggle (Everyday / Research) ── */
+.persona-toggle-wrap, .mode-toggle {
+  display: inline-flex;
+  background: transparent;
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid var(--warm-border);
+  align-items: center;
+}
+
+.persona-toggle-btn, .mode-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--warm-mid);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.persona-toggle-btn.active, .mode-btn.active {
+  background: var(--cortia-red) !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
 }
 
 /* ── Buttons (Only #C94040 for Primary, No Blue Anywhere) ── */
@@ -382,6 +435,7 @@ h1, h2, h3, h4, .page-title, .brand-name, .metric-value, .panel-title, .result-t
   border: none;
   border-radius: 8px;
   padding: 7px 16px;
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -407,14 +461,27 @@ h1, h2, h3, h4, .page-title, .brand-name, .metric-value, .panel-title, .result-t
 }
 
 .btn-pacs-secondary, .btn-ghost, .ghost-sm {
-  background: var(--white);
+  background: transparent;
   color: var(--warm-mid);
   border: 1px solid var(--warm-border);
   border-radius: 8px;
   padding: 6px 14px;
+  font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.btn-pacs-secondary:hover, .btn-ghost:hover, .ghost-sm:hover {
+  background: var(--cream);
+  color: var(--warm-ink);
+}
   transition: background 0.15s ease, color 0.15s ease;
   display: inline-flex;
   align-items: center;
