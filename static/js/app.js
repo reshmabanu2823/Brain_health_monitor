@@ -450,7 +450,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/api/stats');
       if (!res.ok) throw new Error('Statistics unavailable');
       const data = await res.json();
-      document.getElementById('tele-accuracy').textContent = data.model_accuracy || 'Not evaluated';
+      const teleAcc = document.getElementById('tele-accuracy');
+      if (teleAcc) teleAcc.textContent = data.model_accuracy || 'Not evaluated';
       if (teleTotal) teleTotal.textContent = data.total_scans || 0;
       if (telePosRate) telePosRate.textContent = '—';
       if (telePosRate && data.total_scans > 0) {
@@ -460,7 +461,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       if (teleTotal) teleTotal.textContent = 'Unavailable';
       if (telePosRate) telePosRate.textContent = '—';
-      document.getElementById('tele-accuracy').textContent = 'Unavailable';
+      const teleAccErr = document.getElementById('tele-accuracy');
+      if (teleAccErr) teleAccErr.textContent = 'Unavailable';
       console.error('Telemetry load error:', e);
     }
   }
