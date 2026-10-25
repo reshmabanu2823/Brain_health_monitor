@@ -1,0 +1,311 @@
+/* ==========================================================================
+   CORTIA Everyday Companion & Patient-Friendly Styles
+   Brand Identity: Warm Cream (#F5F0EB), Cormorant Garamond, Coral-Red (#C94040)
+   ========================================================================== */
+
+/* Mode Switcher Pill in Top Bar */
+.persona-toggle-wrap, .mode-toggle {
+  display: inline-flex;
+  background: var(--cream);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--warm-border);
+  align-items: center;
+}
+
+.persona-toggle-btn, .mode-btn {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--warm-mid);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.persona-toggle-btn.active, .mode-btn.active {
+  background: var(--cortia-red) !important;
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+
+/* Visibility Control between Personas */
+body.mode-everyday .mode-research-only {
+  display: none !important;
+}
+
+body.mode-research .mode-everyday-only {
+  display: none !important;
+}
+
+/* ── Plain-English Findings Card ── */
+.patient-finding-card {
+  background: var(--white);
+  border: 1px solid var(--warm-border);
+  border-left: 5px solid var(--cortia-red);
+  border-radius: var(--md-radius, 12px);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.patient-finding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.patient-finding-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--warm-ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.patient-finding-body {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--warm-mid);
+}
+
+.patient-urgency-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--blush);
+  color: var(--cortia-red);
+}
+
+/* ── Doctor Questions Checklist ── */
+.doctor-questions-card {
+  background: var(--white);
+  border: 1px solid var(--warm-border);
+  border-radius: var(--md-radius, 12px);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.doctor-questions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.doctor-questions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.doctor-question-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--cream);
+  border: 1px solid var(--warm-border);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--warm-ink);
+  line-height: 1.5;
+  transition: all 0.15s ease;
+}
+
+.doctor-question-item:hover {
+  border-color: var(--cortia-red);
+  background: var(--white);
+}
+
+.question-check-icon {
+  color: var(--cortia-red);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* ── Calmness Gauge for EEG ── */
+.calmness-widget-card {
+  background: var(--white);
+  border: 1px solid var(--warm-border);
+  border-radius: var(--md-radius, 12px);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.calmness-dial-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.calmness-score-circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 8px solid var(--cream-deep);
+  border-top-color: var(--cortia-red);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  transition: border-color 0.4s ease;
+}
+
+.calmness-score-num {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--warm-ink);
+  line-height: 1;
+}
+
+.calmness-score-lbl {
+  font-size: 10px;
+  color: var(--warm-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-top: 4px;
+}
+
+.calmness-info-wrap {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calmness-level-tag {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--warm-ink);
+}
+
+.calmness-guidance-text {
+  font-size: 12px;
+  color: var(--warm-mid);
+  line-height: 1.5;
+}
+
+/* ── Guided Breathing Pacer Widget ── */
+.breathing-pacer-card {
+  background: var(--cream);
+  border: 1px solid var(--warm-border);
+  border-radius: var(--md-radius, 12px);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.breathing-circle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 4px 16px rgba(201, 64, 64, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cortia-red);
+  transition: transform 4s ease-in-out;
+  flex-shrink: 0;
+  border: 1px solid var(--warm-border);
+}
+
+.breathing-circle.inhale {
+  transform: scale(1.25);
+  border-color: var(--cortia-red);
+}
+
+.breathing-circle.exhale {
+  transform: scale(0.9);
+}
+
+/* ── Step-by-Step Onboarding Banner ── */
+.how-it-works-banner {
+  background: var(--white);
+  border: 1px solid var(--warm-border);
+  border-radius: 10px;
+  padding: 0;
+  display: flex;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+
+.step-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-right: 1px solid var(--warm-border);
+}
+
+.step-item:last-child {
+  border-right: none;
+}
+
+.step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--cortia-red-lt);
+  color: var(--cortia-red);
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-desc {
+  font-size: 12px;
+  color: var(--warm-ink);
+  line-height: 1.4;
+}
+
+.step-desc strong {
+  font-weight: 600;
+}

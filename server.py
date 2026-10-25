@@ -21,6 +21,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 from app.eeg.api import router as eeg_router
+from app.insights.api import router as insights_router
+from app.ai.api import router as ai_router
 from app.eeg.model import EEGModel
 from app.eeg.service import EEGService
 from app.eeg.signal import SignalConfig
@@ -40,6 +42,7 @@ from inference import BrainTumorModel, CLASS_LABELS, read_mri_file
 from gradcam import generate_gradcam_heatmap, preload_gradcam_model
 from logger import init_db, log_result, get_scan_history, get_scan_stats, clear_scan_history
 from report_generator import generate_pdf_report
+from patient_companion import get_patient_mri_companion, get_mind_calmness_metrics
 
 log = logging.getLogger(__name__)
 SUPPORTED_SUFFIXES = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tif', '.tiff', '.dcm', '.dicom'}
@@ -50,6 +53,7 @@ PROBABILITY_NAMES = ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary']
 async def lifespan(application):
     init_db()
     Path(UPLOADS_DIR).mkdir(parents=True, exist_ok=True)
+    application.state.model_dir = MODEL_DIR
     application.state.model = None
     application.state.analysis_slots = threading.BoundedSemaphore(MAX_CONCURRENT_ANALYSES)
     try:
@@ -79,6 +83,8 @@ async def lifespan(application):
 
 app = FastAPI(title='Brain Health Monitor API', description='Single-channel EEG and separate MRI research workstation', version='3.0.0', lifespan=lifespan)
 app.include_router(eeg_router)
+app.include_router(insights_router)
+app.include_router(ai_router)
 origins = [value.strip() for value in os.getenv('BHM_CORS_ORIGINS', '').split(',') if value.strip()]
 if origins:
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=False, allow_methods=['GET', 'POST'], allow_headers=['Content-Type'])
@@ -212,7 +218,8 @@ def _process_upload(path, filename, model):
             patient_id = 'SCAN-' + uuid.uuid4().hex[:12]
         patient_name = metadata.get('patient_name') or 'De-identified'
         scan_id = log_result(filename, label, confidence, distribution, patient_id=patient_id, patient_name=patient_name, tumor_area_pct=metrics.get('tumor_area_pct', 0), peak_saliency=metrics.get('peak_saliency', 0))
-        return {'success': True, 'scan_id': scan_id, 'filename': filename, 'patient_id': patient_id, 'patient_name': patient_name, 'label': label, 'confidence': round(confidence, 1), 'is_tumor': label != 'No Tumor', 'probabilities': distribution, 'tumor_metrics': metrics, 'dicom_metadata': metadata, 'original_b64': to_base64_url(image), 'heatmap_b64': to_base64_url(overlay), 'explanation': {'available': overlay is not None, 'method': 'gradcam' if overlay is not None else None, 'class_index': class_index, 'measurement': 'saliency coverage, not lesion segmentation', 'reason': None if overlay is not None else 'Grad-CAM is unavailable for this prediction'}}
+        patient_companion_data = get_patient_mri_companion(label, round(confidence, 1), metrics.get('tumor_area_pct', 0), distribution)
+        return {'success': True, 'scan_id': scan_id, 'filename': filename, 'patient_id': patient_id, 'patient_name': patient_name, 'label': label, 'confidence': round(confidence, 1), 'is_tumor': label != 'No Tumor', 'probabilities': distribution, 'tumor_metrics': metrics, 'dicom_metadata': metadata, 'original_b64': to_base64_url(image), 'heatmap_b64': to_base64_url(overlay), 'explanation': {'available': overlay is not None, 'method': 'gradcam' if overlay is not None else None, 'class_index': class_index, 'measurement': 'saliency coverage, not lesion segmentation', 'reason': None if overlay is not None else 'Grad-CAM is unavailable for this prediction'}, 'patient_companion': patient_companion_data}
     finally:
         Path(path).unlink(missing_ok=True)
 
@@ -289,6 +296,16 @@ app.mount('/static', StaticFiles(directory=STATIC_DIR), name='static')
 @app.get('/landing')
 def cortia_landing():
     return FileResponse(os.path.join(STATIC_DIR, 'cortia', 'index.html'))
+
+
+@app.get('/insights')
+def insights_workspace():
+    return FileResponse(os.path.join(STATIC_DIR, 'insights.html'))
+
+
+@app.get('/ai')
+def ai_workspace():
+    return FileResponse(os.path.join(STATIC_DIR, 'ai.html'))
 
 
 @app.get('/eeg')

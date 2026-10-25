@@ -1,355 +1,349 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Brain Health Monitor — EEG Signal Intelligence Workspace</title>
-  <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev1" />
-  <link rel="stylesheet" href="/static/css/eeg.css?v=20261025_rev1" />
-  <script defer src="/static/js/eeg.js?v=20261025_rev1"></script>
-</head>
-<body>
-  <a class="skip" href="#main">Skip to main content</a>
-
-  <div class="neuro-app">
-
-    <!-- Google Cloud Console Inspired Navigation Sidebar -->
-    <aside class="neuro-rail" aria-label="Main Navigation">
-      <a href="/eeg" class="rail-brand" title="Brain Health Monitor Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-        </svg>
-        <span class="rail-brand-text">Health Monitor</span>
-      </a>
-
-      <nav class="rail-nav" aria-label="Workspaces">
-        <!-- Cortia Landing Portal -->
-        <a href="/cortia" class="rail-item" aria-label="Cortia landing portal" title="Cortia Landing Portal">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-          <span class="rail-label">Cortia Portal</span>
-        </a>
-
-        <!-- MRI Analysis -->
-        <a href="/" class="rail-item" aria-label="MRI analysis" title="MRI analysis">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 3a9 9 0 0 0 0 18M12 3v18M3 12h18" />
-          </svg>
-          <span class="rail-label">MRI Analysis</span>
-        </a>
-
-        <!-- EEG Monitoring (Active) -->
-        <a href="/eeg" class="rail-item active" aria-label="EEG Signal Intelligence" title="EEG Signal Intelligence" aria-current="page">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4" />
-          </svg>
-          <span class="rail-label">EEG Intelligence</span>
-        </a>
-
-        <!-- API Reference -->
-        <a href="/docs" class="rail-item" aria-label="API documentation" title="API documentation" target="_blank">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-          </svg>
-          <span class="rail-label">API Reference</span>
-        </a>
-      </nav>
-
-      <div class="rail-footer">
-        <span class="status-indicator" title="System Operational"></span>
-        <span>EEG Intel v2.5</span>
-      </div>
-    </aside>
-
-    <!-- Main Workspace Content Area -->
-    <main id="main" class="neuro-content">
-
-      <!-- Top App Bar (Header) -->
-      <header class="neuro-header">
-        <div class="header-meta">
-          <div class="brand-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#1A73E8" stroke-width="2" width="22" height="22">
-              <path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4" />
-            </svg>
-            <span>Brain Health Monitor</span>
-            <span class="brand-badge">EEG Signal Intelligence</span>
-          </div>
-          <span class="brand-subtitle">Physiological biopotential telemetry, spectral estimation &bull; Simulated demo data</span>
-        </div>
-
-        <div class="header-actions">
-          <div class="neuro-pill" title="Backend service state">
-            <span class="status-indicator"></span>
-            <span id="backend">Connecting...</span>
-          </div>
-
-          <a href="/cortia" class="btn-pacs-secondary">Cortia Portal</a>
-          <a href="/" class="btn-pacs-secondary">MRI Workspace</a>
-        </div>
-      </header>
-
-      <!-- Page Heading Section -->
-      <section class="page-title-section">
-        <h1 class="page-title">EEG Signal Intelligence Workspace</h1>
-        <p class="page-subtitle">Real-time biopotential acquisition, zero-phase filtering, 3-state quality validation, and research feature telemetry</p>
-      </section>
-
-      <!-- Main EEG Workspace -->
-      <div class="eeg-workspace">
-
-        <!-- Status & System Notices -->
-        <div id="notice" class="eeg-banner notice" hidden></div>
-        <div id="error" class="eeg-banner error" hidden></div>
-
-        <!-- EEG Status Readouts Strip (4 Cards) -->
-        <div class="eeg-status-grid" role="region" aria-label="Telemetry readouts">
-          <div class="card stat-card">
-            <span class="stat-label">Hardware Stream</span>
-            <strong class="stat-value" id="connection" style="font-size: 20px;">Disconnected</strong>
-          </div>
-          <div class="card stat-card">
-            <span class="stat-label">Sample Rate</span>
-            <strong class="stat-value" id="rate" style="font-size: 20px;">0 / 250 Hz</strong>
-          </div>
-          <div class="card stat-card">
-            <span class="stat-label">Signal Quality State</span>
-            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-              <span id="quality-pill" class="quality-pill quality-insufficient">Unknown</span>
-            </div>
-            <span id="quality-reasons" style="font-size: 11px; color: var(--md-sys-color-text-secondary); margin-top: 4px; display: block;">Awaiting window</span>
-          </div>
-          <div class="card stat-card">
-            <span class="stat-label">Recording State</span>
-            <strong class="stat-value" id="recording" style="font-size: 20px;">Idle</strong>
-          </div>
-        </div>
-
-        <!-- Acquisition Controls Card -->
-        <section class="eeg-card controls" aria-labelledby="source-heading">
-          <div class="card-heading">
-            <div>
-              <h2 id="source-heading">Acquisition Source &amp; Configuration</h2>
-              <p>Configure hardware telemetry, serial communication, session recording, and protocol notes</p>
-            </div>
-          </div>
-
-          <div class="fields">
-            <div class="field-group">
-              <label for="source">Data Source</label>
-              <select id="source">
-                <option value="simulated">Simulated EEG (Synthetic)</option>
-                <option value="serial">Maker UNO / BioAmp (Serial A0)</option>
-              </select>
-            </div>
-
-            <div class="field-group">
-              <label for="port">Serial Device Port</label>
-              <select id="port" disabled>
-                <option value="">Choose serial port</option>
-              </select>
-            </div>
-
-            <div class="field-group" style="flex: 1; min-width: 200px;">
-              <label for="session-notes">Researcher Notes (Optional)</label>
-              <input id="session-notes" type="text" placeholder="Protocol details, subject code, or task state..." />
-            </div>
-
-            <button id="refresh-ports" class="btn-pacs-secondary" type="button">Refresh Ports</button>
-            <button id="connect" class="btn-pacs" type="button">Connect Stream</button>
-            <button id="disconnect" class="btn-pacs-secondary" type="button" disabled>Disconnect</button>
-          </div>
-        </section>
-
-        <!-- Main Analysis Grid -->
-        <div class="analysis-grid">
-
-          <!-- Left Column: Waveforms & Spectral Bands -->
-          <div class="analysis-column">
-
-            <!-- Synchronized Raw vs. Processed Waveform Card -->
-            <section class="eeg-card" aria-labelledby="wave-heading">
-              <div class="card-heading">
-                <div>
-                  <h2 id="wave-heading">Synchronized Biopotential Waveforms</h2>
-                  <p>Raw 10-bit ADC biopotential (0–1023 counts) &amp; Zero-phase filtered signal (1.0–40.0 Hz)</p>
-                </div>
-                <div style="display: flex; gap: 8px; align-items: center;">
-                  <span id="source-badge" class="brand-badge">Simulated</span>
-                </div>
-              </div>
-
-              <!-- Raw Stream Plot -->
-              <div style="margin-bottom: 12px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                  <span style="font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--md-sys-color-text-secondary); letter-spacing: 0.5px;">Raw Input Telemetry (Buffer: 0–1023 ADC counts)</span>
-                </div>
-                <div class="chart">
-                  <canvas id="wave" aria-label="Live raw EEG waveform"></canvas>
-                  <div id="wave-empty" class="empty">Connect to an EEG stream to visualize live signals</div>
-                </div>
-              </div>
-
-              <!-- Zero-phase Filtered Active Window Plot -->
-              <div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                  <span style="font-size: 11px; font-weight: 500; text-transform: uppercase; color: #1A73E8; letter-spacing: 0.5px;">Zero-Phase Processed Waveform (4s Window &bull; Detrended + 50Hz Notch + 1–40Hz Bandpass)</span>
-                </div>
-                <div class="chart small">
-                  <canvas id="wave-filtered" aria-label="Zero-phase filtered EEG waveform"></canvas>
-                  <div id="wave-filtered-empty" class="empty">Processed window available after 6 seconds of continuous data</div>
-                </div>
-              </div>
-
-              <div class="card-heading" style="margin-top: 14px; margin-bottom: 0;">
-                <div id="sample-info" class="sample-meta">0 samples displayed</div>
-                <div class="actions" style="margin: 0;">
-                  <button id="record" class="btn-pacs" type="button" disabled>Record Session</button>
-                  <button id="stop-record" class="btn-pacs-secondary" type="button" disabled>Stop</button>
-                </div>
-              </div>
-            </section>
-
-            <!-- Relative Spectral Band Power Card -->
-            <section class="eeg-card" aria-labelledby="bands-heading">
-              <div class="card-heading">
-                <div>
-                  <h2 id="bands-heading">Spectral Band Power Distribution</h2>
-                  <p>Normalized energy distribution: Delta (1–4Hz), Theta (4–8Hz), Alpha (8–13Hz), Beta (13–30Hz), Partial Gamma (30–40Hz)</p>
-                </div>
-              </div>
-
-              <div class="chart small" style="background-color: var(--md-sys-color-surface-variant); padding: 12px;">
-                <div id="bands"></div>
-              </div>
-            </section>
-
-            <!-- Detailed Features Table Card -->
-            <section class="eeg-card" aria-labelledby="features-heading">
-              <div class="card-heading">
-                <div>
-                  <h2 id="features-heading">Extracted Feature Metrics &amp; Units</h2>
-                  <p>Computed time-domain, frequency-domain, and complexity indicators for current active window</p>
-                </div>
-              </div>
-
-              <div style="overflow-x: auto;">
-                <table class="feature-table" aria-label="Extracted feature metrics table">
-                  <thead>
-                    <tr>
-                      <th>Feature Metric</th>
-                      <th>Value</th>
-                      <th>Unit</th>
-                      <th>Band / Specification</th>
-                    </tr>
-                  </thead>
-                  <tbody id="features-table-body">
-                    <tr>
-                      <td colspan="4" style="text-align: center; color: var(--md-sys-color-text-secondary); padding: 14px;">Awaiting complete 4-second analysis window...</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-          </div>
-
-          <!-- Right Column: PSD, Model Registry, Classification, History -->
-          <div class="analysis-column">
-
-            <!-- Power Spectral Density Card -->
-            <section class="eeg-card" aria-labelledby="psd-heading">
-              <div class="card-heading">
-                <div>
-                  <h2 id="psd-heading">Power Spectral Density (PSD)</h2>
-                  <p>Welch estimated power spectrum (counts&sup2;/Hz)</p>
-                </div>
-              </div>
-
-              <div class="chart small">
-                <canvas id="psd" aria-label="Power spectral density estimate"></canvas>
-                <div id="psd-empty" class="empty">Spectrum calculated once a 4-second active window is ready</div>
-              </div>
-              <div id="window-info" class="sample-meta">Buffer: 0 / 1500 samples (including 1s edge guards)</div>
-            </section>
-
-            <!-- Model Inference Card -->
-            <section class="eeg-card" aria-labelledby="model-heading">
-              <div class="card-heading">
-                <div>
-                  <h2 id="model-heading">Experimental Task Model Inference</h2>
-                  <p id="model-info">Classifier runtime &bull; Research baseline</p>
-                </div>
-              </div>
-
-              <div class="prediction-box">
-                <div id="prediction" class="prediction-title">Awaiting Data</div>
-                <div id="prediction-detail" class="prediction-detail">Model evaluation requires active streaming window</div>
-              </div>
-            </section>
-
-            <!-- Planned Research Modules & Model Registry -->
-            <section class="eeg-card" aria-labelledby="registry-heading">
-              <div class="card-heading">
-                <div>
-                  <h2 id="registry-heading">Research Model Registry &amp; Feasibility</h2>
-                  <p>Planned modules, input contracts, and single-channel hardware feasibility</p>
-                </div>
-              </div>
-
-              <div id="model-registry-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow-y: auto;">
-                <div style="font-size: 13px; color: var(--md-sys-color-text-secondary);">Loading model registry...</div>
-              </div>
-            </section>
-
-            <!-- Session History Card -->
-            <section class="eeg-card" aria-labelledby="history-heading">
-              <div class="card-heading">
-                <div>
-                  <h2 id="history-heading">Recent Session Recordings</h2>
-                  <p>Session data recorded to local SQLite storage with reproducible provenance</p>
-                </div>
-                <button id="refresh-history" class="btn-pacs-sm" type="button">Refresh</button>
-              </div>
-
-              <div style="overflow-x: auto;">
-                <table class="feature-table" style="font-family: var(--font-sans);">
-                  <thead>
-                    <tr>
-                      <th>Started (UTC)</th>
-                      <th>Source</th>
-                      <th>Duration</th>
-                      <th>Samples</th>
-                      <th>Status</th>
-                      <th>Export</th>
-                    </tr>
-                  </thead>
-                  <tbody id="history">
-                    <tr><td colspan="6" style="text-align: center;">No recordings stored in current workspace.</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- Clean Footer -->
-      <footer class="pacs-footer">
-        Brain Health Monitor System &bull; Research Workstation &bull; Not for clinical diagnosis
-      </footer>
-    </main>
-
-  </div>
-</body>
-</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Brain Health Monitor — EEG Signal Intelligence Workspace</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev1" />
+  <link rel="stylesheet" href="/static/css/eeg.css?v=20261025_rev1" />
+  <script defer src="/static/js/eeg.js?v=20261025_rev1"></script>
+  <link rel="stylesheet" href="/static/css/cortia-assistant.css">
+  <link rel="stylesheet" href="/static/css/companion-mode.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+
+  <div class="neuro-app">
+
+    <!-- Google Cloud Console Inspired Navigation Sidebar -->
+        <!-- CORTIA Dark Sidebar (#231A17) -->
+        <!-- CORTIA Dark Sidebar (#231A17) -->
+    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
+      <div class="sidebar-brand">
+        <a class="brand-logo" href="/cortia">
+          <div class="brand-icon">🧠</div>
+          <div class="brand-name">CORTIA</div>
+        </a>
+        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Workspaces</div>
+        <a class="nav-item rail-item " href="/" title="MRI Analysis">
+          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
+        </a>
+        <a class="nav-item rail-item active" href="/eeg" title="EEG Monitoring">
+          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
+        </a>
+        <a class="nav-item rail-item " href="/insights" title="CORTIA Insights">
+          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Assistant</div>
+        <a class="nav-item rail-item " href="/ai" title="CORTIA AI">
+          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
+        </a>
+        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
+          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
+        <a class="nav-item rail-item" href="/cortia" title="Cortia Portal">
+          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer rail-footer">
+        <div class="runtime-badge">
+          <span class="runtime-dot status-indicator"></span>
+          Runtime v2.4 &bull; Active
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content Area -->
+    <main id="main" class="neuro-content">
+
+      <!-- Top App Bar (Header) -->
+      <header class="neuro-header">
+        <div class="header-meta">
+          <div class="brand-title">EEG Signal Intelligence</div>
+          <span class="brand-subtitle">Physiological biopotential telemetry, spectral estimation &bull; Simulated demo data</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="neuro-pill" title="Backend service state">
+            <span class="status-indicator"></span>
+            <span id="backend">Connecting...</span>
+          </div>
+
+          <a href="/" class="btn-pacs-secondary">MRI Workspace</a>
+          <a href="/insights" class="btn-pacs-secondary">Insights</a>
+          <a href="/ai" class="btn-pacs-primary">✦ Ask CORTIA AI</a>
+        </div>
+      </header>
+
+      <!-- Page Heading Section -->
+      <section class="page-title-section">
+        <h1 class="page-title">EEG Signal Intelligence Workspace</h1>
+        <p class="page-subtitle">Real-time biopotential acquisition, zero-phase filtering, 3-state quality validation, and research feature telemetry</p>
+      </section>
+
+      <!-- Main EEG Workspace -->
+      <div class="eeg-workspace">
+
+        <!-- Status & System Notices -->
+        <div id="notice" class="eeg-banner notice" hidden></div>
+        <div id="error" class="eeg-banner error" hidden></div>
+
+        <!-- EEG Status Readouts Strip (4 Cards) -->
+        <div class="eeg-status-grid" role="region" aria-label="Telemetry readouts">
+          <div class="card stat-card">
+            <span class="stat-label">Hardware Stream</span>
+            <strong class="stat-value" id="connection" style="font-size: 20px;">Disconnected</strong>
+          </div>
+          <div class="card stat-card">
+            <span class="stat-label">Sample Rate</span>
+            <strong class="stat-value" id="rate" style="font-size: 20px;">0 / 250 Hz</strong>
+          </div>
+          <div class="card stat-card">
+            <span class="stat-label">Signal Quality State</span>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+              <span id="quality-pill" class="quality-pill quality-insufficient">Unknown</span>
+            </div>
+            <span id="quality-reasons" style="font-size: 11px; color: var(--md-sys-color-text-secondary); margin-top: 4px; display: block;">Awaiting window</span>
+          </div>
+          <div class="card stat-card">
+            <span class="stat-label">Recording State</span>
+            <strong class="stat-value" id="recording" style="font-size: 20px;">Idle</strong>
+          </div>
+        </div>
+
+        <!-- Acquisition Controls Card -->
+        <section class="eeg-card controls" aria-labelledby="source-heading">
+          <div class="card-heading">
+            <div>
+              <h2 id="source-heading">Acquisition Source &amp; Configuration</h2>
+              <p>Configure hardware telemetry, serial communication, session recording, and protocol notes</p>
+            </div>
+          </div>
+
+          <div class="fields">
+            <div class="field-group">
+              <label for="source">Data Source</label>
+              <select id="source">
+                <option value="simulated">Simulated EEG (Synthetic)</option>
+                <option value="serial">Maker UNO / BioAmp (Serial A0)</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label for="port">Serial Device Port</label>
+              <select id="port" disabled>
+                <option value="">Choose serial port</option>
+              </select>
+            </div>
+
+            <div class="field-group" style="flex: 1; min-width: 200px;">
+              <label for="session-notes">Researcher Notes (Optional)</label>
+              <input id="session-notes" type="text" placeholder="Protocol details, subject code, or task state..." />
+            </div>
+
+            <button id="refresh-ports" class="btn-pacs-secondary" type="button">Refresh Ports</button>
+            <button id="connect" class="btn-pacs" type="button">Connect Stream</button>
+            <button id="disconnect" class="btn-pacs-secondary" type="button" disabled>Disconnect</button>
+          </div>
+        </section>
+
+        <!-- Main Analysis Grid -->
+        <div class="analysis-grid">
+
+          <!-- Left Column: Waveforms & Spectral Bands -->
+          <div class="analysis-column">
+
+            <!-- Synchronized Raw vs. Processed Waveform Card -->
+            <section class="eeg-card" aria-labelledby="wave-heading">
+              <div class="card-heading">
+                <div>
+                  <h2 id="wave-heading">Synchronized Biopotential Waveforms</h2>
+                  <p>Raw 10-bit ADC biopotential (0–1023 counts) &amp; Zero-phase filtered signal (1.0–40.0 Hz)</p>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <span id="source-badge" class="brand-badge">Simulated</span>
+                </div>
+              </div>
+
+              <!-- Raw Stream Plot -->
+              <div style="margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <span style="font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--md-sys-color-text-secondary); letter-spacing: 0.5px;">Raw Input Telemetry (Buffer: 0–1023 ADC counts)</span>
+                </div>
+                <div class="chart">
+                  <canvas id="wave" aria-label="Live raw EEG waveform"></canvas>
+                  <div id="wave-empty" class="empty">Connect to an EEG stream to visualize live signals</div>
+                </div>
+              </div>
+
+              <!-- Zero-phase Filtered Active Window Plot -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <span style="font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--red); letter-spacing: 0.5px;">Zero-Phase Processed Waveform (4s Window &bull; Detrended + 50Hz Notch + 1–40Hz Bandpass)</span>
+                </div>
+                <div class="chart small">
+                  <canvas id="wave-filtered" aria-label="Zero-phase filtered EEG waveform"></canvas>
+                  <div id="wave-filtered-empty" class="empty">Processed window available after 6 seconds of continuous data</div>
+                </div>
+              </div>
+
+              <div class="card-heading" style="margin-top: 14px; margin-bottom: 0;">
+                <div id="sample-info" class="sample-meta">0 samples displayed</div>
+                <div class="actions" style="margin: 0;">
+                  <button id="record" class="btn-pacs" type="button" disabled>Record Session</button>
+                  <button id="stop-record" class="btn-pacs-secondary" type="button" disabled>Stop</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Relative Spectral Band Power Card -->
+            <section class="eeg-card" aria-labelledby="bands-heading">
+              <div class="card-heading">
+                <div>
+                  <h2 id="bands-heading">Spectral Band Power Distribution</h2>
+                  <p>Normalized energy distribution: Delta (1–4Hz), Theta (4–8Hz), Alpha (8–13Hz), Beta (13–30Hz), Partial Gamma (30–40Hz)</p>
+                </div>
+              </div>
+
+              <div class="chart small" style="background-color: var(--md-sys-color-surface-variant); padding: 12px;">
+                <div id="bands"></div>
+              </div>
+            </section>
+
+            <!-- Detailed Features Table Card -->
+            <section class="eeg-card" aria-labelledby="features-heading">
+              <div class="card-heading">
+                <div>
+                  <h2 id="features-heading">Extracted Feature Metrics &amp; Units</h2>
+                  <p>Computed time-domain, frequency-domain, and complexity indicators for current active window</p>
+                </div>
+              </div>
+
+              <div style="overflow-x: auto;">
+                <table class="feature-table" aria-label="Extracted feature metrics table">
+                  <thead>
+                    <tr>
+                      <th>Feature Metric</th>
+                      <th>Value</th>
+                      <th>Unit</th>
+                      <th>Band / Specification</th>
+                    </tr>
+                  </thead>
+                  <tbody id="features-table-body">
+                    <tr>
+                      <td colspan="4" style="text-align: center; color: var(--md-sys-color-text-secondary); padding: 14px;">Awaiting complete 4-second analysis window...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- Right Column: PSD, Model Registry, Classification, History -->
+          <div class="analysis-column">
+
+            <!-- Power Spectral Density Card -->
+            <section class="eeg-card" aria-labelledby="psd-heading">
+              <div class="card-heading">
+                <div>
+                  <h2 id="psd-heading">Power Spectral Density (PSD)</h2>
+                  <p>Welch estimated power spectrum (counts&sup2;/Hz)</p>
+                </div>
+              </div>
+
+              <div class="chart small">
+                <canvas id="psd" aria-label="Power spectral density estimate"></canvas>
+                <div id="psd-empty" class="empty">Spectrum calculated once a 4-second active window is ready</div>
+              </div>
+              <div id="window-info" class="sample-meta">Buffer: 0 / 1500 samples (including 1s edge guards)</div>
+            </section>
+
+            <!-- Model Inference Card -->
+            <section class="eeg-card" aria-labelledby="model-heading">
+              <div class="card-heading">
+                <div>
+                  <h2 id="model-heading">Experimental Task Model Inference</h2>
+                  <p id="model-info">Classifier runtime &bull; Research baseline</p>
+                </div>
+              </div>
+
+              <div class="prediction-box">
+                <div id="prediction" class="prediction-title">Awaiting Data</div>
+                <div id="prediction-detail" class="prediction-detail">Model evaluation requires active streaming window</div>
+              </div>
+            </section>
+
+            <!-- Planned Research Modules & Model Registry -->
+            <section class="eeg-card" aria-labelledby="registry-heading">
+              <div class="card-heading">
+                <div>
+                  <h2 id="registry-heading">Research Model Registry &amp; Feasibility</h2>
+                  <p>Planned modules, input contracts, and single-channel hardware feasibility</p>
+                </div>
+              </div>
+
+              <div id="model-registry-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow-y: auto;">
+                <div style="font-size: 13px; color: var(--md-sys-color-text-secondary);">Loading model registry...</div>
+              </div>
+            </section>
+
+            <!-- Session History Card -->
+            <section class="eeg-card" aria-labelledby="history-heading">
+              <div class="card-heading">
+                <div>
+                  <h2 id="history-heading">Recent Session Recordings</h2>
+                  <p>Session data recorded to local SQLite storage with reproducible provenance</p>
+                </div>
+                <button id="refresh-history" class="btn-pacs-sm" type="button">Refresh</button>
+              </div>
+
+              <div style="overflow-x: auto;">
+                <table class="feature-table" style="font-family: var(--font-sans);">
+                  <thead>
+                    <tr>
+                      <th>Started (UTC)</th>
+                      <th>Source</th>
+                      <th>Duration</th>
+                      <th>Samples</th>
+                      <th>Status</th>
+                      <th>Export</th>
+                    </tr>
+                  </thead>
+                  <tbody id="history">
+                    <tr><td colspan="6" style="text-align: center;">No recordings stored in current workspace.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Clean Footer -->
+      <footer class="pacs-footer">
+        Brain Health Monitor System &bull; Research Workstation &bull; Not for clinical diagnosis
+      </footer>
+    </main>
+
+  </div>
+  <script src="/static/js/cortia-assistant.js"></script>
+  <script src="/static/js/companion-mode.js"></script>
+</body>
+</html>
