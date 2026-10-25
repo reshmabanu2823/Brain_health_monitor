@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <base href="/static/cortia/" />
+  <title>Cortia — Neural Intelligence &amp; Clinical Workstation</title>
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" />
+
+  <style>
+    :root {
+      --cortia-ground: #f4f4f1;
+      --cortia-ink: #202124;
+      --cortia-ink-subtle: #5f6368;
+      --cortia-crimson: #c43a55;
+      --cortia-rose: #e2677f;
+      --cortia-gold: #f2c46a;
+      --cortia-blue: #1a73e8;
+      --surface-white: #ffffff;
+      --border-subtle: #dadce0;
+      --display: "Manrope", "Helvetica Neue", Arial, system-ui, sans-serif;
+      --sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; width: 100%; }
+
+    body {
+      background: var(--cortia-ground);
+      color: var(--cortia-ink);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: max(20px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) max(40px, env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
+      transition: background-color 0.4s ease;
+    }
+
+    /* Top Skip / Quick Action Bar */
+    .top-nav {
+      position: fixed;
+      top: 18px;
+      right: 24px;
+      z-index: 10;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .skip-btn {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-subtle);
+      color: var(--cortia-ink-subtle);
+      padding: 7px 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .skip-btn:hover {
+      background: #ffffff;
+      color: var(--cortia-ink);
+      border-color: #bdc1c6;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Main Container */
+    .landing-wrapper {
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    /* Stage for initial reveal film */
+    .stage {
+      width: min(100%, 880px);
+      display: grid;
+      justify-items: center;
+      margin-top: clamp(20px, 6vh, 60px);
+      transition: opacity 0.4s ease;
+    }
+    .lockup {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      transform: translateX(13.6%);
+    }
+    .film {
+      position: absolute;
+      inset: 0;
+      background: var(--cortia-ground);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+      -webkit-mask-composite: source-in;
+      mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+      mask-composite: intersect;
+      transition: opacity 0.6s ease;
+    }
+    .film video, .film img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: var(--cortia-ground);
+    }
+    .film img { opacity: 0; }
+    .reduced .film img { opacity: 1; }
+    .reduced .film video { display: none; }
+    .lockup.gone .film { opacity: 0; transition-duration: 0.35s; }
+    .lockup.gone { pointer-events: none; }
+
+    /* Progress hairline rule */
+    .rule {
+      width: min(220px, 52vw);
+      height: 2px;
+      border-radius: 2px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--cortia-ink) 9%, transparent);
+      transition: opacity 0.9s ease 0.2s;
+      margin-top: 16px;
+    }
+    .rule i {
+      display: block;
+      height: 100%;
+      width: 100%;
+      transform-origin: left center;
+      transform: scaleX(0);
+      background: linear-gradient(90deg, var(--gold), var(--coral) 45%, var(--crimson));
+      will-change: transform;
+    }
+    .rule.wait i { animation: sweep 1.6s cubic-bezier(0.6, 0, 0.3, 1) infinite; }
+    .rule.done { opacity: 0; }
+    @keyframes sweep {
+      0% { transform: translateX(-100%) scaleX(0.35); }
+      100% { transform: translateX(280%) scaleX(0.35); }
+    }
+
+    /* Final Logo Lockup */
+    .final {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      z-index: 3;
+      margin-top: 20px;
+      transition: margin-top 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.ready .final {
+      margin-top: 30px;
+    }
+
+    .fin {
+      position: relative;
+      width: min(84vw, 520px);
+      aspect-ratio: 1320/343;
+      margin: 0;
+    }
+    .fin img {
+      position: absolute;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .fin .l { opacity: 0; will-change: transform, opacity, filter; }
+    .fin .brain { left: 17.27%; top: 1.75%; width: 25.6%; height: 96.5%; opacity: 0; z-index: 2; }
+    .fin .flier { left: 30.07%; top: 1.75%; height: 96.5%; width: auto; aspect-ratio: 984/872; translate: -50% 0; opacity: 0; transform-origin: 0 0; will-change: transform; z-index: 3; }
+    .fin.static .l, .fin.static .brain { opacity: 1 !important; }
+
+    /* Landing Content Section (Fades in when animation blooms) */
+    .landing-content {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      pointer-events: none;
+      transition: opacity 0.8s ease 0.1s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+      margin-top: 28px;
+    }
+    .landing-content.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .landing-hero {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 0 16px;
+    }
+    .landing-tagline {
+      font-family: var(--display);
+      font-size: clamp(20px, 3.2vw, 28px);
+      font-weight: 700;
+      color: var(--cortia-ink);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .landing-sub {
+      font-size: clamp(14px, 1.8vw, 15px);
+      color: var(--cortia-ink-subtle);
+      max-width: 620px;
+      line-height: 1.5;
+      margin: 0 auto;
+    }
+
+    /* Dual Workspace Action Cards */
+    .landing-portals {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 0 12px;
+      margin-bottom: 32px;
+    }
+
+    .portal-card {
+      background: var(--surface-white);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px 22px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(60,64,67,0.08), 0 1px 2px rgba(60,64,67,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+    .portal-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(60,64,67,0.12), 0 2px 6px rgba(60,64,67,0.08);
+      border-color: #bdc1c6;
+    }
+    .portal-card#portal-mri:hover {
+      border-color: var(--cortia-blue);
+    }
+    .portal-card#portal-eeg:hover {
+      border-color: var(--cortia-crimson);
+    }
+
+    .portal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .portal-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mri-icon {
+      background: #E8F0FE;
+      color: var(--cortia-blue);
+    }
+    .eeg-icon {
+      background: #FCE8E6;
+      color: var(--cortia-crimson);
+    }
+
+    .portal-badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: #E8F0FE;
+      color: var(--cortia-blue);
+    }
+    .eeg-badge {
+      background: #FCE8E6;
+      color: var(--cortia-crimson);
+    }
+
+    .portal-title {
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cortia-ink);
+      letter-spacing: -0.2px;
+      margin-bottom: 6px;
+    }
+    .portal-desc {
+      font-size: 13px;
+      color: var(--cortia-ink-subtle);
+      line-height: 1.45;
+      flex-grow: 1;
+    }
+
+    .portal-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .portal-card#portal-mri .portal-cta { color: var(--cortia-blue); }
+    .portal-card#portal-eeg .portal-cta { color: var(--cortia-crimson); }
+
+    /* Footer Strip */
+    .landing-footer {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 12px;
+      color: var(--cortia-ink-subtle);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-pill .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #188038;
+      box-shadow: 0 0 0 2px rgba(24,128,56,0.2);
+    }
+
+    .landing-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .text-link {
+      color: var(--cortia-ink-subtle);
+      text-decoration: none;
+      background: none;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 0;
+      transition: color 0.15s ease;
+    }
+    .text-link:hover {
+      color: var(--cortia-ink);
+      text-decoration: underline;
+    }
+
+    /* Replay Button Hidden Native */
+    .replay { position: fixed; inset: 0; border: 0; background: none; cursor: pointer; opacity: 0; z-index: -1; }
+
+    @media (max-width: 720px) {
+      .landing-portals { grid-template-columns: 1fr; }
+      .lockup { transform: translateX(8%); }
+      .landing-footer { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Controls -->
+  <div class="top-nav">
+    <button id="skip-intro" class="skip-btn" type="button">
+      <span>Skip Intro</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+        <polyline points="13 17 18 12 13 7"></polyline>
+        <polyline points="6 17 11 12 6 7"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <div class="landing-wrapper">
+
+    <!-- Stage: Video Film Reveal -->
+    <main class="stage" aria-busy="true" id="stage">
+      <div class="lockup" role="img" aria-label="Cortia is loading">
+        <div class="film">
+          <img src="cortia-poster.jpg" alt="" decoding="async">
+          <video id="v" muted playsinline preload="auto" disablepictureinpicture>
+            <source src="cortia-reveal.mp4" type="video/mp4">
+            <source src="cortia-reveal.webm" type="video/webm">
+          </video>
+        </div>
+        <i id="mark" hidden></i>
+      </div>
+      <div class="rule" id="rule"><i id="bar"></i></div>
+    </main>
+
+    <!-- Final Blooming Logo Lockup -->
+    <div class="final" id="final">
+      <div class="fin" id="fin" role="img" aria-label="Cortia">
+        <img class="l" data-l="C" src="f_C.webp" alt="" decoding="async" draggable="false" style="left:0.758%;top:16.618%;width:16.818%;height:68.513%">
+        <img class="l" data-l="R" src="f_R.webp" alt="" decoding="async" draggable="false" style="left:42.576%;top:17.784%;width:15.682%;height:66.181%">
+        <img class="l" data-l="T" src="f_T.webp" alt="" decoding="async" draggable="false" style="left:58.333%;top:17.784%;width:14.621%;height:66.181%">
+        <img class="l" data-l="I" src="f_I.webp" alt="" decoding="async" draggable="false" style="left:74.394%;top:17.784%;width:4.394%;height:66.181%">
+        <img class="l" data-l="A" src="f_A.webp" alt="" decoding="async" draggable="false" style="left:80.0%;top:17.784%;width:19.318%;height:66.181%">
+        <img class="brain" id="brain" src="final-brain.webp" alt="" decoding="async" draggable="false">
+        <img class="flier" id="flier" src="cortia-brain.webp" alt="" decoding="async" draggable="false">
+      </div>
+    </div>
+
+    <!-- Landing Content: Revealed Once Cortia Blooms -->
+    <section class="landing-content" id="landing-content" aria-label="Cortia Workspaces">
+      <div class="landing-hero">
+        <h1 class="landing-tagline">Neural Intelligence &amp; Clinical Workstation</h1>
+        <p class="landing-sub">Multimodal research platform integrating deep learning MRI brain tumor classification and real-time EEG biopotential telemetry.</p>
+      </div>
+
+      <div class="landing-portals">
+        <!-- MRI Workspace Card -->
+        <a href="/" class="portal-card" id="portal-mri">
+          <div class="portal-header">
+            <div class="portal-icon mri-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 3a9 9 0 0 0 0 18M12 3v18M3 12h18" />
+              </svg>
+            </div>
+            <span class="portal-badge">Test Acc 95.3%</span>
+          </div>
+          <div>
+            <h2 class="portal-title">MRI Diagnostic Workstation</h2>
+            <p class="portal-desc">Automated 4-class brain tumor classification with MobileNetV2, Grad-CAM interpretability heatmaps, and PACS-standard PDF reporting.</p>
+          </div>
+          <span class="portal-cta">Launch MRI Workspace &rarr;</span>
+        </a>
+
+        <!-- EEG Workspace Card -->
+        <a href="/eeg" class="portal-card" id="portal-eeg">
+          <div class="portal-header">
+            <div class="portal-icon eeg-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                <path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4" />
+              </svg>
+            </div>
+            <span class="portal-badge eeg-badge">250 Hz Stream</span>
+          </div>
+          <div>
+            <h2 class="portal-title">EEG Signal Intelligence</h2>
+            <p class="portal-desc">Single-channel biopotential acquisition, 3-state heuristic quality assurance, Welch PSD spectral bands, and research model registry.</p>
+          </div>
+          <span class="portal-cta">Launch EEG Workspace &rarr;</span>
+        </a>
+      </div>
+
+      <!-- Footer Info -->
+      <footer class="landing-footer">
+        <div class="status-pill">
+          <span class="dot"></span>
+          <span>Core PACS Rest Engine &bull; Candidate Model Active &bull; Single-Channel Telemetry v2.5</span>
+        </div>
+        <div class="landing-links">
+          <a href="/docs" target="_blank" class="text-link">API Reference</a>
+          <button id="replay-btn" class="text-link" type="button">Replay Intro</button>
+        </div>
+      </footer>
+    </section>
+
+  </div>
+
+  <button class="replay" id="replay" aria-label="Replay intro" hidden></button>
+
+  <script>
+  (function(){
+    var v = document.getElementById('v'),
+        bar = document.getElementById('bar'),
+        rule = document.getElementById('rule'),
+        stage = document.getElementById('stage'),
+        replay = document.getElementById('replay'),
+        replayBtn = document.getElementById('replay-btn'),
+        skipBtn = document.getElementById('skip-intro'),
+        mark = document.getElementById('mark'),
+        lockup = document.querySelector('.lockup'),
+        fin = document.getElementById('fin'),
+        brain = document.getElementById('brain'),
+        flier = document.getElementById('flier'),
+        landingContent = document.getElementById('landing-content');
+
+    var timers = [], reduceMotion = false;
+    var REVEAL_DONE = 4.0;
+    var pageReady = document.readyState === 'complete', ended = false, finished = false, shown = 0;
+
+    window.addEventListener('load', function(){ pageReady = true; tick(); });
+
+    function set(p){
+      shown = Math.max(shown, p);
+      if (bar) bar.style.transform = 'scaleX(' + shown + ')';
+    }
+
+    function finish(){
+      if (finished) return;
+      finished = true;
+      if (rule) rule.classList.remove('wait');
+      set(1);
+      stage.setAttribute('aria-busy', 'false');
+      timers.push(setTimeout(function(){ if (rule) rule.classList.add('done'); }, 500));
+      timers.push(setTimeout(function(){ minimise(reduceMotion ? 'fade' : undefined); }, reduceMotion ? 400 : 60));
+      window.dispatchEvent(new CustomEvent('cortia:loaded'));
+    }
+
+    var BLOOM = [['R',0,1],['C',70,-1],['T',150,1],['I',230,1],['A',310,1]];
+    var EASE_FLY = 'cubic-bezier(.76,0,.24,1)', EASE_BLOOM = 'cubic-bezier(.16,1,.3,1)';
+    var pieces = [].slice.call(document.querySelectorAll('#fin .l'));
+    function byName(n){ return pieces.filter(function(p){ return p.getAttribute('data-l') === n; })[0]; }
+
+    function revealLanding(){
+      document.body.classList.add('ready');
+      if (stage) stage.style.display = 'none';
+      if (landingContent) landingContent.classList.add('visible');
+      if (skipBtn) skipBtn.style.opacity = '0';
+      if (replay) replay.hidden = false;
+    }
+
+    function minimise(mode){
+      if (mode === true) {
+        lockup.classList.add('gone');
+        fin.classList.add('static');
+        revealLanding();
+        window.dispatchEvent(new CustomEvent('cortia:minimised'));
+        return;
+      }
+      if (mode === 'fade') {
+        lockup.classList.add('gone');
+        pieces.concat([brain]).forEach(function(e){
+          e.animate([{opacity:0},{opacity:1}], {duration: 1100, delay: 450, easing: 'ease-in-out', fill: 'both'});
+        });
+        timers.push(setTimeout(function(){
+          revealLanding();
+          window.dispatchEvent(new CustomEvent('cortia:minimised'));
+        }, 1700));
+        return;
+      }
+
+      var lk = lockup.getBoundingClientRect();
+      var sx = lk.left + lk.width * 0.1078125,
+          sy = lk.top + lk.height * 0.0907407,
+          sw = lk.width * 0.5125;
+      flier.style.opacity = '1';
+      var r = flier.getBoundingClientRect(),
+          sc = sw / Math.max(r.width, 1),
+          dx = sx - r.left,
+          dy = sy - r.top,
+          T = 2400,
+          D = 120;
+
+      lockup.classList.add('gone');
+      var a = flier.animate([
+        {transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + sc + ')'},
+        {transform: 'translate(0,0) scale(1)'}
+      ], {duration: T, delay: D, easing: EASE_FLY, fill: 'both'});
+
+      flier.animate([{opacity:1}, {opacity:1, offset:0.8}, {opacity:0}], {duration: T + 420, delay: D, fill: 'both'});
+      brain.animate([{opacity:0}, {opacity:1}], {duration: 520, delay: D + T - 260, easing: 'ease-out', fill: 'both'});
+      brain.animate([{transform: 'scale(1)'}, {transform: 'scale(1.05)', offset: 0.4}, {transform: 'scale(1)'}], {duration: 1100, delay: D + T - 160, easing: 'ease-in-out', fill: 'both'});
+
+      var W = fin.getBoundingClientRect().width;
+      BLOOM.forEach(function(b){
+        var p = byName(b[0]), d = b[2], shift = d * W * 0.13;
+        if (!p) return;
+        p.style.transformOrigin = (d > 0 ? '0% 50%' : '100% 50%');
+        p.animate([
+          {opacity: 0, transform: 'translateX(' + (-shift) + 'px) scale(.5)', filter: 'blur(16px)'},
+          {opacity: 0.9, filter: 'blur(3px)', offset: 0.55},
+          {opacity: 1, transform: 'translateX(0) scale(1)', filter: 'blur(0)'}
+        ], {duration: 1700, delay: D + T * 0.45 + b[1], easing: EASE_BLOOM, fill: 'both'});
+      });
+
+      timers.push(setTimeout(function(){
+        revealLanding();
+        window.dispatchEvent(new CustomEvent('cortia:minimised'));
+      }, D + T * 0.45 + 310 + 1700));
+    }
+
+    function tick(){
+      if (finished) return;
+      if (ended) {
+        if (pageReady) finish();
+        else if (rule) rule.classList.add('wait');
+      }
+    }
+
+    function frame(){
+      if (!ended && v && v.duration) {
+        set(Math.min(0.94, v.currentTime / v.duration * 0.94));
+        if (v.currentTime >= REVEAL_DONE) {
+          ended = true; set(0.94); tick();
+        }
+      }
+      if (!finished) requestAnimationFrame(frame);
+    }
+
+    if (v) {
+      v.addEventListener('ended', function(){
+        ended = true; set(0.94); if (mark) mark.classList.add('show'); tick();
+      });
+    }
+
+    function still(){
+      document.documentElement.classList.add('reduced');
+      if (mark) mark.classList.add('show');
+      ended = true; set(0.94); tick();
+    }
+
+    var reduce = /[?&#]motion=reduced/.test(location.href);
+    if (reduce) { reduceMotion = true; still(); }
+    else if (v) {
+      var p = v.play();
+      if (p && p.catch) p.catch(still);
+      requestAnimationFrame(frame);
+    }
+
+    function restartIntro(){
+      finished = false; ended = false; shown = 0; set(0);
+      document.body.classList.remove('ready');
+      if (stage) stage.style.display = 'grid';
+      if (rule) rule.classList.remove('done', 'wait');
+      if (landingContent) landingContent.classList.remove('visible');
+      if (skipBtn) skipBtn.style.opacity = '1';
+      timers.forEach(clearTimeout); timers = [];
+      [brain, flier].concat(pieces).forEach(function(e){
+        e.getAnimations().forEach(function(x){ x.cancel(); });
+        e.style.opacity = '';
+      });
+      fin.classList.remove('go', 'static');
+      lockup.classList.remove('gone');
+      if (mark) { mark.classList.remove('show'); void mark.offsetWidth; }
+      document.documentElement.classList.remove('reduced');
+      if (v) { v.currentTime = 0; v.play(); }
+      stage.setAttribute('aria-busy', 'true');
+      requestAnimationFrame(frame);
+    }
+
+    if (replay) replay.addEventListener('click', restartIntro);
+    if (replayBtn) replayBtn.addEventListener('click', restartIntro);
+
+    if (skipBtn) {
+      skipBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        timers.forEach(clearTimeout);
+        if (v) v.pause();
+        minimise(true);
+      });
+    }
+  })();
+  </script>
+</body>
+</html>

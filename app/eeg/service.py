@@ -6,7 +6,7 @@ import math
 import threading
 import time
 from .protocol import SerialParser, SampleClock
-from .signal import analyze
+from .signal import analyze, get_preprocessing_record
 from .storage import utc_now
 
 log = logging.getLogger(__name__)
@@ -68,19 +68,26 @@ class EEGService:
                 self.analysis = None
                 self.prediction = self.unavailable('Device disconnected')
 
-    def start_recording(self):
+    def start_recording(self, notes=None):
         with self.lock:
             if self.state != 'connected' or self.recording:
                 raise ValueError('Connect a source and stop any active recording first')
-            rid = self.store.start(self.source, asdict(self.config))
+            cfg_dict = {**asdict(self.config), 'preprocessing': get_preprocessing_record(self.config)}
+            rid = self.store.start(self.source, cfg_dict, notes=notes)
             self.recording = rid
             self.recording_started = time.monotonic()
             return rid
 
     def _finish_recording(self, status):
         if self.recording:
-            self.store.finish(self.recording, status)
+            rid = self.recording
             self.recording = None
+            self.store.finish(rid, status)
+            try:
+                summary = self.store.get_summary(rid)
+                self.store.update_summary(rid, summary)
+            except Exception:
+                log.exception('Could not precompute recording summary')
 
     def stop_recording(self):
         with self.lock:
@@ -92,20 +99,47 @@ class EEGService:
 
     def snapshot(self):
         with self.lock:
-            stale = self.state == 'connected' and self.last_received is not None and time.monotonic()-self.last_received > 2
+            stale = self.state == 'connected' and self.last_received is not None and time.monotonic() - self.last_received > 2
             measured = None
             if len(self.buffer) > 1:
-                duration = self.buffer[-1]['seconds']-self.buffer[0]['seconds']
-                measured = (len(self.buffer)-1)/duration if duration > 0 else None
-            return {'measured_rate_hz': measured if not stale else None, 'state': self.state, 'source': self.source, 'simulated': self.source == 'simulated',
-                    'channels': 1, 'units': 'adc_counts', 'configured_rate_hz': self.config.sample_rate,
-                    'buffer_capacity_samples': self.buffer.maxlen, 'received_samples': self.received,
-                    'buffer_evictions': self.evicted, 'malformed_lines': self.malformed,
-                    'discontinuities': self.discontinuities, 'error': self.error, 'stale': stale,
-                    'recording_id': self.recording, 'samples': list(self.buffer) if not stale else [],
-                    'analysis': self.analysis if not stale else None,
-                    'prediction': self.prediction if not stale else self.unavailable('Input stale'),
-                    'server_utc': utc_now()}
+                duration = self.buffer[-1]['seconds'] - self.buffer[0]['seconds']
+                measured = (len(self.buffer) - 1) / duration if duration > 0 else None
+
+            quality_state = 'Unknown'
+            quality_reasons = []
+            if stale:
+                quality_state = 'Insufficient quality'
+                quality_reasons = ['input_stale']
+            elif self.analysis:
+                quality_state = self.analysis.get('quality_state', 'Acceptable' if self.analysis.get('valid') else 'Insufficient quality')
+                quality_reasons = self.analysis.get('quality_reasons', [])
+            elif self.state == 'connected':
+                quality_state = 'Needs review'
+                quality_reasons = ['collecting_initial_window']
+
+            return {
+                'measured_rate_hz': measured if not stale else None,
+                'state': self.state,
+                'source': self.source,
+                'simulated': self.source == 'simulated',
+                'channels': 1,
+                'units': 'adc_counts',
+                'configured_rate_hz': self.config.sample_rate,
+                'buffer_capacity_samples': self.buffer.maxlen,
+                'received_samples': self.received,
+                'buffer_evictions': self.evicted,
+                'malformed_lines': self.malformed,
+                'discontinuities': self.discontinuities,
+                'error': self.error,
+                'stale': stale,
+                'recording_id': self.recording,
+                'quality_state': quality_state,
+                'quality_reasons': quality_reasons,
+                'samples': list(self.buffer) if not stale else [],
+                'analysis': self.analysis if not stale else None,
+                'prediction': self.prediction if not stale else self.unavailable('Input stale'),
+                'server_utc': utc_now()
+            }
 
     def _accept(self, samples, discontinuity=False):
         with self.lock:
@@ -126,10 +160,10 @@ class EEGService:
                 self.last_received = time.monotonic()
             if self.recording:
                 self.store.append(self.recording, rows)
-                if time.monotonic()-self.recording_started >= self.max_record_seconds:
+                if time.monotonic() - self.recording_started >= self.max_record_seconds:
                     self._finish_recording('duration_limit')
             data = list(self.buffer)
-        if len(data) == self.config.input_samples and time.monotonic()-getattr(self, '_last_analysis', 0) >= 1:
+        if len(data) == self.config.input_samples and time.monotonic() - getattr(self, '_last_analysis', 0) >= 1:
             self._last_analysis = time.monotonic()
             result = analyze([s['seconds'] for s in data], [s['value'] for s in data], self.config)
             result['source'] = self.source
@@ -168,11 +202,11 @@ class EEGService:
         start = time.monotonic()
         seq = 0
         while not self.stop.wait(.02):
-            target = int((time.monotonic()-start)*self.config.sample_rate)
+            target = int((time.monotonic() - start) * self.config.sample_rate)
             rows = []
             while seq < target:
-                t = seq/self.config.sample_rate
-                adc = round(512 + 30*math.sin(2*math.pi*10*t) + 8*math.sin(2*math.pi*6*t))
+                t = seq / self.config.sample_rate
+                adc = round(512 + 30 * math.sin(2 * math.pi * 10 * t) + 8 * math.sin(2 * math.pi * 6 * t))
                 rows.append((seq, t, adc))
                 seq += 1
             self._accept(rows)
@@ -193,7 +227,7 @@ class EEGService:
                     before = parser.errors
                     records = parser.feed(chunk)
                     with self.lock:
-                        self.malformed += parser.errors-before
+                        self.malformed += parser.errors - before
                     batch = []
                     for seq, micros, adc in records:
                         seconds, broken = clock.push(seq, micros)
@@ -208,7 +242,7 @@ class EEGService:
                             self.state, self.error = 'connected', None
                         self._accept(batch)
                         last_valid = time.monotonic()
-                    if time.monotonic()-last_valid > 3:
+                    if time.monotonic() - last_valid > 3:
                         raise OSError('No valid samples for three seconds')
             except (OSError, serial.SerialException):
                 failures += 1

@@ -1,47 +1,147 @@
-@import "common.css";
+/* ==========================================================================
+   Brain Health Monitor — EEG Workspace (Material Design 3)
+   ========================================================================== */
 
-/* ── EEG Workspace — Transparent Frosted Glass Styling ───────────── */
-
-.controls {
-  margin-bottom: 22px;
+/* Main EEG Workspace Layout */
+.eeg-workspace {
+  padding: 20px 24px 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.controls p,
-.card > p,
-.card-heading p {
-  font-size: 13px;
-  color: var(--text-sub);
+/* EEG Status Readout Strip */
+.eeg-status-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 
+/* Card Base */
+.eeg-card {
+  background-color: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.15s ease;
+}
+.eeg-card:hover {
+  border-color: #BDC1C6;
+}
+
+.eeg-card h2,
+.eeg-card h3 {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--md-sys-color-text-primary);
+  margin-bottom: 4px;
+}
+
+.eeg-card p {
+  font-size: 12px;
+  color: var(--md-sys-color-text-secondary);
+}
+
+.card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+/* Fields & Form Controls */
 .fields {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: flex-end;
   flex-wrap: wrap;
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-group label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--md-sys-color-text-secondary);
+}
+
+.field-group select,
+.field-group input {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--md-sys-color-outline);
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field-group select:focus,
+.field-group input:focus {
+  border-color: var(--md-sys-color-primary);
+  box-shadow: 0 0 0 1px var(--md-sys-color-primary);
+}
+
+.field-group select:disabled,
+.field-group input:disabled {
+  background-color: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-text-disabled);
+  cursor: not-allowed;
+}
+
+/* Actions Row */
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* Dedicated Action Buttons */
+#record:not(:disabled) {
+  background-color: var(--md-sys-color-error);
+  color: #FFFFFF;
+}
+#record:not(:disabled):hover {
+  background-color: var(--md-sys-color-error-hover);
+}
+
+/* Two-Column Analysis Grid */
 .analysis-grid {
   display: grid;
-  grid-template-columns: 1.7fr 1fr;
-  gap: 22px;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
 }
 
+.analysis-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Chart Canvas Container (Medical Contrast Charcoal Screen) */
 .chart {
   height: 250px;
   position: relative;
-  margin: 18px 0 10px;
-  background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
+  margin: 14px 0 10px;
+  background-color: #121316;
+  border: 1px solid var(--md-sys-color-outline);
   border-radius: var(--radius-sm);
   overflow: hidden;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 .chart.small {
-  height: 195px;
+  height: 190px;
 }
 
 canvas {
@@ -57,150 +157,231 @@ canvas {
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
+  color: #9AA0A6;
   pointer-events: none;
-  color: var(--text-muted);
 }
-
 .empty[hidden] {
   display: none;
 }
 
-.empty-inline {
-  color: var(--text-muted);
-  font-size: 13px;
-  padding: 18px 0;
+.sample-meta {
+  font-size: 12px;
+  font-family: var(--font-mono);
+  color: var(--md-sys-color-text-secondary);
+  margin-top: 6px;
 }
 
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-#record:not(:disabled) {
-  background: linear-gradient(135deg, #ff5252 0%, #dc2626 100%);
-  color: #ffffff;
-  box-shadow: 0 0 20px rgba(255, 82, 82, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
-}
-
-#record:not(:disabled):hover {
-  box-shadow: 0 0 28px rgba(255, 82, 82, 0.75);
-  transform: translateY(-1px);
-}
-
-/* Frequency Bands */
-.bands {
-  min-height: 218px;
-  padding-top: 12px;
+/* Spectral Band Power Bars */
+#bands {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 10px 0;
 }
 
 .band {
   display: grid;
-  grid-template-columns: 110px 1fr 50px;
+  grid-template-columns: 100px 1fr 48px;
   gap: 12px;
   align-items: center;
-  font-size: 12px;
-  color: var(--text-main);
+  font-size: 13px;
+  color: var(--md-sys-color-text-primary);
+  text-transform: capitalize;
 }
 
 .band progress {
   width: 100%;
-  height: 10px;
-  accent-color: var(--cyan-primary);
-  border-radius: 6px;
+  height: 8px;
+  accent-color: var(--md-sys-color-primary);
+  border-radius: var(--radius-pill);
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+  background: var(--md-sys-color-outline-variant);
+  border: none;
 }
 
 .band progress::-webkit-progress-bar {
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
+  background: var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-pill);
 }
 
 .band progress::-webkit-progress-value {
-  background: linear-gradient(90deg, #38bdf8, #7dd3fc);
-  border-radius: 6px;
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+  background: var(--md-sys-color-primary);
+  border-radius: var(--radius-pill);
 }
 
-.prediction {
-  display: block;
-  font-size: 26px;
-  font-weight: 700;
-  margin: 18px 0 8px;
-  color: var(--cyan-primary);
-  text-shadow: 0 0 20px rgba(0, 229, 255, 0.55);
+.band span:last-child {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: right;
+  color: var(--md-sys-color-text-secondary);
 }
 
-.history {
-  margin-top: 22px;
+/* Prediction Card */
+.prediction-box {
+  padding: 16px;
+  background-color: var(--md-sys-color-surface-variant);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--md-sys-color-primary);
+  margin-top: 12px;
 }
 
-.table-wrap {
-  overflow: auto;
-  margin-top: 18px;
+.prediction-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--md-sys-color-text-primary);
+  margin-bottom: 4px;
 }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
+.prediction-detail {
   font-size: 13px;
-  white-space: nowrap;
+  color: var(--md-sys-color-text-secondary);
+}
+
+/* Notice & Error Banners */
+.eeg-banner {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eeg-banner.error {
+  background-color: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+  border: 1px solid #F5C2C7;
+}
+.eeg-banner.notice {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border: 1px solid #D2E3FC;
+}
+
+/* Three-State Quality Indicators */
+.quality-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+.quality-pill.quality-acceptable {
+  background-color: #E6F4EA;
+  color: #137333;
+  border: 1px solid #CEEAD6;
+}
+.quality-pill.quality-needs-review {
+  background-color: #FEF7E0;
+  color: #B06000;
+  border: 1px solid #FEEFC3;
+}
+.quality-pill.quality-insufficient {
+  background-color: #FCE8E6;
+  color: #C5221F;
+  border: 1px solid #FAD2CF;
+}
+
+/* Feature Metrics Table */
+.feature-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 6px;
+}
+.feature-table th {
   text-align: left;
+  padding: 8px 10px;
+  background-color: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-text-secondary);
+  font-weight: 500;
+  border-bottom: 1px solid var(--md-sys-color-outline);
+}
+.feature-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-text-primary);
+  font-family: var(--font-mono);
+}
+.feature-table td:first-child {
+  font-family: var(--font-sans);
+  font-weight: 500;
 }
 
-td,
-th {
-  padding: 13px 16px;
-  border-bottom: 1px solid var(--glass-border);
+/* Research Model Registry Styles */
+.registry-item {
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  background-color: var(--md-sys-color-surface-variant);
+  transition: border-color 0.15s ease;
 }
-
-th {
-  font-size: 11px;
+.registry-item:hover {
+  border-color: #BDC1C6;
+}
+.registry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.registry-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--md-sys-color-text-primary);
+}
+.registry-badge {
+  font-size: 10px;
+  font-weight: 500;
   text-transform: uppercase;
-  color: var(--cyan-primary);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background-color: #FCE8E6;
+  color: #C5221F;
+  border: 1px solid #FAD2CF;
+}
+.registry-badge.infeasible {
+  background-color: #F1F3F4;
+  color: #5F6368;
+  border: 1px solid #DADCE0;
+}
+.registry-desc {
+  font-size: 12px;
+  color: var(--md-sys-color-text-secondary);
+  margin-bottom: 6px;
+}
+.registry-meta {
+  font-size: 11px;
+  color: var(--md-sys-color-text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: #FFFFFF;
+  padding: 8px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--md-sys-color-outline-variant);
 }
 
-td {
-  color: var(--text-main);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-@media (max-width: 900px) {
+/* Responsive */
+@media (max-width: 1080px) {
+  .eeg-status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
   .analysis-grid {
     grid-template-columns: 1fr;
   }
-  .fields {
-    align-items: stretch;
-  }
-  .fields label {
-    flex: 1;
-  }
-  .card-heading {
-    flex-wrap: wrap;
-  }
 }
 
-@media (max-width: 480px) {
-  select {
-    min-width: 0;
-    width: 100%;
+@media (max-width: 768px) {
+  .eeg-workspace {
+    padding: 16px;
   }
-  .fields label {
-    flex-basis: 100%;
+  .eeg-status-grid {
+    grid-template-columns: 1fr;
   }
   .band {
-    grid-template-columns: 90px 1fr 40px;
+    grid-template-columns: 80px 1fr 40px;
   }
 }
