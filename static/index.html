@@ -33,11 +33,11 @@
 
 
 
-  <link rel="stylesheet" href="/static/css/common.css?v=20261021_rev5" />
+  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev2" />
 
 
 
-  <link rel="stylesheet" href="/static/css/style.css?v=20261021_rev5" />
+  <link rel="stylesheet" href="/static/css/style.css?v=20261025_rev2" />
 
 
 
@@ -50,11 +50,11 @@
   
 
 
-  <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev1" />
+  <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev2" />
 
 
 
-  <script defer src="/static/js/cortia.js?v=20261025_rev1"></script>
+  <script defer src="/static/js/cortia.js?v=20261025_rev2"></script>
 
 
 
@@ -66,6 +66,94 @@
 
 
 
+  <style id="mri-centered-styles">
+    /* ── Main MRI Workspace: Default Centered Hero State ── */
+    .workspace-grid:not(.has-scan) {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 32px auto 40px auto !important;
+      transition: all 0.3s ease;
+    }
+    .workspace-grid:not(.has-scan) .upload-card {
+      width: 100% !important;
+      max-width: 380px !important;
+      margin: 0 auto !important;
+      padding: 28px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 24px rgba(35, 26, 23, 0.06) !important;
+      background: var(--card, #FFFFFF) !important;
+      border: 1px solid var(--border, #DDD4CC) !important;
+    }
+    .workspace-grid:not(.has-scan) .upload-card .drop-target {
+      padding: 28px 16px !important;
+      border-radius: 12px !important;
+      background: #F3EEEA !important;
+    }
+    .workspace-grid:not(.has-scan) .upload-card .drop-icon,
+    .workspace-grid:not(.has-scan) .upload-card .upload-icon {
+      width: 38px !important;
+      height: 38px !important;
+      max-width: 38px !important;
+      max-height: 38px !important;
+      color: var(--cortia-red, #C94040) !important;
+      margin-bottom: 6px !important;
+    }
+    .workspace-grid:not(.has-scan) .viewports-card {
+      display: none !important;
+    }
+    .dashboard-container:not(.has-scan) .details-grid,
+    .dashboard-container:not(.has-scan) .crosshair-wide-card {
+      display: none !important;
+    }
+
+    /* ── Active State: Revealed ONLY after an image is uploaded ── */
+    .workspace-grid.has-scan {
+      display: grid !important;
+      grid-template-columns: 280px 1fr !important;
+      gap: 20px !important;
+      align-items: stretch !important;
+      margin: 0 0 24px 0 !important;
+    }
+    .workspace-grid.has-scan .upload-card {
+      width: 280px !important;
+      max-width: 280px !important;
+      margin: 0 !important;
+      padding: 20px !important;
+      border-radius: 12px !important;
+    }
+    .workspace-grid.has-scan .upload-card .drop-target {
+      padding: 20px 14px !important;
+    }
+    .workspace-grid.has-scan .viewports-card {
+      display: flex !important;
+      flex-direction: column !important;
+      animation: fadeInWorkspace 0.35s ease forwards;
+    }
+    .dashboard-container.has-scan .details-grid {
+      display: grid !important;
+      animation: fadeInWorkspace 0.35s ease forwards;
+    }
+    .dashboard-container.has-scan .crosshair-wide-card {
+      display: block !important;
+      animation: fadeInWorkspace 0.35s ease forwards;
+    }
+    @keyframes fadeInWorkspace {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 1024px) {
+      .workspace-grid.has-scan {
+        grid-template-columns: 1fr !important;
+      }
+      .workspace-grid.has-scan .upload-card {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+  </style>
 </head>
 
 
@@ -638,7 +726,7 @@
 
 
 
-          <div class="card-section viewports-card">
+          <div class="card-section viewports-card" style="display: none;">
 
 
 
@@ -1054,7 +1142,7 @@
 
 
 
-        <section class="details-grid" aria-label="Analysis Details">
+        <section class="details-grid" aria-label="Analysis Details" style="display: none;">
 
 
 
@@ -1382,7 +1470,7 @@
 
 
 
-        <section class="card-section crosshair-wide-card" aria-label="Crosshair Saliency Inspector">
+        <section class="card-section crosshair-wide-card" aria-label="Crosshair Saliency Inspector" style="display: none;">
 
 
 
@@ -1866,7 +1954,7 @@
 
 
 
-  <script src="/static/js/app.js?v=20261021_rev5"></script>
+  <script src="/static/js/app.js?v=20261025_rev2"></script>
 
 
 

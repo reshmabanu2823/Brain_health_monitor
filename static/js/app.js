@@ -133,6 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const dashboardContainer = document.querySelector('.dashboard-container');
     if (dashboardContainer) dashboardContainer.classList.add('has-scan');
 
+    const viewportsCard = document.querySelector('.viewports-card');
+    if (viewportsCard) viewportsCard.style.display = 'flex';
+    const detailsGrid = document.querySelector('.details-grid');
+    if (detailsGrid) detailsGrid.style.display = 'grid';
+    const crosshairCard = document.querySelector('.crosshair-wide-card');
+    if (crosshairCard) crosshairCard.style.display = 'block';
+
     // Render Acquisition Metadata
     metaSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
     metaType.textContent = isDcm ? 'DICOM (Medical Pixel Stream)' : (file.type || 'RGB (8-bit)');
@@ -651,6 +658,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (workspaceGrid) workspaceGrid.classList.remove('has-scan');
     const dashboardContainer = document.querySelector('.dashboard-container');
     if (dashboardContainer) dashboardContainer.classList.remove('has-scan');
+
+    const viewportsCard = document.querySelector('.viewports-card');
+    if (viewportsCard) viewportsCard.style.display = 'none';
+    const detailsGrid = document.querySelector('.details-grid');
+    if (detailsGrid) detailsGrid.style.display = 'none';
+    const crosshairCard = document.querySelector('.crosshair-wide-card');
+    if (crosshairCard) crosshairCard.style.display = 'none';
 
     resetMeters();
     resetRoiMetrics();
