@@ -203,12 +203,21 @@
       <!-- Header -->
 
       <header class="neuro-header" id="cortia-topbar">
-        <div class="header-meta">
-          <div class="brand-title">
-            <span class="topbar-title-text" id="topbar-title">CORTIA AI</span>
-            <span class="brand-badge" id="topbar-badge">Grounded Assistant</span>
+        <div class="header-left">
+          <button type="button" class="sidebar-toggle-btn" id="cortia-sidebar-toggle" aria-label="Toggle navigation menu" title="Toggle Navigation Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+          <div class="header-meta">
+            <div class="brand-title">
+              <span class="topbar-title-text" id="topbar-title">CORTIA AI</span>
+              <span class="brand-badge" id="topbar-badge">Grounded Assistant</span>
+            </div>
+            <span class="brand-subtitle" id="topbar-subtitle">Grounded in scientific literature, verified application state, and real telemetry records</span>
           </div>
-          <span class="brand-subtitle" id="topbar-subtitle">Grounded in scientific literature, verified application state, and real telemetry records</span>
         </div>
         <div class="header-actions-right">
           <a href="/chats" target="_blank" class="btn-top-history btn-top-chat-history" id="btn-top-chats" title="Open Consultation Chat History in a new page">
@@ -394,6 +403,7 @@
       });
     })();
   </script>
+  <script defer src="/static/js/cortia-sidebar.js?v=20261026_rev1"></script>
 </body>
 
 </html>
