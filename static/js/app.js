@@ -676,4 +676,4 @@ document.addEventListener('DOMContentLoaded', () => {
   loadHistory();
 });
 
-fetch('/api/health').then(r => r.json()).then(data => {document.getElementById('engine-status').textContent = data.model_loaded ? 'MRI ENGINE LOADED' : 'MRI ENGINE UNAVAILABLE';}).catch(() => {document.getElementById('engine-status').textContent = 'BACKEND UNAVAILABLE';});
+fetch('/api/health').then(r => r.json()).then(data => { const el = document.getElementById('engine-status'); if (el) el.textContent = data.model_loaded ? 'MRI ENGINE LOADED' : 'MRI ENGINE UNAVAILABLE'; }).catch(() => { const el = document.getElementById('engine-status'); if (el) el.textContent = 'BACKEND UNAVAILABLE'; });
