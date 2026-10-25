@@ -285,6 +285,12 @@ async def generate_pdf(request: PDFReportRequest):
 app.mount('/static', StaticFiles(directory=STATIC_DIR), name='static')
 
 
+@app.get('/cortia')
+@app.get('/landing')
+def cortia_landing():
+    return FileResponse(os.path.join(STATIC_DIR, 'cortia', 'index.html'))
+
+
 @app.get('/eeg')
 def eeg_workspace():
     return FileResponse(os.path.join(STATIC_DIR, 'eeg.html'))
