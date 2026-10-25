@@ -362,6 +362,12 @@ def eeg_workspace():
     return FileResponse(os.path.join(STATIC_DIR, 'eeg.html'))
 
 
+@app.get('/history')
+@app.get('/audit')
+def history_workspace():
+    return FileResponse(os.path.join(STATIC_DIR, 'history.html'))
+
+
 @app.get('/')
 def read_root():
     return FileResponse(os.path.join(STATIC_DIR, 'index.html'))

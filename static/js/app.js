@@ -484,6 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Load Audit Log Table ──────────────────────────────────────────
   async function loadHistory() {
+    if (!historyTbody) return;
     try {
       const res = await fetch('/api/scans');
       const data = await res.json();

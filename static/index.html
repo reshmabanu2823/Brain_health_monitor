@@ -33,11 +33,11 @@
 
 
 
-  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev3" />
+  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev4" />
 
 
 
-  <link rel="stylesheet" href="/static/css/style.css?v=20261025_rev3" />
+  <link rel="stylesheet" href="/static/css/style.css?v=20261025_rev4" />
 
 
 
@@ -50,11 +50,11 @@
   
 
 
-  <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev3" />
+  <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev4" />
 
 
 
-  <script defer src="/static/js/cortia.js?v=20261025_rev3"></script>
+  <script defer src="/static/js/cortia.js?v=20261025_rev4"></script>
 
 
 
@@ -153,6 +153,38 @@
         max-width: 100% !important;
       }
     }
+  
+    .btn-top-history {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      padding: 9px 16px !important;
+      background: var(--card, #FFFFFF) !important;
+      border: 1px solid var(--border, #DDD4CC) !important;
+      border-radius: 10px !important;
+      color: var(--ink, #1C1917) !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      text-decoration: none !important;
+      box-shadow: 0 1px 4px rgba(35, 26, 23, 0.05) !important;
+      transition: all 0.2s ease !important;
+      cursor: pointer !important;
+    }
+    .btn-top-history svg {
+      color: var(--cortia-red, #C94040) !important;
+      transition: transform 0.2s ease !important;
+    }
+    .btn-top-history:hover {
+      border-color: var(--cortia-red, #C94040) !important;
+      color: var(--cortia-red, #C94040) !important;
+      background: var(--blush, #F0DDD8) !important;
+      box-shadow: 0 3px 10px rgba(201, 64, 64, 0.15) !important;
+      transform: translateY(-1px) !important;
+    }
+    .btn-top-history:hover svg {
+      transform: rotate(-20deg) !important;
+    }
+
   </style>
 </head>
 
@@ -415,6 +447,7 @@
           <a href="/" class="btn-ghost" title="MRI">MRI</a>
           <a href="/eeg" class="btn-ghost" title="EEG">EEG</a>
           <a href="/insights" class="btn-ghost" title="Insights">Insights</a>
+          <a href="/history" target="_blank" class="btn-ghost" title="Scan History">History</a>
           <a href="/ai" class="btn-primary" id="topbar-primary-btn" title="Ask CORTIA AI">✦ Ask CORTIA AI</a>
         </div>
       </header>
@@ -425,22 +458,21 @@
 
 
 
-      <!-- Section A: Page Heading -->
-
-
-
-      <section class="page-title-section">
-
-
-
-        <h1 class="page-title">MRI Analysis Dashboard</h1>
-
-
-
-        <p class="page-subtitle">AI-powered brain tumor classification for research purposes</p>
-
-
-
+      <!-- Section A: Page Heading with Top-Right History Button -->
+      <section class="page-title-section" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+        <div>
+          <h1 class="page-title">MRI Analysis Dashboard</h1>
+          <p class="page-subtitle">AI-powered brain tumor classification for research purposes</p>
+        </div>
+        <div>
+          <a href="/history" target="_blank" class="btn-top-history" id="btn-top-history" title="Open Scan Audit History in a new page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Scan Audit History &rarr;
+          </a>
+        </div>
       </section>
 
 
@@ -1526,131 +1558,7 @@
 
 
 
-        <!-- Section E: Recent Scan Audit Log -->
-
-
-
-        <section class="card-section audit-card" aria-label="Recent Scan Audit Log">
-
-
-
-          <div class="table-header">
-
-
-
-            <div class="table-header-title">
-
-
-
-              <span>Recent Scan Audit Log</span>
-
-
-
-              <span class="brand-badge" style="background-color: var(--md-sys-color-surface-variant); color: var(--md-sys-color-text-secondary);">Session History</span>
-
-
-
-            </div>
-
-
-
-            <div style="display: flex; gap: 8px;">
-
-
-
-              <button class="btn-pacs-sm" id="btn-refresh-history">Refresh Log</button>
-
-
-
-              <button class="btn-pacs-sm" id="btn-clear-history" style="color: #D93025;">Clear Audit</button>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-
-          <div class="table-scroll-container">
-
-
-
-            <table class="pacs-table">
-
-
-
-              <thead>
-
-
-
-                <tr>
-
-
-
-                  <th scope="col">TIMESTAMP</th>
-
-
-
-                  <th scope="col">FILE IDENTIFIER</th>
-
-
-
-                  <th scope="col">CLASSIFICATION FINDING</th>
-
-
-
-                  <th scope="col">CONFIDENCE INDEX</th>
-
-
-
-                  <th scope="col">DIAGNOSTIC FLAG</th>
-
-
-
-                </tr>
-
-
-
-              </thead>
-
-
-
-              <tbody id="history-tbody">
-
-
-
-                <tr>
-
-
-
-                  <td colspan="5" class="table-empty">No scan log entries recorded in session audit log.</td>
-
-
-
-                </tr>
-
-
-
-              </tbody>
-
-
-
-            </table>
-
-
-
-          </div>
-
-
-
-        </section>
+        
 
 
 
@@ -1918,7 +1826,7 @@
 
 
 
-  <script src="/static/js/app.js?v=20261025_rev3"></script>
+  <script src="/static/js/app.js?v=20261025_rev4"></script>
 
 
 
