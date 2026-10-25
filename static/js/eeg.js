@@ -164,7 +164,7 @@
 
   function render(s) {
     state = s; online = true;
-    $('backend').textContent = 'Backend connected';
+    if ($('backend')) $('backend').textContent = 'Backend connected';
     $('connection').textContent = s.stale ? 'Input stale' : s.state;
     $('source-badge').textContent = s.simulated ? 'SIMULATED · DEMO' : s.source === 'serial' ? 'USB serial · real input' : 'No source';
     $('notice').classList.toggle('demo', s.simulated);
@@ -312,7 +312,7 @@
     try {
       render(await api('/api/eeg/live'));
     } catch (e) {
-      online = false; $('backend').textContent = 'Backend unavailable'; $('connection').textContent = 'Unavailable';
+      online = false; if ($('backend')) $('backend').textContent = 'Backend unavailable'; $('connection').textContent = 'Unavailable';
       $('prediction').textContent = 'No prediction'; $('prediction-detail').textContent = 'Backend unavailable; live data cleared.';
       const qPill = $('quality-pill');
       qPill.textContent = 'Unavailable';
