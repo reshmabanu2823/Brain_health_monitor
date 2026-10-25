@@ -7,6 +7,7 @@ from .knowledge import KnowledgeRetriever
 from .provider import get_llm_provider
 from .schemas import AnalysisReference, ChatMessage, ChatRequest, ChatResponse, Citation
 from .storage import ConversationStore
+import database as cortia_db
 from .tools import (
     get_eeg_hardware_status,
     get_eeg_session_summary,
@@ -46,6 +47,19 @@ class CortiaAIService:
 
         # Save user message
         self.store.add_message(conversation_id=conv_id, role="user", content=req.message)
+        try:
+            conn = cortia_db.get_connection()
+            row = conn.execute("SELECT id FROM ai_conversations WHERE id = ?", (conv_id,)).fetchone()
+            if not row:
+                conn.execute(
+                    "INSERT INTO ai_conversations (id, created_at, updated_at, title, provider) VALUES (?,?,?,?,?)",
+                    (conv_id, cortia_db.now_utc(), cortia_db.now_utc(), req.message[:50], "local")
+                )
+                conn.commit()
+            conn.close()
+            cortia_db.insert_message(conv_id, "user", req.message)
+        except Exception as db_exc:
+            log.warning(f"Failed to sync user message to cortia_db: {db_exc}")
 
         # 1. Retrieve verified scientific citations
         citations: List[Citation] = []
@@ -171,6 +185,11 @@ class CortiaAIService:
             references=references,
             simulated_warning=simulated_warning,
         )
+        try:
+            cit_titles = [c.title for c in citations] if citations else []
+            cortia_db.insert_message(conv_id, "assistant", answer_text, cit_titles)
+        except Exception as db_exc:
+            log.warning(f"Failed to sync assistant message to cortia_db: {db_exc}")
 
         # 6. Build suggested follow-ups
         followups = []

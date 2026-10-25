@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
+import database as cortia_db
 from .schemas import CapabilitiesResponse, ChatRequest, ChatResponse, ConversationSummary
 from .service import CortiaAIService
 
@@ -32,12 +33,30 @@ def chat_with_assistant(req: ChatRequest, service: CortiaAIService = Depends(get
         raise HTTPException(status_code=500, detail=f"Assistant processing failed: {str(exc)}") from exc
 
 
+@router.post("/conversations")
+def new_conversation(provider: str = "local"):
+    conv_id = cortia_db.create_conversation(provider=provider)
+    return {"conversation_id": conv_id}
+
+
 @router.get("/conversations", response_model=List[ConversationSummary])
 def list_conversations(
     limit: int = Query(30, ge=1, le=100),
     service: CortiaAIService = Depends(get_ai_service)
 ):
     items = service.store.list_conversations(limit=limit)
+    if not items:
+        db_items = cortia_db.get_conversations(limit=limit)
+        return [
+            ConversationSummary(
+                id=item["id"],
+                title=item["title"],
+                created_at=item["created_at"],
+                updated_at=item["updated_at"],
+                message_count=0,
+            )
+            for item in db_items
+        ]
     return [
         ConversationSummary(
             id=item["id"],
@@ -54,14 +73,44 @@ def list_conversations(
 def get_conversation_history(conversation_id: str, service: CortiaAIService = Depends(get_ai_service)):
     conv = service.store.get_conversation(conversation_id)
     if not conv:
-        raise HTTPException(status_code=404, detail="Conversation not found.")
+        # Check database.py
+        messages = cortia_db.get_messages(conversation_id)
+        if not messages:
+            raise HTTPException(status_code=404, detail="Conversation not found.")
+        return {"id": conversation_id, "messages": messages}
     return conv
+
+
+@router.get("/conversations/{conv_id}/messages")
+def list_messages(conv_id: str):
+    return cortia_db.get_messages(conv_id)
+
+
+@router.post("/conversations/{conv_id}/messages")
+def add_message(conv_id: str, body: dict):
+    msg_id = cortia_db.insert_message(
+        conversation_id=conv_id,
+        role=body["role"],
+        content=body["content"],
+        citations=body.get("citations", []),
+    )
+    return {"message_id": msg_id}
 
 
 @router.delete("/conversations/{conversation_id}")
 def delete_conversation(conversation_id: str, service: CortiaAIService = Depends(get_ai_service)):
-    deleted = service.store.delete_conversation(conversation_id)
-    if not deleted:
+    deleted_store = service.store.delete_conversation(conversation_id)
+    db_existed = False
+    try:
+        conn = cortia_db.get_connection()
+        row = conn.execute("SELECT id FROM ai_conversations WHERE id = ?", (conversation_id,)).fetchone()
+        if row:
+            db_existed = True
+        conn.close()
+        cortia_db.delete_conversation(conversation_id)
+    except Exception:
+        pass
+    if not deleted_store and not db_existed:
         raise HTTPException(status_code=404, detail="Conversation not found.")
     return {"status": "deleted", "conversation_id": conversation_id}
 
