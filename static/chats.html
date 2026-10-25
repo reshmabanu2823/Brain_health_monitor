@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CORTIA — Consultation Chat History</title>
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/cortia-theme.css">
+  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev7" />
+  <link rel="stylesheet" href="/static/css/style.css?v=20261025_rev7" />
+  <style>
+    :root {
+      --cream: #F5F0EB;
+      --card: #FFFFFF;
+      --border: #DDD4CC;
+      --border-subtle: #ECE5DE;
+      --ink: #1C1917;
+      --mid: #6B5248;
+      --cortia-red: #C94040;
+      --blush: #F0DDD8;
+      --blush-light: #FBF4F1;
+    }
+
+    body {
+      background: var(--cream, #F5F0EB) !important;
+      color: var(--ink, #1C1917) !important;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    .chats-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Page Header */
+    .chats-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 8px;
+    }
+
+    .chats-title-group h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--ink, #1C1917);
+      margin: 0 0 6px 0;
+      letter-spacing: -0.01em;
+    }
+
+    .chats-title-group p {
+      font-size: 14px;
+      color: var(--mid, #6B5248);
+      margin: 0;
+    }
+
+    .chats-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      background: var(--card, #FFFFFF);
+      border: 1px solid var(--border, #DDD4CC);
+      border-radius: 9px;
+      color: var(--ink, #1C1917);
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-action-back:hover {
+      border-color: var(--cortia-red, #C94040);
+      color: var(--cortia-red, #C94040);
+      background: var(--blush, #F0DDD8);
+    }
+
+    .btn-new-chat {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      background: var(--cortia-red, #C94040);
+      border: 1px solid var(--cortia-red, #C94040);
+      border-radius: 9px;
+      color: #FFFFFF !important;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(201, 64, 64, 0.25);
+    }
+    .btn-new-chat:hover {
+      background: #B33232;
+      border-color: #B33232;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(201, 64, 64, 0.35);
+    }
+
+    .btn-clear-chats {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 14px;
+      background: #FFF5F5;
+      border: 1px solid #F0C4C4;
+      border-radius: 9px;
+      color: #C94040;
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .btn-clear-chats:hover {
+      background: #FBE6E6;
+      border-color: #C94040;
+    }
+
+    /* Stats Row */
+    .chats-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--card, #FFFFFF);
+      border: 1px solid var(--border, #DDD4CC);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 1px 4px rgba(35, 26, 23, 0.03);
+    }
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--blush-light, #FBF4F1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--cortia-red, #C94040);
+      flex-shrink: 0;
+    }
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-val {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink, #1C1917);
+      line-height: 1.2;
+    }
+    .stat-lbl {
+      font-size: 12px;
+      color: var(--mid, #6B5248);
+      font-weight: 500;
+    }
+
+    /* Search & Filter Bar */
+    .chats-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card, #FFFFFF);
+      border: 1px solid var(--border, #DDD4CC);
+      border-radius: 12px;
+      padding: 10px 16px;
+      box-shadow: 0 1px 4px rgba(35, 26, 23, 0.03);
+    }
+    .search-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-input-wrap svg {
+      color: var(--mid, #6B5248);
+      flex-shrink: 0;
+    }
+    .search-input-wrap input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--ink, #1C1917);
+      background: transparent;
+    }
+    .search-input-wrap input::placeholder {
+      color: #9E8D85;
+    }
+
+    /* Conversations List */
+    .chats-list-card {
+      background: var(--card, #FFFFFF);
+      border: 1px solid var(--border, #DDD4CC);
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 10px rgba(35, 26, 23, 0.04);
+    }
+
+    .chats-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle, #ECE5DE);
+      margin-bottom: 16px;
+    }
+    .chats-list-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink, #1C1917);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chats-count-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: var(--blush, #F0DDD8);
+      color: var(--cortia-red, #C94040);
+    }
+
+    .conv-items-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .conv-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--border-subtle, #ECE5DE);
+      border-radius: 12px;
+      background: #FFFFFF;
+      transition: all 0.18s ease;
+    }
+    .conv-row:hover {
+      border-color: #E0C8C1;
+      background: #FDFBFA;
+      box-shadow: 0 3px 12px rgba(35, 26, 23, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .conv-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 1;
+      min-width: 0;
+    }
+    .conv-bubble-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--blush, #F0DDD8);
+      color: var(--cortia-red, #C94040);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .conv-main-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .conv-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink, #1C1917);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .conv-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--mid, #6B5248);
+      flex-wrap: wrap;
+    }
+    .conv-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .conv-provider-tag {
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #F0ECE7;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--mid, #6B5248);
+    }
+
+    .conv-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn-open-conv {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--card, #FFFFFF);
+      border: 1px solid var(--border, #DDD4CC);
+      border-radius: 8px;
+      color: var(--ink, #1C1917);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-open-conv:hover {
+      background: var(--cortia-red, #C94040);
+      border-color: var(--cortia-red, #C94040);
+      color: #FFFFFF !important;
+    }
+    .btn-delete-conv {
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: #A89890;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-delete-conv:hover {
+      color: #D93025;
+      background: #FDF0EE;
+      border-color: #F8D0C9;
+    }
+
+    /* Empty state */
+    .chats-empty-state {
+      text-align: center;
+      padding: 56px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--blush, #F0DDD8);
+      color: var(--cortia-red, #C94040);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+    .chats-empty-state h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink, #1C1917);
+      margin: 0;
+    }
+    .chats-empty-state p {
+      font-size: 14px;
+      color: var(--mid, #6B5248);
+      max-width: 440px;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Toast notice */
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      background: #231A17;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body data-page="chats">
+
+  <div class="neuro-app">
+    <!-- CORTIA Dark Sidebar (#231A17) -->
+    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
+      <div class="sidebar-brand">
+        <a class="brand-logo" href="/cortia">
+          <div class="brand-icon">🧠</div>
+          <div class="brand-name">CORTIA</div>
+        </a>
+        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Workspaces</div>
+        <a class="nav-item rail-item" data-path="/" href="/" title="MRI Analysis">
+          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
+        </a>
+        <a class="nav-item rail-item" data-path="/eeg" href="/eeg" title="EEG Monitoring">
+          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
+        </a>
+        <a class="nav-item rail-item" data-path="/insights" href="/insights" title="CORTIA Insights">
+          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Assistant &amp; History</div>
+        <a class="nav-item rail-item" data-path="/ai" href="/ai" title="CORTIA AI">
+          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
+        </a>
+        <a class="nav-item rail-item active" data-path="/chats" href="/chats" title="Chat History">
+          <span class="nav-icon">💬</span> <span class="rail-label">Chat History</span>
+        </a>
+        <a class="nav-item rail-item" data-path="/history" href="/history" title="Scan Audit History">
+          <span class="nav-icon">🕒</span> <span class="rail-label">Audit History</span>
+        </a>
+        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
+          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
+        <a class="nav-item rail-item" data-path="/cortia" href="/cortia" title="Cortia Portal">
+          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer rail-footer">
+        <div class="runtime-badge">
+          <span class="runtime-dot status-indicator"></span>
+          Runtime v2.4 &bull; Active
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content Area -->
+    <main id="main" class="neuro-content">
+
+      <!-- Top Header -->
+      <header class="neuro-header" id="cortia-topbar">
+        <div class="header-meta">
+          <div class="brand-title">
+            <span class="topbar-title-text">Consultation Chat History</span>
+            <span class="brand-badge">AI Telemetry</span>
+          </div>
+          <span class="brand-subtitle">Historical consultation threads, clinical literature queries, and session transcripts</span>
+        </div>
+      </header>
+
+      <!-- Main Content Container -->
+      <div class="dashboard-container" style="padding-top: 16px;">
+        <div class="chats-container">
+
+          <!-- Header & Actions Row -->
+          <div class="chats-header-row">
+            <div class="chats-title-group">
+              <h1>AI Consultation Chats</h1>
+              <p>Explore, revisit, and manage your previous interactive Q&amp;A sessions with CORTIA AI</p>
+            </div>
+            <div class="chats-actions">
+              <a href="/" class="btn-action-back" title="Back to MRI Workspace">
+                &larr; Back to MRI
+              </a>
+              <a href="/history" class="btn-action-back" title="View Scan Audit Records">
+                🕒 Scan Audit
+              </a>
+              <a href="/ai" class="btn-new-chat" title="Start a new chat inquiry">
+                ✦ + New Chat
+              </a>
+              <button id="btn-clear-all-chats" class="btn-clear-chats" type="button" title="Delete all consultation threads">
+                Clear All History
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="chats-stats-row">
+            <div class="stat-card">
+              <div class="stat-icon">💬</div>
+              <div class="stat-info">
+                <div class="stat-val" id="stat-conv-count">0</div>
+                <div class="stat-lbl">Saved Conversations</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📑</div>
+              <div class="stat-info">
+                <div class="stat-val" id="stat-msg-count">0</div>
+                <div class="stat-lbl">Total Exchanged Messages</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">⚡</div>
+              <div class="stat-info">
+                <div class="stat-val" id="stat-provider-val">CORTIA Engine</div>
+                <div class="stat-lbl">Active Inference Provider</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="chats-search-bar">
+            <div class="search-input-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="chats-search-input" placeholder="Search consultation threads by title or question keywords..." />
+            </div>
+          </div>
+
+          <!-- Conversations List Card -->
+          <div class="chats-list-card">
+            <div class="chats-list-header">
+              <h2>
+                <span>Saved Discussions</span>
+                <span class="chats-count-badge" id="badge-conv-count">0 threads</span>
+              </h2>
+            </div>
+
+            <!-- List Container -->
+            <div class="conv-items-grid" id="conv-items-container">
+              <div style="text-align:center; padding: 32px; color: var(--mid);">Loading conversation history...</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="toast" class="toast-msg"></div>
+
+  <script>
+    let allConversations = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchConversations();
+      fetchCapabilities();
+
+      const searchInput = document.getElementById('chats-search-input');
+      searchInput.addEventListener('input', (e) => {
+        renderFiltered(e.target.value);
+      });
+
+      const clearAllBtn = document.getElementById('btn-clear-all-chats');
+      clearAllBtn.addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to clear all consultation chat history? This action cannot be undone.')) {
+          return;
+        }
+        try {
+          const res = await fetch('/api/ai/clear', { method: 'POST' });
+          if (res.ok) {
+            showToast('All conversation history cleared');
+            fetchConversations();
+          } else {
+            showToast('Failed to clear conversations');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('Error connecting to server');
+        }
+      });
+    });
+
+    async function fetchCapabilities() {
+      try {
+        const res = await fetch('/api/ai/capabilities');
+        if (res.ok) {
+          const data = await res.json();
+          const provEl = document.getElementById('stat-provider-val');
+          if (provEl && data.active_provider) {
+            provEl.textContent = data.active_provider.replace('Provider', '').replace('Engine', ' Engine');
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function fetchConversations() {
+      const container = document.getElementById('conv-items-container');
+      try {
+        const res = await fetch('/api/ai/conversations?limit=100');
+        if (!res.ok) throw new Error('API error');
+        allConversations = await res.json();
+
+        // Update stats
+        const count = allConversations.length;
+        document.getElementById('stat-conv-count').textContent = count;
+        document.getElementById('badge-conv-count').textContent = `${count} ${count === 1 ? 'thread' : 'threads'}`;
+
+        let totalMsgs = 0;
+        allConversations.forEach(c => {
+          totalMsgs += (c.message_count || 0);
+        });
+        document.getElementById('stat-msg-count').textContent = totalMsgs;
+
+        renderConversations(allConversations);
+      } catch (err) {
+        console.error('Failed to load conversations:', err);
+        container.innerHTML = `
+          <div style="text-align:center; padding: 32px; color: #D93025;">
+            Failed to load conversation history. Ensure backend server is reachable.
+          </div>
+        `;
+      }
+    }
+
+    function renderFiltered(query) {
+      const q = (query || '').toLowerCase().trim();
+      if (!q) {
+        renderConversations(allConversations);
+        return;
+      }
+      const filtered = allConversations.filter(c => {
+        return (c.title || '').toLowerCase().includes(q) || (c.id || '').toLowerCase().includes(q);
+      });
+      renderConversations(filtered);
+    }
+
+    function formatDate(isoStr) {
+      if (!isoStr) return 'Just now';
+      try {
+        const d = new Date(isoStr);
+        if (isNaN(d.getTime())) return isoStr;
+        return d.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        }) + ' • ' + d.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch {
+        return isoStr;
+      }
+    }
+
+    function renderConversations(list) {
+      const container = document.getElementById('conv-items-container');
+      container.innerHTML = '';
+
+      if (!list || list.length === 0) {
+        container.innerHTML = `
+          <div class="chats-empty-state">
+            <div class="empty-icon">💬</div>
+            <h3>No Consultation Chats Found</h3>
+            <p>Start a new conversation with CORTIA AI to analyze scans, explain biopotential telemetry, or discuss neural findings.</p>
+            <a href="/ai" class="btn-new-chat" style="margin-top: 8px;">✦ Start New Consultation</a>
+          </div>
+        `;
+        return;
+      }
+
+      list.forEach(c => {
+        const row = document.createElement('div');
+        row.className = 'conv-row';
+        const formattedTime = formatDate(c.updated_at || c.created_at);
+        const msgCount = c.message_count !== undefined ? c.message_count : 0;
+        const msgBadge = `${msgCount} ${msgCount === 1 ? 'message' : 'messages'}`;
+
+        row.innerHTML = `
+          <div class="conv-left">
+            <div class="conv-bubble-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+            <div class="conv-main-info">
+              <div class="conv-title" title="${escapeHtml(c.title || 'Inquiry')}">${escapeHtml(c.title || 'Consultation Inquiry')}</div>
+              <div class="conv-meta">
+                <span class="conv-meta-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  ${formattedTime}
+                </span>
+                <span class="conv-meta-item">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                  </svg>
+                  ${msgBadge}
+                </span>
+                <span class="conv-provider-tag">Thread #${c.id.substring(0, 10)}</span>
+              </div>
+            </div>
+          </div>
+          <div class="conv-right">
+            <a href="/ai?conv=${encodeURIComponent(c.id)}" class="btn-open-conv" title="Open and continue this chat">
+              Open Chat &rarr;
+            </a>
+            <button class="btn-delete-conv" data-id="${c.id}" title="Delete this conversation">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+        `;
+
+        row.querySelector('.btn-delete-conv').addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (confirm('Delete this conversation thread?')) {
+            await deleteConv(c.id);
+          }
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    async function deleteConv(id) {
+      try {
+        const res = await fetch(`/api/ai/conversations/${encodeURIComponent(id)}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Conversation deleted');
+          fetchConversations();
+        } else {
+          showToast('Failed to delete conversation');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Error deleting conversation');
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => {
+        t.classList.remove('show');
+      }, 2500);
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

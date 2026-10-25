@@ -368,6 +368,12 @@ def history_workspace():
     return FileResponse(os.path.join(STATIC_DIR, 'history.html'))
 
 
+@app.get('/chats')
+@app.get('/chat-history')
+def chats_workspace():
+    return FileResponse(os.path.join(STATIC_DIR, 'chats.html'))
+
+
 @app.get('/')
 def read_root():
     return FileResponse(os.path.join(STATIC_DIR, 'index.html'))

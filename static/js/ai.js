@@ -61,6 +61,14 @@ function initURLParams() {
   const params = new URLSearchParams(window.location.search);
   const type = params.get('analysis_type') || params.get('type');
   const id = params.get('analysis_id') || params.get('id');
+  const convId = params.get('conv') || params.get('conversation_id');
+
+  if (convId) {
+    activeConversationId = convId;
+    setTimeout(() => {
+      switchConversation(convId);
+    }, 200);
+  }
 
   if (type && id) {
     currentAnalysisContext.type = type;
