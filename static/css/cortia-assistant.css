@@ -1,29 +1,32 @@
-/* Floating CORTIA AI Assistant Trigger & Flyout Modal */
+/* ==========================================================================
+   CORTIA Floating Assistant & Quick Flyout Drawer
+   Brand Identity: Warm Cream (#F5F0EB), Cormorant Garamond, Coral-Red (#C94040)
+   ========================================================================== */
 
-.floating-assistant-btn {
+.floating-assistant-btn, .fab {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: var(--md-blue-primary, #1A73E8);
-  color: #FFFFFF;
-  border-radius: 28px;
+  bottom: 28px;
+  right: 28px;
+  background: var(--cortia-red, #C94040) !important;
+  color: #FFFFFF !important;
+  border-radius: 50px;
   padding: 12px 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 16px rgba(26, 115, 232, 0.35);
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(201, 64, 64, 0.35);
   cursor: pointer;
   z-index: 999;
-  font-size: 0.875rem;
+  font-size: 13px;
   font-weight: 600;
+  border: none;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.floating-assistant-btn:hover {
-  background: #1557B0;
-  box-shadow: 0 6px 20px rgba(26, 115, 232, 0.45);
+.floating-assistant-btn:hover, .fab:hover {
+  background: var(--cortia-red-dk, #A83232) !important;
   transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(201, 64, 64, 0.45);
 }
 
 /* Quick Drawer Modal */
@@ -33,7 +36,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(32, 33, 36, 0.4);
+  background: rgba(28, 25, 23, 0.45);
   backdrop-filter: blur(2px);
   z-index: 1000;
   display: none;
@@ -50,15 +53,16 @@
   position: fixed;
   top: 0;
   right: -480px;
-  width: 460px;
+  width: 440px;
   max-width: 90vw;
   height: 100vh;
-  background: #FFFFFF;
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+  background: var(--white);
+  box-shadow: -8px 0 24px rgba(28, 25, 23, 0.15);
   z-index: 1001;
   display: flex;
   flex-direction: column;
   transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-left: 1px solid var(--warm-border);
 }
 
 .cortia-drawer-panel.active {
@@ -67,50 +71,53 @@
 
 .drawer-header {
   padding: 16px 20px;
-  border-bottom: 1px solid #DADCE0;
+  border-bottom: 1px solid var(--warm-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: var(--white);
 }
 
 .drawer-title {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-family: var(--font-serif);
   font-weight: 600;
-  font-size: 1rem;
-  color: #202124;
+  font-size: 18px;
+  color: var(--warm-ink);
 }
 
 .drawer-close-btn {
   background: transparent;
   border: none;
-  font-size: 1.25rem;
+  font-size: 20px;
   cursor: pointer;
-  color: #5F6368;
+  color: var(--warm-sub);
   padding: 4px;
   border-radius: 4px;
+  line-height: 1;
 }
 
 .drawer-close-btn:hover {
-  background: #F1F3F4;
-  color: #202124;
+  background: var(--cream);
+  color: var(--warm-ink);
 }
 
 .drawer-messages-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
-  background: #F8F9FA;
+  padding: 18px;
+  background: var(--cream);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .drawer-input-bar {
-  padding: 14px 16px;
-  border-top: 1px solid #DADCE0;
-  background: #FFFFFF;
+  padding: 14px 18px;
+  border-top: 1px solid var(--warm-border);
+  background: var(--white);
   display: flex;
   gap: 8px;
 }

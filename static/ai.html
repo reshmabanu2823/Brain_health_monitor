@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CORTIA AI — Neuroscience Research Assistant</title>
@@ -15,77 +16,52 @@
   <div class="neuro-app">
 
     <!-- Navigation Sidebar -->
-    <aside class="neuro-rail" aria-label="Main Navigation">
-      <a href="/" class="rail-brand" title="Brain Health Monitor Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-        </svg>
-        <span class="rail-brand-text">CORTIA</span>
-      </a>
-
-      <nav class="rail-nav" aria-label="Workspaces">
-        <!-- Cortia Landing Portal -->
-        <a href="/cortia" class="rail-item" aria-label="Cortia landing portal" title="Cortia Landing Portal">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-          <span class="rail-label">Cortia Portal</span>
+        <!-- CORTIA Dark Sidebar (#231A17) -->
+    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
+      <div class="sidebar-brand">
+        <a class="brand-logo" href="/cortia" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+          <div class="brand-icon">🧠</div>
+          <div>
+            <div class="brand-name">CORTIA</div>
+          </div>
         </a>
+        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
+      </div>
 
-        <!-- MRI Analysis -->
-        <a href="/" class="rail-item" aria-label="MRI analysis" title="MRI Analysis">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 3a9 9 0 0 0 0 18M12 3v18M3 12h18" />
-          </svg>
-          <span class="rail-label">MRI Analysis</span>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Workspaces</div>
+        <a class="nav-item rail-item" href="/" title="MRI Analysis">
+          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
         </a>
-
-        <!-- EEG Monitoring -->
-        <a href="/eeg" class="rail-item" aria-label="EEG monitoring" title="EEG Monitoring">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4" />
-          </svg>
-          <span class="rail-label">EEG Monitoring</span>
+        <a class="nav-item rail-item" href="/eeg" title="EEG Monitoring">
+          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
         </a>
-
-        <!-- CORTIA Insights -->
-        <a href="/insights" class="rail-item" aria-label="CORTIA Insights" title="CORTIA Insights">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 2 7 12 12 22 7 12 2" />
-            <polyline points="2 17 12 22 22 17" />
-            <polyline points="2 12 12 17 22 12" />
-          </svg>
-          <span class="rail-label">CORTIA Insights</span>
+        <a class="nav-item rail-item" href="/insights" title="CORTIA Insights">
+          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
         </a>
+      </div>
 
-        <!-- CORTIA AI (Active) -->
-        <a href="/ai" class="rail-item active" aria-label="CORTIA AI" title="CORTIA AI Assistant" aria-current="page">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            <circle cx="9" cy="10" r="1" fill="currentColor" />
-            <circle cx="15" cy="10" r="1" fill="currentColor" />
-          </svg>
-          <span class="rail-label">CORTIA AI</span>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Assistant</div>
+        <a class="nav-item rail-item active" href="/ai" title="CORTIA AI">
+          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
         </a>
-
-        <!-- API Reference -->
-        <a href="/docs" class="rail-item" aria-label="API documentation" title="API Documentation" target="_blank">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
-          </svg>
-          <span class="rail-label">API Reference</span>
+        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
+          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
         </a>
-      </nav>
+      </div>
 
-      <div class="rail-footer">
-        <span class="status-indicator" title="System Operational"></span>
-        <span>CORTIA AI v2.0</span>
+      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
+        <a class="nav-item rail-item" href="/cortia" title="Cortia Portal">
+          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer rail-footer">
+        <div class="runtime-badge">
+          <span class="runtime-dot status-indicator"></span>
+          Runtime v2.4 &bull; Active
+        </div>
       </div>
     </aside>
 
@@ -96,7 +72,7 @@
       <header class="neuro-header">
         <div class="header-meta">
           <div class="brand-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#1A73E8" stroke-width="2" width="22" height="22">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C94040" stroke-width="2" width="22" height="22">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               <circle cx="9" cy="10" r="1" fill="currentColor" />
               <circle cx="15" cy="10" r="1" fill="currentColor" />

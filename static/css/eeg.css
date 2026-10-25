@@ -1,10 +1,11 @@
 /* ==========================================================================
-   Brain Health Monitor — EEG Workspace (Material Design 3)
+   CORTIA EEG Signal Intelligence Stylesheet
+   Brand Identity: Warm Cream (#F5F0EB), Cormorant Garamond, Coral-Red (#C94040)
    ========================================================================== */
 
 /* Main EEG Workspace Layout */
 .eeg-workspace {
-  padding: 20px 24px 32px 24px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -14,33 +15,36 @@
 .eeg-status-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .eeg-status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Card Base */
 .eeg-card {
-  background-color: var(--md-sys-color-surface);
-  border: 1px solid var(--md-sys-color-outline);
-  border-radius: var(--radius-md);
-  padding: 18px 20px;
-  box-shadow: var(--shadow-card);
-  transition: border-color 0.15s ease;
-}
-.eeg-card:hover {
-  border-color: #BDC1C6;
+  background: var(--white);
+  border: 1px solid var(--warm-border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
 }
 
 .eeg-card h2,
 .eeg-card h3 {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--md-sys-color-text-primary);
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--warm-ink);
   margin-bottom: 4px;
 }
 
 .eeg-card p {
   font-size: 12px;
-  color: var(--md-sys-color-text-secondary);
+  color: var(--warm-sub);
 }
 
 .card-heading {
@@ -48,6 +52,8 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 /* Fields & Form Controls */
@@ -66,85 +72,52 @@
 }
 
 .field-group label {
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--md-sys-color-text-secondary);
+  letter-spacing: 0.8px;
+  color: var(--warm-sub);
 }
 
 .field-group select,
 .field-group input {
   height: 38px;
   padding: 0 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--md-sys-color-outline);
-  background-color: var(--md-sys-color-surface);
-  color: var(--md-sys-color-text-primary);
+  border-radius: 8px;
+  border: 1px solid var(--warm-border);
+  background: var(--cream);
+  color: var(--warm-ink);
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 12px;
   outline: none;
   transition: border-color 0.15s ease;
 }
 
 .field-group select:focus,
 .field-group input:focus {
-  border-color: var(--md-sys-color-primary);
-  box-shadow: 0 0 0 1px var(--md-sys-color-primary);
+  border-color: var(--cortia-red);
 }
 
 .field-group select:disabled,
 .field-group input:disabled {
-  background-color: var(--md-sys-color-surface-variant);
-  color: var(--md-sys-color-text-disabled);
+  background: var(--cream-deep);
+  color: var(--warm-sub);
   cursor: not-allowed;
 }
 
-/* Actions Row */
-.actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-/* Dedicated Action Buttons */
-#record:not(:disabled) {
-  background-color: var(--md-sys-color-error);
-  color: #FFFFFF;
-}
-#record:not(:disabled):hover {
-  background-color: var(--md-sys-color-error-hover);
-}
-
-/* Two-Column Analysis Grid */
-.analysis-grid {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 20px;
-}
-
-.analysis-column {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Chart Canvas Container (Medical Contrast Charcoal Screen) */
-.chart {
-  height: 250px;
+/* Telemetry Waveform Visualizer (Clinical Dark #1A1412 Stage) */
+.scope-wrap {
   position: relative;
-  margin: 14px 0 10px;
-  background-color: #121316;
-  border: 1px solid var(--md-sys-color-outline);
-  border-radius: var(--radius-sm);
+  width: 100%;
+  height: 240px;
+  background: #1A1412;
+  border-radius: 8px;
   overflow: hidden;
+  border: 1px solid #2A1F1C;
+  margin-top: 12px;
 }
 
-.chart.small {
-  height: 190px;
-}
-
-canvas {
+canvas#wave, canvas#wave-filtered {
   width: 100%;
   height: 100%;
   display: block;
@@ -157,18 +130,19 @@ canvas {
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 13px;
-  color: #9AA0A6;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
   pointer-events: none;
 }
+
 .empty[hidden] {
   display: none;
 }
 
 .sample-meta {
-  font-size: 12px;
+  font-size: 11px;
   font-family: var(--font-mono);
-  color: var(--md-sys-color-text-secondary);
+  color: var(--warm-sub);
   margin-top: 6px;
 }
 
@@ -176,7 +150,7 @@ canvas {
 #bands {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding: 10px 0;
 }
 
@@ -185,203 +159,103 @@ canvas {
   grid-template-columns: 100px 1fr 48px;
   gap: 12px;
   align-items: center;
-  font-size: 13px;
-  color: var(--md-sys-color-text-primary);
+  font-size: 12px;
+  color: var(--warm-ink);
   text-transform: capitalize;
 }
 
 .band progress {
   width: 100%;
-  height: 8px;
-  accent-color: var(--md-sys-color-primary);
-  border-radius: var(--radius-pill);
+  height: 6px;
+  accent-color: var(--cortia-red);
+  border-radius: 3px;
   overflow: hidden;
-  background: var(--md-sys-color-outline-variant);
+  background: var(--cream-deep);
   border: none;
 }
 
 .band progress::-webkit-progress-bar {
-  background: var(--md-sys-color-outline-variant);
-  border-radius: var(--radius-pill);
+  background: var(--cream-deep);
+  border-radius: 3px;
 }
 
 .band progress::-webkit-progress-value {
-  background: var(--md-sys-color-primary);
-  border-radius: var(--radius-pill);
+  background: var(--cortia-red);
+  border-radius: 3px;
 }
 
 .band span:last-child {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   text-align: right;
-  color: var(--md-sys-color-text-secondary);
+  color: var(--warm-sub);
 }
 
-/* Prediction Card */
+/* Prediction Box */
 .prediction-box {
   padding: 16px;
-  background-color: var(--md-sys-color-surface-variant);
-  border-radius: var(--radius-sm);
-  border-left: 4px solid var(--md-sys-color-primary);
+  background: var(--cream);
+  border-radius: 8px;
+  border-left: 4px solid var(--cortia-red);
   margin-top: 12px;
 }
 
 .prediction-title {
+  font-family: var(--font-serif);
   font-size: 18px;
-  font-weight: 500;
-  color: var(--md-sys-color-text-primary);
+  font-weight: 600;
+  color: var(--warm-ink);
   margin-bottom: 4px;
 }
 
 .prediction-detail {
-  font-size: 13px;
-  color: var(--md-sys-color-text-secondary);
+  font-size: 12px;
+  color: var(--warm-mid);
 }
 
 /* Notice & Error Banners */
 .eeg-banner {
   padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
+  border-radius: 8px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
+
 .eeg-banner.error {
-  background-color: var(--md-sys-color-error-container);
-  color: var(--md-sys-color-on-error-container);
-  border: 1px solid #F5C2C7;
-}
-.eeg-banner.notice {
-  background-color: var(--md-sys-color-primary-container);
-  color: var(--md-sys-color-on-primary-container);
-  border: 1px solid #D2E3FC;
+  background: var(--cortia-red-lt);
+  color: var(--cortia-red-dk);
+  border: 1px solid #E4B8B8;
 }
 
-/* Three-State Quality Indicators */
-.quality-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-}
-.quality-pill.quality-acceptable {
-  background-color: #E6F4EA;
-  color: #137333;
-  border: 1px solid #CEEAD6;
-}
-.quality-pill.quality-needs-review {
-  background-color: #FEF7E0;
-  color: #B06000;
-  border: 1px solid #FEEFC3;
-}
-.quality-pill.quality-insufficient {
-  background-color: #FCE8E6;
-  color: #C5221F;
-  border: 1px solid #FAD2CF;
+.eeg-banner.warning {
+  background: #F8EFE3;
+  color: var(--amber);
+  border: 1px solid #EEDAC0;
 }
 
-/* Feature Metrics Table */
-.feature-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-  margin-top: 6px;
-}
-.feature-table th {
-  text-align: left;
-  padding: 8px 10px;
-  background-color: var(--md-sys-color-surface-variant);
-  color: var(--md-sys-color-text-secondary);
-  font-weight: 500;
-  border-bottom: 1px solid var(--md-sys-color-outline);
-}
-.feature-table td {
-  padding: 6px 10px;
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
-  color: var(--md-sys-color-text-primary);
-  font-family: var(--font-mono);
-}
-.feature-table td:first-child {
-  font-family: var(--font-sans);
-  font-weight: 500;
+.eeg-banner.simulated {
+  background: #F8EFE3;
+  color: var(--amber);
+  border: 1px solid #EEDAC0;
 }
 
-/* Research Model Registry Styles */
-.registry-item {
-  border: 1px solid var(--md-sys-color-outline);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  background-color: var(--md-sys-color-surface-variant);
-  transition: border-color 0.15s ease;
-}
-.registry-item:hover {
-  border-color: #BDC1C6;
-}
-.registry-header {
+/* Quality Reason Chips */
+.reasons-wrap {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
 }
-.registry-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--md-sys-color-text-primary);
-}
-.registry-badge {
+
+.reason-chip {
+  display: inline-block;
+  padding: 3px 8px;
+  background: #F8EFE3;
+  color: var(--amber);
+  border-radius: 4px;
   font-size: 10px;
-  font-weight: 500;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: var(--radius-pill);
-  background-color: #FCE8E6;
-  color: #C5221F;
-  border: 1px solid #FAD2CF;
-}
-.registry-badge.infeasible {
-  background-color: #F1F3F4;
-  color: #5F6368;
-  border: 1px solid #DADCE0;
-}
-.registry-desc {
-  font-size: 12px;
-  color: var(--md-sys-color-text-secondary);
-  margin-bottom: 6px;
-}
-.registry-meta {
-  font-size: 11px;
-  color: var(--md-sys-color-text-secondary);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  background: #FFFFFF;
-  padding: 8px;
-  border-radius: var(--radius-xs);
-  border: 1px solid var(--md-sys-color-outline-variant);
-}
-
-/* Responsive */
-@media (max-width: 1080px) {
-  .eeg-status-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .analysis-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .eeg-workspace {
-    padding: 16px;
-  }
-  .eeg-status-grid {
-    grid-template-columns: 1fr;
-  }
-  .band {
-    grid-template-columns: 80px 1fr 40px;
-  }
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }

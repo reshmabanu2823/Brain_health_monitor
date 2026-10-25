@@ -1,14 +1,19 @@
-/* CORTIA Insights — Explainable AI Centre Styles (Google Material Design 3) */
+/* ==========================================================================
+   CORTIA Insights — Explainable AI Centre Styles
+   Brand Identity: Warm Cream (#F5F0EB), Cormorant Garamond, Coral-Red (#C94040)
+   ========================================================================== */
 
 .insights-tabs-nav {
   display: flex;
-  gap: 8px;
-  border-bottom: 1px solid var(--md-border);
+  gap: 4px;
+  border-bottom: 1px solid var(--warm-border);
   margin-bottom: 24px;
-  background: var(--md-card-bg);
+  background: var(--white);
   padding: 8px 16px 0 16px;
   border-radius: var(--md-radius) var(--md-radius) 0 0;
   overflow-x: auto;
+  border: 1px solid var(--warm-border);
+  border-bottom: none;
 }
 
 .insights-tab-btn {
@@ -16,26 +21,26 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  font-size: 0.875rem;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--md-text-secondary);
+  color: var(--warm-mid);
   background: transparent;
   border: none;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .insights-tab-btn:hover {
-  color: var(--md-text-primary);
-  background: var(--md-blue-surface);
-  border-radius: var(--md-radius-sm) var(--md-radius-sm) 0 0;
+  color: var(--warm-ink);
+  background: var(--cream);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 
 .insights-tab-btn.active {
-  color: var(--md-blue-primary);
-  border-bottom-color: var(--md-blue-primary);
+  color: var(--cortia-red);
+  border-bottom-color: var(--cortia-red);
   font-weight: 600;
 }
 
@@ -47,59 +52,64 @@
   display: block;
 }
 
-/* Overview Section */
+/* ── Overview Section ── */
 .insights-overview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
   margin-bottom: 24px;
 }
 
 .metric-highlight-card {
-  background: var(--md-card-bg);
-  border: 1px solid var(--md-border);
+  background: var(--white);
+  border: 1px solid var(--warm-border);
   border-radius: var(--md-radius);
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: var(--shadow-sm);
 }
 
 .metric-highlight-title {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--md-text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--warm-sub);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   margin-bottom: 8px;
+  font-family: var(--font-sans);
 }
 
 .metric-highlight-value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--md-text-primary);
-  line-height: 1.1;
+  font-family: var(--font-serif);
+  font-size: 2.25rem;
+  font-weight: 600;
+  color: var(--warm-ink);
+  line-height: 1;
   margin-bottom: 6px;
 }
 
 .metric-highlight-sub {
-  font-size: 0.8125rem;
-  color: var(--md-text-secondary);
+  font-size: 11px;
+  color: var(--warm-sub);
 }
 
 .safeguards-box {
-  background: #FFFFFF;
-  border: 1px solid var(--md-border);
-  border-left: 4px solid var(--md-blue-primary);
+  background: var(--white);
+  border: 1px solid var(--warm-border);
+  border-left: 4px solid var(--cortia-red);
   border-radius: var(--md-radius);
   padding: 20px 24px;
   margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .safeguards-title {
-  font-size: 1rem;
+  font-family: var(--font-serif);
+  font-size: 17px;
   font-weight: 600;
-  color: var(--md-text-primary);
+  color: var(--warm-ink);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -109,16 +119,16 @@
 .safeguards-list {
   margin: 0;
   padding-left: 20px;
-  color: var(--md-text-secondary);
-  font-size: 0.875rem;
-  line-height: 1.6;
+  color: var(--warm-mid);
+  font-size: 12px;
+  line-height: 1.65;
 }
 
-/* MRI Explainability Viewer */
+/* ── MRI Explainability Viewer ── */
 .explain-viewer-container {
   display: grid;
   grid-template-columns: 1fr 340px;
-  gap: 24px;
+  gap: 20px;
   margin-bottom: 24px;
 }
 
@@ -129,12 +139,13 @@
 }
 
 .viewer-card {
-  background: var(--md-card-bg);
-  border: 1px solid var(--md-border);
+  background: var(--white);
+  border: 1px solid var(--warm-border);
   border-radius: var(--md-radius);
   padding: 20px;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-sm);
 }
 
 .viewer-toolbar {
@@ -144,7 +155,7 @@
   flex-wrap: wrap;
   gap: 12px;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--md-border);
+  border-bottom: 1px solid var(--warm-border);
   margin-bottom: 16px;
 }
 
@@ -156,20 +167,20 @@
 
 .view-mode-toggle {
   display: inline-flex;
-  border: 1px solid var(--md-border);
-  border-radius: var(--md-radius-sm);
+  border: 1px solid var(--warm-border);
+  border-radius: 7px;
   overflow: hidden;
 }
 
 .mode-btn {
   padding: 6px 12px;
-  font-size: 0.8125rem;
+  font-size: 11px;
   font-weight: 500;
-  background: #FFFFFF;
-  color: var(--md-text-secondary);
+  background: var(--white);
+  color: var(--warm-mid);
   border: none;
   cursor: pointer;
-  border-right: 1px solid var(--md-border);
+  border-right: 1px solid var(--warm-border);
   transition: all 0.15s ease;
 }
 
@@ -178,25 +189,26 @@
 }
 
 .mode-btn:hover {
-  background: var(--md-blue-surface);
-  color: var(--md-blue-primary);
+  background: var(--blush);
+  color: var(--cortia-red);
 }
 
 .mode-btn.active {
-  background: var(--md-blue-surface);
-  color: var(--md-blue-primary);
+  background: var(--cortia-red);
+  color: #FFFFFF;
   font-weight: 600;
 }
 
 .viewer-canvas-stage {
-  background: #111418;
-  border-radius: var(--md-radius-sm);
-  min-height: 440px;
+  background: #1A1412 !important;
+  border-radius: 8px;
+  min-height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+  border: 1px solid #2A1F1C;
 }
 
 .side-by-side-wrap {
@@ -216,24 +228,23 @@
 }
 
 .viewport-label {
-  color: #DADCE0;
-  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .compare-img {
   max-width: 100%;
-  max-height: 380px;
+  max-height: 360px;
   object-fit: contain;
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .overlay-stage {
   position: relative;
   max-width: 100%;
-  max-height: 420px;
+  max-height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -241,7 +252,7 @@
 
 .overlay-img {
   max-width: 100%;
-  max-height: 420px;
+  max-height: 400px;
   object-fit: contain;
   border-radius: 4px;
 }
@@ -260,110 +271,114 @@
 .opacity-slider-wrap {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.8125rem;
-  color: var(--md-text-secondary);
+  gap: 8px;
+  font-size: 11px;
+  color: var(--warm-sub);
 }
 
 .opacity-slider {
-  width: 120px;
-  accent-color: var(--md-blue-primary);
+  width: 100px;
+  accent-color: var(--cortia-red);
 }
 
-/* Feature Explorer & Tables */
+/* ── Features Explorer & Data Tables ── */
 .features-data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 12px;
 }
 
 .features-data-table th {
   text-align: left;
-  padding: 12px 14px;
-  background: var(--md-bg);
-  color: var(--md-text-secondary);
+  padding: 10px 14px;
+  background: var(--cream);
+  color: var(--warm-sub);
   font-weight: 600;
-  border-bottom: 1px solid var(--md-border);
+  border-bottom: 1px solid var(--warm-border);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-size: 10px;
 }
 
 .features-data-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--md-border);
-  color: var(--md-text-primary);
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--cream-deep);
+  color: var(--warm-ink);
 }
 
 .features-data-table tr:hover {
-  background: var(--md-blue-surface);
+  background: var(--cream);
 }
 
 .feature-unit-chip {
   display: inline-block;
   padding: 2px 6px;
-  background: #E8EAED;
-  color: #3C4043;
+  background: var(--cream-deep);
+  color: var(--warm-mid);
   border-radius: 4px;
-  font-size: 0.75rem;
-  font-family: monospace;
+  font-size: 10px;
+  font-family: var(--font-mono);
 }
 
-/* Confusion Matrix Grid */
+/* ── Empirical Confusion Matrix ── */
 .matrix-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 16px;
+  margin-top: 14px;
 }
 
 .matrix-grid {
   display: grid;
-  grid-template-columns: 140px repeat(4, 1fr);
+  grid-template-columns: 130px repeat(4, 1fr);
   gap: 4px;
-  background: var(--md-border);
-  border: 1px solid var(--md-border);
-  border-radius: var(--md-radius-sm);
+  background: var(--warm-border);
+  border: 1px solid var(--warm-border);
+  border-radius: 8px;
   padding: 4px;
 }
 
 .matrix-cell {
-  background: #FFFFFF;
-  padding: 12px 8px;
+  background: var(--white);
+  padding: 10px 6px;
   text-align: center;
-  font-size: 0.875rem;
+  font-size: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .matrix-cell.header {
-  background: #F1F3F4;
+  background: var(--cream);
   font-weight: 600;
-  color: var(--md-text-secondary);
-  font-size: 0.75rem;
+  color: var(--warm-sub);
+  font-size: 10px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .matrix-cell.diagonal {
-  background: #E8F0FE;
-  color: #1967D2;
+  background: var(--blush);
+  color: var(--cortia-red);
   font-weight: 700;
 }
 
 .matrix-cell-val {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .matrix-cell-sub {
-  font-size: 0.6875rem;
-  color: var(--md-text-secondary);
+  font-size: 10px;
+  color: var(--warm-sub);
 }
 
-/* Ask AI Banner */
+/* ── Ask AI Banner ── */
 .ask-ai-cta-card {
-  background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
-  border: 1px solid var(--md-border);
+  background: var(--white);
+  border: 1px solid var(--warm-border);
   border-radius: var(--md-radius);
   padding: 16px 20px;
   display: flex;
@@ -371,6 +386,7 @@
   justify-content: space-between;
   margin-top: 16px;
   gap: 16px;
+  box-shadow: var(--shadow-sm);
 }
 
 .ask-ai-cta-text {
@@ -383,9 +399,10 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--md-blue-surface);
-  color: var(--md-blue-primary);
+  background: var(--blush);
+  color: var(--cortia-red);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }

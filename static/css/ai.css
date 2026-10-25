@@ -1,4 +1,7 @@
-/* CORTIA AI Assistant Workspace Styles (Google Material Design 3) */
+/* ==========================================================================
+   CORTIA AI Assistant Workspace Styles
+   Brand Identity: Warm Cream (#F5F0EB), Cormorant Garamond, Coral-Red (#C94040)
+   ========================================================================== */
 
 .ai-workspace-layout {
   display: grid;
@@ -15,19 +18,20 @@
   }
 }
 
-/* Sidebar History */
+/* ── Left Sidebar Conversation History ── */
 .ai-sidebar-card {
-  background: var(--md-card-bg);
-  border: 1px solid var(--md-border);
+  background: var(--white);
+  border: 1px solid var(--warm-border);
   border-radius: var(--md-radius);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .ai-sidebar-header {
   padding: 16px;
-  border-bottom: 1px solid var(--md-border);
+  border-bottom: 1px solid var(--warm-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,9 +51,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  border-radius: var(--md-radius-sm);
-  font-size: 0.8125rem;
-  color: var(--md-text-primary);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--warm-ink);
   background: transparent;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -57,14 +61,14 @@
 }
 
 .conv-item:hover {
-  background: var(--md-blue-surface);
-  color: var(--md-blue-primary);
+  background: var(--cream);
+  color: var(--warm-ink);
 }
 
 .conv-item.active {
-  background: var(--md-blue-surface);
-  color: var(--md-blue-primary);
-  border-color: #D2E3FC;
+  background: var(--blush);
+  color: var(--cortia-red);
+  border-color: var(--blush-mid);
   font-weight: 600;
 }
 
@@ -72,7 +76,7 @@
   opacity: 0;
   background: transparent;
   border: none;
-  color: var(--md-text-secondary);
+  color: var(--warm-sub);
   cursor: pointer;
   padding: 2px 4px;
   border-radius: 4px;
@@ -83,27 +87,28 @@
 }
 
 .conv-delete-btn:hover {
-  color: #D93025;
-  background: #FCE8E6;
+  color: var(--cortia-red);
+  background: var(--cortia-red-lt);
 }
 
-/* Chat Main Panel */
+/* ── Chat Main Panel ── */
 .ai-chat-card {
-  background: var(--md-card-bg);
-  border: 1px solid var(--md-border);
+  background: var(--white);
+  border: 1px solid var(--warm-border);
   border-radius: var(--md-radius);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .ai-chat-header {
   padding: 14px 20px;
-  border-bottom: 1px solid var(--md-border);
+  border-bottom: 1px solid var(--warm-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #FFFFFF;
+  background: var(--white);
 }
 
 .ai-messages-scroll {
@@ -113,7 +118,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background: #FAFAFA;
+  background: var(--cream);
 }
 
 /* Message Bubbles */
@@ -134,26 +139,26 @@
 }
 
 .msg-avatar {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .msg-avatar.user-av {
-  background: #E8EAED;
-  color: #3C4043;
+  background: var(--cream-deep);
+  color: var(--warm-ink);
 }
 
 .msg-avatar.ai-av {
-  background: var(--md-blue-surface);
-  color: var(--md-blue-primary);
-  border: 1px solid #D2E3FC;
+  background: var(--blush);
+  color: var(--cortia-red);
+  border: 1px solid var(--blush-mid);
 }
 
 .msg-body {
@@ -165,27 +170,27 @@
 .msg-bubble {
   padding: 14px 18px;
   border-radius: 12px;
-  font-size: 0.875rem;
+  font-size: 13px;
   line-height: 1.6;
 }
 
 .chat-msg.user .msg-bubble {
-  background: var(--md-blue-primary);
+  background: var(--cortia-red);
   color: #FFFFFF;
   border-top-right-radius: 2px;
 }
 
 .chat-msg.assistant .msg-bubble {
-  background: #FFFFFF;
-  color: var(--md-text-primary);
-  border: 1px solid var(--md-border);
+  background: var(--white);
+  color: var(--warm-ink);
+  border: 1px solid var(--warm-border);
   border-top-left-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .msg-time {
-  font-size: 0.6875rem;
-  color: var(--md-text-secondary);
+  font-size: 10px;
+  color: var(--warm-sub);
 }
 
 .chat-msg.user .msg-time {
@@ -194,31 +199,31 @@
 
 /* Warning & Context Banner */
 .simulated-warning-chip {
-  background: #FEF7E0;
-  border: 1px solid #FEEFC3;
-  color: #B06000;
+  background: #F8EFE3;
+  border: 1px solid #EEDAC0;
+  color: var(--amber);
   padding: 8px 12px;
   border-radius: 6px;
-  font-size: 0.8125rem;
+  font-size: 11px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* Citations & References in Message */
+/* Citations Box */
 .citations-box {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #ECEFF1;
+  border-top: 1px solid var(--cream-deep);
 }
 
 .citations-title {
-  font-size: 0.75rem;
+  font-size: 10px;
   font-weight: 700;
-  color: var(--md-text-secondary);
+  color: var(--warm-sub);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   margin-bottom: 6px;
   display: flex;
   align-items: center;
@@ -226,12 +231,12 @@
 }
 
 .citation-card {
-  background: #F8F9FA;
-  border: 1px solid var(--md-border);
+  background: var(--cream);
+  border: 1px solid var(--warm-border);
   border-radius: 6px;
   padding: 8px 12px;
   margin-top: 6px;
-  font-size: 0.8125rem;
+  font-size: 11px;
 }
 
 .citation-card-header {
@@ -239,27 +244,27 @@
   align-items: center;
   justify-content: space-between;
   font-weight: 600;
-  color: var(--md-blue-primary);
+  color: var(--cortia-red);
 }
 
 .citation-snippet {
-  color: var(--md-text-secondary);
+  color: var(--warm-mid);
   margin-top: 4px;
-  font-size: 0.75rem;
+  font-size: 10px;
   line-height: 1.4;
 }
 
-/* Context Deep Link Chips */
+/* Deep Link Reference Chips */
 .analysis-ref-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--md-blue-surface);
-  color: var(--md-blue-primary);
-  border: 1px solid #D2E3FC;
+  background: var(--blush);
+  color: var(--cortia-red);
+  border: 1px solid var(--blush-mid);
   padding: 6px 12px;
   border-radius: 16px;
-  font-size: 0.8125rem;
+  font-size: 11px;
   font-weight: 500;
   text-decoration: none;
   margin-top: 8px;
@@ -267,14 +272,15 @@
 }
 
 .analysis-ref-chip:hover {
-  background: #D2E3FC;
+  background: var(--cortia-red);
+  color: #FFFFFF;
 }
 
 /* Suggested Follow-up Chips */
 .suggested-prompts-bar {
   padding: 10px 20px;
-  background: #FFFFFF;
-  border-top: 1px solid var(--md-border);
+  background: var(--white);
+  border-top: 1px solid var(--warm-border);
   display: flex;
   gap: 8px;
   overflow-x: auto;
@@ -285,25 +291,27 @@
   display: inline-flex;
   align-items: center;
   padding: 6px 12px;
-  background: var(--md-blue-surface);
-  border: 1px solid #D2E3FC;
+  background: var(--cream);
+  border: 1px solid var(--warm-border);
   border-radius: 16px;
-  font-size: 0.75rem;
+  font-size: 11px;
   font-weight: 500;
-  color: var(--md-blue-primary);
+  color: var(--warm-ink);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .prompt-pill:hover {
-  background: #D2E3FC;
+  background: var(--blush);
+  border-color: var(--cortia-red);
+  color: var(--cortia-red);
 }
 
 /* Input Area */
 .ai-input-bar {
   padding: 16px 20px;
-  background: #FFFFFF;
-  border-top: 1px solid var(--md-border);
+  background: var(--white);
+  border-top: 1px solid var(--warm-border);
   display: flex;
   gap: 12px;
   align-items: flex-end;
@@ -311,27 +319,29 @@
 
 .ai-input-field {
   flex: 1;
-  border: 1px solid var(--md-border);
+  border: 1px solid var(--warm-border);
   border-radius: 8px;
   padding: 12px 14px;
-  font-size: 0.875rem;
+  font-size: 13px;
   font-family: inherit;
   resize: none;
   outline: none;
   min-height: 48px;
   max-height: 120px;
   line-height: 1.4;
+  background: var(--cream);
+  color: var(--warm-ink);
   transition: border-color 0.15s ease;
 }
 
 .ai-input-field:focus {
-  border-color: var(--md-blue-primary);
-  box-shadow: 0 0 0 2px var(--md-blue-surface);
+  border-color: var(--cortia-red);
+  background: var(--white);
 }
 
 .ai-send-btn {
-  background: var(--md-blue-primary);
-  color: #FFFFFF;
+  background: var(--cortia-red) !important;
+  color: #FFFFFF !important;
   border: none;
   border-radius: 8px;
   width: 48px;
@@ -345,15 +355,16 @@
 }
 
 .ai-send-btn:hover {
-  background: #1557B0;
+  background: var(--cortia-red-dk) !important;
 }
 
 .ai-send-btn:disabled {
-  background: #BDC1C6;
+  background: var(--cream-deep) !important;
+  color: var(--warm-sub) !important;
   cursor: not-allowed;
 }
 
-/* Loading Dots */
+/* Typing Dots Animation */
 .typing-dots {
   display: flex;
   gap: 4px;
@@ -362,9 +373,9 @@
 }
 
 .typing-dot {
-  width: 6px;
-  height: 6px;
-  background: #80868B;
+  width: 5px;
+  height: 5px;
+  background: var(--warm-sub);
   border-radius: 50%;
   animation: bounce 1.2s infinite ease-in-out;
 }
@@ -374,7 +385,7 @@
 
 @keyframes bounce {
   0%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-6px); }
+  40% { transform: translateY(-5px); }
 }
 
 @keyframes fadeIn {
