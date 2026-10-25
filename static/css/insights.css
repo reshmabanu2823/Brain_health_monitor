@@ -10,7 +10,7 @@
   margin-bottom: 24px;
   background: var(--white);
   padding: 8px 16px 0 16px;
-  border-radius: var(--md-radius) var(--md-radius) 0 0;
+  border-radius: 10px 10px 0 0;
   overflow-x: auto;
   border: 1px solid var(--warm-border);
   border-bottom: none;
@@ -63,7 +63,7 @@
 .metric-highlight-card {
   background: var(--white);
   border: 1px solid var(--warm-border);
-  border-radius: var(--md-radius);
+  border-radius: 10px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -99,7 +99,7 @@
   background: var(--white);
   border: 1px solid var(--warm-border);
   border-left: 4px solid var(--cortia-red);
-  border-radius: var(--md-radius);
+  border-radius: 10px;
   padding: 20px 24px;
   margin-bottom: 24px;
   box-shadow: var(--shadow-sm);
@@ -141,7 +141,7 @@
 .viewer-card {
   background: var(--white);
   border: 1px solid var(--warm-border);
-  border-radius: var(--md-radius);
+  border-radius: 10px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -379,7 +379,7 @@
 .ask-ai-cta-card {
   background: var(--white);
   border: 1px solid var(--warm-border);
-  border-radius: var(--md-radius);
+  border-radius: 10px;
   padding: 16px 20px;
   display: flex;
   align-items: center;

@@ -35,13 +35,13 @@
     if (badge && subtitle) {
       if (mode === 'everyday') {
         badge.textContent = 'Patient & Health Companion';
-        badge.style.background = '#E6F4EA';
-        badge.style.color = '#137333';
+        badge.style.background = '#D8EDD8';
+        badge.style.color = '#5A8A5A';
         subtitle.textContent = 'Plain-language brain scan understanding, mental calmness tracking, and doctor visit prep';
       } else {
         badge.textContent = 'Research Workspace';
-        badge.style.background = '#E8F0FE';
-        badge.style.color = '#1967D2';
+        badge.style.background = '#F0D0D0';
+        badge.style.color = '#C94040';
         subtitle.textContent = 'Clinical research environment • Not for diagnostic use';
       }
     }
@@ -219,15 +219,15 @@
 
       if (score >= 70) {
         if (levelTag) levelTag.textContent = 'Deeply Calm & Relaxed';
-        if (circle) circle.style.borderTopColor = '#188038';
+        if (circle) circle.style.borderTopColor = '#5A8A5A';
         if (guidance) guidance.textContent = 'High Alpha rhythm synchronization detected. Your brain is in a peaceful, restful state.';
       } else if (score >= 45) {
         if (levelTag) levelTag.textContent = 'Balanced & Mindful';
-        if (circle) circle.style.borderTopColor = '#1A73E8';
+        if (circle) circle.style.borderTopColor = '#C94040';
         if (guidance) guidance.textContent = 'Normal resting alertness. Try closing your eyes for 30 seconds to boost alpha calmness.';
       } else {
         if (levelTag) levelTag.textContent = 'Active / Mental Engagement';
-        if (circle) circle.style.borderTopColor = '#F29900';
+        if (circle) circle.style.borderTopColor = '#C07830';
         if (guidance) guidance.textContent = 'Active cognitive state or forehead muscle activity detected. Relax your jaw and brow.';
       }
     } catch {
@@ -292,7 +292,7 @@
       <div class="patient-finding-card">
         <div class="patient-finding-header">
           <div class="patient-finding-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#1A73E8" stroke-width="2" width="22" height="22">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C94040" stroke-width="2" width="22" height="22">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
               <line x1="16" y1="13" x2="8" y2="13"/>

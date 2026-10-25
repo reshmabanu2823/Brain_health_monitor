@@ -1,177 +1,173 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CORTIA AI — Neuroscience Research Assistant</title>
-  <link rel="stylesheet" href="/static/css/common.css">
-  <link rel="stylesheet" href="/static/css/ai.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/companion-mode.css">
-</head>
-<body>
-  <div class="neuro-app">
-
-    <!-- Navigation Sidebar -->
-        <!-- CORTIA Dark Sidebar (#231A17) -->
-    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
-      <div class="sidebar-brand">
-        <a class="brand-logo" href="/cortia" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-          <div class="brand-icon">🧠</div>
-          <div>
-            <div class="brand-name">CORTIA</div>
-          </div>
-        </a>
-        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Workspaces</div>
-        <a class="nav-item rail-item" href="/" title="MRI Analysis">
-          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
-        </a>
-        <a class="nav-item rail-item" href="/eeg" title="EEG Monitoring">
-          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
-        </a>
-        <a class="nav-item rail-item" href="/insights" title="CORTIA Insights">
-          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
-        </a>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Assistant</div>
-        <a class="nav-item rail-item active" href="/ai" title="CORTIA AI">
-          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
-        </a>
-        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
-          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
-        </a>
-      </div>
-
-      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
-        <a class="nav-item rail-item" href="/cortia" title="Cortia Portal">
-          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
-        </a>
-      </div>
-
-      <div class="sidebar-footer rail-footer">
-        <div class="runtime-badge">
-          <span class="runtime-dot status-indicator"></span>
-          Runtime v2.4 &bull; Active
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Workspace Content Area -->
-    <main id="main" class="neuro-content">
-
-      <!-- Header -->
-      <header class="neuro-header">
-        <div class="header-meta">
-          <div class="brand-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#C94040" stroke-width="2" width="22" height="22">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              <circle cx="9" cy="10" r="1" fill="currentColor" />
-              <circle cx="15" cy="10" r="1" fill="currentColor" />
-            </svg>
-            <span>CORTIA AI</span>
-            <span class="brand-badge">Research Conversational Assistant</span>
-          </div>
-          <span class="brand-subtitle">Grounded in scientific literature, verified application state, and real telemetry records</span>
-        </div>
-
-        <div class="header-actions">
-          <div class="neuro-pill" title="Provider status">
-            <span class="status-indicator"></span>
-            <span id="ai-provider-badge">Grounded Engine Active</span>
-          </div>
-          <a href="/insights" class="btn-pacs-secondary">Open Insights &rarr;</a>
-        </div>
-      </header>
-
-      <!-- Chat Workspace Layout -->
-      <div class="ai-workspace-layout" style="margin-top:16px;">
-
-        <!-- Left Conversation History Sidebar -->
-        <aside class="ai-sidebar-card">
-          <div class="ai-sidebar-header">
-            <span style="font-weight:600;font-size:0.875rem;">Conversations</span>
-            <button id="new-conv-btn" class="btn-pacs-primary" style="padding:6px 10px;font-size:0.75rem;">+ New Chat</button>
-          </div>
-          <div class="ai-conv-list" id="conv-list-container">
-            <!-- Populated via JS -->
-          </div>
-          <div style="padding:12px;border-top:1px solid var(--md-border);background:#F8F9FA;">
-            <button id="clear-all-convs-btn" class="btn-pacs-secondary" style="width:100%;font-size:0.75rem;color:#D93025;">Clear All History</button>
-          </div>
-        </aside>
-
-        <!-- Main Chat Area -->
-        <section class="ai-chat-card">
-          <!-- Chat Header -->
-          <div class="ai-chat-header">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <h2 id="active-conv-title" style="font-size:1rem;font-weight:600;margin:0;">Research Inquiry</h2>
-              <span id="active-context-badge" class="badge" style="display:none;background:#E8F0FE;color:#1967D2;">Context Attached</span>
-            </div>
-            <button id="delete-curr-conv-btn" class="btn-pacs-secondary" style="padding:4px 8px;font-size:0.75rem;">Delete Chat</button>
-          </div>
-
-          <!-- Messages Stream -->
-          <div class="ai-messages-scroll" id="messages-container">
-            <!-- Welcome Message -->
-            <div class="chat-msg assistant">
-              <div class="msg-avatar ai-av">AI</div>
-              <div class="msg-body">
-                <div class="msg-bubble">
-                  <p><strong>Welcome to CORTIA AI.</strong></p>
-                  <p>I am your neuroscience research assistant grounded in peer-reviewed scientific literature and the real telemetry of your application. You can ask me to:</p>
-                  <ul style="margin:8px 0 0 18px;padding:0;line-height:1.6;">
-                    <li>Audit and summarize your latest real MRI scan or EEG biopotential session.</li>
-                    <li>Explain the mechanics of Grad-CAM saliency attention maps.</li>
-                    <li>Investigate digital signal processing filters (1-40 Hz bandpass, 50 Hz notch).</li>
-                    <li>Audit the model registry and explain single-channel BioAmp hardware boundaries.</li>
-                  </ul>
-                  <p style="margin-top:10px;font-size:0.75rem;color:var(--md-text-secondary);">
-                    <em>Note: All inferences are grounded in actual database records. No metrics or citations are fabricated.</em>
-                  </p>
-                </div>
-                <div class="msg-time">Just now</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Suggested Starter Prompts -->
-          <div class="suggested-prompts-bar" id="suggested-prompts-bar">
-            <!-- Populated via JS -->
-          </div>
-
-          <!-- Input Field -->
-          <div class="ai-input-bar">
-            <textarea
-              id="chat-textarea"
-              class="ai-input-field"
-              placeholder="Ask a scientific or application question (e.g., 'Summarize my latest EEG recording', 'How does Grad-CAM work?')..."
-              rows="1"
-            ></textarea>
-            <button id="chat-send-btn" class="ai-send-btn" title="Send message">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                <line x1="22" y1="2" x2="11" y2="13"/>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-              </svg>
-            </button>
-          </div>
-        </section>
-
-      </div>
-
-    </main>
-  </div>
-
-  <script src="/static/js/ai.js"></script>
-  <script src="/static/js/companion-mode.js"></script>
-</body>
-</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORTIA AI — Neuroscience Research Assistant</title>
+  <link rel="stylesheet" href="/static/css/common.css">
+  <link rel="stylesheet" href="/static/css/ai.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/companion-mode.css">
+  <link rel="stylesheet" href="/static/css/cortia-assistant.css">
+</head>
+<body>
+  <div class="neuro-app">
+
+    <!-- Navigation Sidebar -->
+        <!-- CORTIA Dark Sidebar (#231A17) -->
+        <!-- CORTIA Dark Sidebar (#231A17) -->
+    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
+      <div class="sidebar-brand">
+        <a class="brand-logo" href="/cortia">
+          <div class="brand-icon">🧠</div>
+          <div class="brand-name">CORTIA</div>
+        </a>
+        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Workspaces</div>
+        <a class="nav-item rail-item " href="/" title="MRI Analysis">
+          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
+        </a>
+        <a class="nav-item rail-item " href="/eeg" title="EEG Monitoring">
+          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
+        </a>
+        <a class="nav-item rail-item " href="/insights" title="CORTIA Insights">
+          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Assistant</div>
+        <a class="nav-item rail-item active" href="/ai" title="CORTIA AI">
+          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
+        </a>
+        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
+          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
+        <a class="nav-item rail-item" href="/cortia" title="Cortia Portal">
+          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer rail-footer">
+        <div class="runtime-badge">
+          <span class="runtime-dot status-indicator"></span>
+          Runtime v2.4 &bull; Active
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content Area -->
+    <main id="main" class="neuro-content">
+
+      <!-- Header -->
+      <header class="neuro-header">
+        <div class="header-meta">
+          <div class="brand-title">CORTIA AI</div>
+          <span class="brand-subtitle">Grounded in scientific literature, verified application state, and real telemetry records</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="neuro-pill" title="Provider status">
+            <span class="status-indicator"></span>
+            <span id="ai-provider-badge">Grounded Engine Active</span>
+          </div>
+          <a href="/" class="btn-pacs-secondary">MRI Workspace</a>
+          <a href="/eeg" class="btn-pacs-secondary">EEG Workspace</a>
+          <a href="/insights" class="btn-pacs-secondary">Insights</a>
+          <button id="topbar-new-chat-btn" class="btn-pacs-primary" onclick="document.getElementById('new-conv-btn')?.click()">+ New Chat</button>
+        </div>
+      </header>
+
+      <!-- Chat Workspace Layout -->
+      <div class="ai-workspace-layout" style="margin-top:16px;">
+
+        <!-- Left Conversation History Sidebar -->
+        <aside class="ai-sidebar-card">
+          <div class="ai-sidebar-header">
+            <span style="font-weight:600;font-size:0.875rem;">Conversations</span>
+            <button id="new-conv-btn" class="btn-pacs-primary" style="padding:6px 10px;font-size:0.75rem;">+ New Chat</button>
+          </div>
+          <div class="ai-conv-list" id="conv-list-container">
+            <!-- Populated via JS -->
+          </div>
+          <div style="padding:12px;border-top:1px solid var(--md-border);background:#F8F9FA;">
+            <button id="clear-all-convs-btn" class="btn-pacs-secondary" style="width:100%;font-size:0.75rem;color:#D93025;">Clear All History</button>
+          </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <section class="ai-chat-card">
+          <!-- Chat Header -->
+          <div class="ai-chat-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <h2 id="active-conv-title" style="font-size:1rem;font-weight:600;margin:0;">Research Inquiry</h2>
+              <span id="active-context-badge" class="badge" style="display:none;background:var(--red-light);color:var(--red);">Context Attached</span>
+            </div>
+            <button id="delete-curr-conv-btn" class="btn-pacs-secondary" style="padding:4px 8px;font-size:0.75rem;">Delete Chat</button>
+          </div>
+
+          <!-- Messages Stream -->
+          <div class="ai-messages-scroll" id="messages-container">
+            <!-- Welcome Message -->
+            <div class="chat-msg assistant">
+              <div class="msg-avatar ai-av">AI</div>
+              <div class="msg-body">
+                <div class="msg-bubble">
+                  <p><strong>Welcome to CORTIA AI.</strong></p>
+                  <p>I am your neuroscience research assistant grounded in peer-reviewed scientific literature and the real telemetry of your application. You can ask me to:</p>
+                  <ul style="margin:8px 0 0 18px;padding:0;line-height:1.6;">
+                    <li>Audit and summarize your latest real MRI scan or EEG biopotential session.</li>
+                    <li>Explain the mechanics of Grad-CAM saliency attention maps.</li>
+                    <li>Investigate digital signal processing filters (1-40 Hz bandpass, 50 Hz notch).</li>
+                    <li>Audit the model registry and explain single-channel BioAmp hardware boundaries.</li>
+                  </ul>
+                  <p style="margin-top:10px;font-size:0.75rem;color:var(--md-text-secondary);">
+                    <em>Note: All inferences are grounded in actual database records. No metrics or citations are fabricated.</em>
+                  </p>
+                </div>
+                <div class="msg-time">Just now</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggested Starter Prompts -->
+          <div class="suggested-prompts-bar" id="suggested-prompts-bar">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Input Field -->
+          <div class="ai-input-bar">
+            <textarea
+              id="chat-textarea"
+              class="ai-input-field"
+              placeholder="Ask a scientific or application question (e.g., 'Summarize my latest EEG recording', 'How does Grad-CAM work?')..."
+              rows="1"
+            ></textarea>
+            <button id="chat-send-btn" class="ai-send-btn" title="Send message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script src="/static/js/ai.js"></script>
+  <script src="/static/js/companion-mode.js"></script>
+  <script src="/static/js/cortia-assistant.js"></script>
+</body>
+</html>

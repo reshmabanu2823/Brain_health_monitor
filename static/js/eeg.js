@@ -43,7 +43,7 @@
     if (items.some(p => p.device === selected)) $('port').value = selected;
   }
 
-  function plot(id, xs, ys, xlabel, ylabel, fixedRange, strokeColor = '#1A73E8') {
+  function plot(id, xs, ys, xlabel, ylabel, fixedRange, strokeColor = '#C94040') {
     const canvas = $(id);
     if (!canvas) return;
     const ratio = window.devicePixelRatio || 1;
@@ -52,8 +52,8 @@
     const ctx = canvas.getContext('2d'); ctx.scale(ratio, ratio);
     ctx.clearRect(0, 0, w, h);
     const left = 55, right = w - 15, top = 12, bottom = h - 30;
-    ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillStyle = '#5F6368'; ctx.strokeStyle = 'rgba(218,220,224,0.8)'; ctx.lineWidth = 1;
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)'; ctx.strokeStyle = 'rgba(201, 64, 64, 0.3)'; ctx.lineWidth = 1;
 
     const xmin = xs[0] || 0, xmax = xs[xs.length - 1] || 1;
     let ymin = 0, ymax = 1;
@@ -172,7 +172,7 @@
 
     const samples = s.samples || [], a = s.analysis;
     $('wave-empty').hidden = !!samples.length;
-    plot('wave', samples.map(v => v.seconds), samples.map(v => v.value), 'Device time (s)', 'ADC counts', [0, 1023], '#1A73E8');
+    plot('wave', samples.map(v => v.seconds), samples.map(v => v.value), 'Device time (s)', 'ADC counts', [0, 1023], '#C94040');
     $('sample-info').textContent = `${s.received_samples} received · ${samples.length}/${s.buffer_capacity_samples} retained · ${s.discontinuities} discontinuities · ${s.malformed_lines} malformed lines. Buffer evictions: ${s.buffer_evictions}.`;
     $('recording').textContent = s.recording_id ? 'Recording' : 'Idle';
     $('rate').textContent = `${s.measured_rate_hz?.toFixed(2) || '—'} / ${s.configured_rate_hz} Hz`;
@@ -194,7 +194,7 @@
     if (a?.synchronized_waveform) {
       const sw = a.synchronized_waveform;
       $('wave-filtered-empty').hidden = true;
-      plot('wave-filtered', sw.timestamps_s, sw.filtered_adc, 'Active window (s)', 'Filtered counts', null, '#188038');
+      plot('wave-filtered', sw.timestamps_s, sw.filtered_adc, 'Active window (s)', 'Filtered counts', null, '#C94040');
     } else {
       $('wave-filtered-empty').hidden = false;
       plot('wave-filtered', [], [], 'Active window (s)', 'Filtered counts');
@@ -210,7 +210,7 @@
         const value = document.createElement('span'); value.textContent = b.available ? `${(b.relative * 100).toFixed(1)}%` : 'N/A';
         row.append(label, bar, value); $('bands').append(row);
       });
-      plot('psd', a.frequencies_hz, a.psd, 'Frequency (Hz)', 'counts²/Hz', null, '#9334E8');
+      plot('psd', a.frequencies_hz, a.psd, 'Frequency (Hz)', 'counts²/Hz', null, '#C94040');
       $('psd-empty').hidden = true;
       $('window-info').textContent = `Analysis ${a.window_start_s.toFixed(2)}–${a.window_end_s.toFixed(2)} s · ${a.analyzed_utc}. Edge guards discarded.`;
     } else {
@@ -243,7 +243,7 @@
       if (r.notes) {
         const noteSpan = document.createElement('div');
         noteSpan.style.fontSize = '11px';
-        noteSpan.style.color = '#5F6368';
+        noteSpan.style.color = '#9C8880';
         noteSpan.textContent = `Note: ${r.notes}`;
         startTd.append(noteSpan);
       }

@@ -28,7 +28,7 @@
 .eeg-card {
   background: var(--white);
   border: 1px solid var(--warm-border);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 20px;
   box-shadow: var(--shadow-sm);
 }
