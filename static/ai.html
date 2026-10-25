@@ -26,6 +26,20 @@
 
   <link rel="stylesheet" href="/static/css/cortia-assistant.css">
 
+
+  <style>
+    body[data-page="ai"] .cortia-ai-fab,
+    body[data-page="ai"] .floating-assistant-btn,
+    body[data-page="ai"] #cortia-ai-floating-trigger,
+    .cortia-ai-fab,
+    .floating-assistant-btn,
+    #cortia-ai-floating-trigger {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+    }
+  </style>
 </head>
 
 <body data-page="ai">
@@ -272,13 +286,7 @@
 
   <script src="/static/js/cortia-assistant.js"></script>
 
-  <!-- Floating Ask CORTIA AI Button -->
-  <a href="/ai" class="cortia-ai-fab" title="Ask CORTIA AI Assistant">
-    <span class="fab-icon">✦</span>
-    <span>Ask CORTIA AI</span>
-  </a>
-
-  <script>
+<script>
     (function() {
       document.addEventListener("DOMContentLoaded", function() {
         var p = window.location.pathname.replace(/\/$/, '') || '/';

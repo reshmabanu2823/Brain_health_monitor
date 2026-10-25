@@ -121,3 +121,12 @@
   display: flex;
   gap: 8px;
 }
+
+/* Suppress floating assistant triggers when inside dedicated AI workspace */
+body[data-page="ai"] .cortia-ai-fab,
+body[data-page="ai"] .floating-assistant-btn,
+body[data-page="ai"] #cortia-ai-floating-trigger {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
