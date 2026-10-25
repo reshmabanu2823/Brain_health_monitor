@@ -43,6 +43,19 @@ from gradcam import generate_gradcam_heatmap, preload_gradcam_model
 from logger import init_db, log_result, get_scan_history, get_scan_stats, clear_scan_history
 from report_generator import generate_pdf_report
 from patient_companion import get_patient_mri_companion, get_mind_calmness_metrics
+from database import (
+    init_db as init_cortia_db,
+    insert_mri_scan,
+    get_mri_scans,
+    start_eeg_session,
+    end_eeg_session,
+    get_eeg_sessions,
+    create_conversation,
+    get_conversations,
+    insert_message,
+    get_messages,
+    delete_conversation,
+)
 
 log = logging.getLogger(__name__)
 SUPPORTED_SUFFIXES = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tif', '.tiff', '.dcm', '.dicom'}
@@ -52,6 +65,7 @@ PROBABILITY_NAMES = ['Glioma', 'Meningioma', 'No Tumor', 'Pituitary']
 @asynccontextmanager
 async def lifespan(application):
     init_db()
+    init_cortia_db()
     Path(UPLOADS_DIR).mkdir(parents=True, exist_ok=True)
     application.state.model_dir = MODEL_DIR
     application.state.model = None
@@ -194,8 +208,26 @@ def fetch_stats():
 
 
 @app.get('/api/scans')
-def fetch_scan_history(limit: int = Query(100, ge=1, le=1000), offset: int = Query(0, ge=0)):
-    return [{**row, 'patient_id': 'ANON', 'patient_name': 'De-identified'} for row in get_scan_history(limit, offset)]
+def fetch_scan_history(limit: int = Query(50, ge=1, le=1000), offset: int = Query(0, ge=0)):
+    history = get_scan_history(limit, offset)
+    if history:
+        return [
+            {
+                **row,
+                'file_identifier': row.get('filename'),
+                'classification': row.get('result'),
+                'diagnostic_flag': 'POS' if row.get('is_tumor') else 'NEG',
+                'patient_id': 'ANON',
+                'patient_name': 'De-identified',
+            }
+            for row in history
+        ]
+    return get_mri_scans(limit=limit)
+
+
+@app.get('/api/mri/scans')
+def list_mri_scans_cortia(limit: int = 50):
+    return get_mri_scans(limit=limit)
 
 
 @app.post('/api/scans/clear')
@@ -218,12 +250,29 @@ def _process_upload(path, filename, model):
             patient_id = 'SCAN-' + uuid.uuid4().hex[:12]
         patient_name = metadata.get('patient_name') or 'De-identified'
         scan_id = log_result(filename, label, confidence, distribution, patient_id=patient_id, patient_name=patient_name, tumor_area_pct=metrics.get('tumor_area_pct', 0), peak_saliency=metrics.get('peak_saliency', 0))
+        try:
+            cortia_scan_id = insert_mri_scan(
+                file_identifier=filename,
+                classification=label,
+                confidence=float(confidence) / 100.0 if float(confidence) > 1.0 else float(confidence),
+                diagnostic_flag='POS' if label != 'No Tumor' else 'NEG',
+                saliency_peak=metrics.get('peak_saliency') if isinstance(metrics, dict) else None,
+                saliency_area=metrics.get('tumor_area_pct') if isinstance(metrics, dict) else None,
+                saliency_center_x=metrics.get('center', {}).get('x') if isinstance(metrics, dict) and isinstance(metrics.get('center'), dict) else None,
+                saliency_center_y=metrics.get('center', {}).get('y') if isinstance(metrics, dict) and isinstance(metrics.get('center'), dict) else None,
+                model_backbone='EfficientNetV2-S',
+                mode='research',
+            )
+        except Exception as scan_err:
+            log.warning(f'Failed to insert into cortia_db: {scan_err}')
+            cortia_scan_id = str(scan_id)
         patient_companion_data = get_patient_mri_companion(label, round(confidence, 1), metrics.get('tumor_area_pct', 0), distribution)
-        return {'success': True, 'scan_id': scan_id, 'filename': filename, 'patient_id': patient_id, 'patient_name': patient_name, 'label': label, 'confidence': round(confidence, 1), 'is_tumor': label != 'No Tumor', 'probabilities': distribution, 'tumor_metrics': metrics, 'dicom_metadata': metadata, 'original_b64': to_base64_url(image), 'heatmap_b64': to_base64_url(overlay), 'explanation': {'available': overlay is not None, 'method': 'gradcam' if overlay is not None else None, 'class_index': class_index, 'measurement': 'saliency coverage, not lesion segmentation', 'reason': None if overlay is not None else 'Grad-CAM is unavailable for this prediction'}, 'patient_companion': patient_companion_data}
+        return {'success': True, 'scan_id': scan_id, 'cortia_scan_id': cortia_scan_id, 'classification': label, 'filename': filename, 'patient_id': patient_id, 'patient_name': patient_name, 'label': label, 'confidence': round(confidence, 1), 'is_tumor': label != 'No Tumor', 'probabilities': distribution, 'tumor_metrics': metrics, 'dicom_metadata': metadata, 'original_b64': to_base64_url(image), 'heatmap_b64': to_base64_url(overlay), 'explanation': {'available': overlay is not None, 'method': 'gradcam' if overlay is not None else None, 'class_index': class_index, 'measurement': 'saliency coverage, not lesion segmentation', 'reason': None if overlay is not None else 'Grad-CAM is unavailable for this prediction'}, 'patient_companion': patient_companion_data}
     finally:
         Path(path).unlink(missing_ok=True)
 
 
+@app.post('/api/analyze')
 @app.post('/api/predict')
 async def predict_mri(file: UploadFile = File(...)):
     model = getattr(app.state, 'model', None)

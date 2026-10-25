@@ -1,10 +1,12 @@
 """EEG routes in the existing FastAPI process, separate from MRI routes."""
+import json
 from typing import Literal
 from urllib.parse import urlsplit
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from serial.tools import list_ports
+import database as cortia_db
 
 router = APIRouter()
 
@@ -163,7 +165,12 @@ def model_registry(s=Depends(service)):
 def start_recording(body: StartRecordingRequest | None = None, s=Depends(service)):
     try:
         notes = body.notes if body else None
-        return {'id': s.start_recording(notes=notes)}
+        rec_id = s.start_recording(notes=notes)
+        try:
+            cortia_db.start_eeg_session(source="SIMULATED" if getattr(s, 'source', None) != 'serial' else 'HARDWARE', notes=notes or '')
+        except Exception:
+            pass
+        return {'id': rec_id}
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
 
@@ -171,9 +178,45 @@ def start_recording(body: StartRecordingRequest | None = None, s=Depends(service
 @router.post('/api/eeg/recordings/stop', dependencies=[Depends(local_control)])
 def stop_recording(s=Depends(service)):
     try:
-        return {'id': s.stop_recording()}
+        rec_id = s.stop_recording()
+        try:
+            rec = s.store.get(rec_id) if hasattr(s, 'store') and hasattr(s.store, 'get') else {}
+            if rec:
+                cortia_db.end_eeg_session(
+                    session_id=rec_id,
+                    duration_seconds=rec.get('duration_seconds', 0),
+                    total_samples=rec.get('sample_count', 0),
+                    signal_quality=rec.get('signal_quality', 'Acceptable'),
+                    features_json=json.dumps(rec.get('features', {})),
+                )
+        except Exception:
+            pass
+        return {'id': rec_id}
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
+
+
+@router.post("/api/eeg/session/start")
+def eeg_start(source: str = "SIMULATED", notes: str = ""):
+    session_id = cortia_db.start_eeg_session(source=source, notes=notes)
+    return {"session_id": session_id}
+
+
+@router.post("/api/eeg/session/{session_id}/end")
+def eeg_end(session_id: str, body: dict):
+    cortia_db.end_eeg_session(
+        session_id=session_id,
+        duration_seconds=body.get("duration_seconds", 0),
+        total_samples=body.get("total_samples", 0),
+        signal_quality=body.get("signal_quality", "Unknown"),
+        features_json=json.dumps(body.get("features", {})),
+    )
+    return {"status": "completed"}
+
+
+@router.get("/api/eeg/sessions")
+def list_eeg_sessions(limit: int = 50):
+    return cortia_db.get_eeg_sessions(limit=limit)
 
 
 @router.get('/api/eeg/recordings')
