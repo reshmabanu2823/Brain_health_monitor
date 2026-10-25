@@ -9,9 +9,11 @@ import numpy as np
 try:
     from ..logger import connection as scan_db_conn, get_scan_history, get_scan_stats
     from ..artifacts import load_contract, sha256_file
+    from ..patient_companion import get_patient_mri_companion, get_mind_calmness_metrics
 except ImportError:
     from logger import connection as scan_db_conn, get_scan_history, get_scan_stats
     from artifacts import load_contract, sha256_file
+    from patient_companion import get_patient_mri_companion, get_mind_calmness_metrics
 
 log = logging.getLogger(__name__)
 
@@ -65,6 +67,12 @@ class InsightsService:
             "notes": record.get("notes") or "",
             "patient_id": record.get("patient_id") or "ANON",
             "patient_name": record.get("patient_name") or "De-identified",
+            "patient_companion": get_patient_mri_companion(
+                record["result"],
+                float(record["confidence"]),
+                float(record.get("tumor_area_pct") or 0.0),
+                probs
+            ),
         }
 
     def get_latest_mri_scan(self) -> Optional[Dict[str, Any]]:
@@ -79,6 +87,10 @@ class InsightsService:
             return None
         try:
             summary = self.eeg_store.get_summary(session_id)
+            if summary:
+                feats = summary.get("feature_summary", {})
+                q_state = summary.get("quality_summary", {}).get("quality_state", "Acceptable")
+                summary["mind_calmness"] = get_mind_calmness_metrics(feats, q_state)
             return summary
         except KeyError:
             return None

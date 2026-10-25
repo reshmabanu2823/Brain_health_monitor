@@ -217,6 +217,9 @@ function renderMRIScanDetails(scan) {
   }
 
   renderMRICanvas();
+  if (window.renderPatientMRICompanion && scan.patient_companion) {
+    window.renderPatientMRICompanion(scan.patient_companion);
+  }
 }
 
 function renderMRICanvas() {

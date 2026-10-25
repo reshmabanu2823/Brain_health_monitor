@@ -324,6 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (aiBtn && data.scan_id) {
         aiBtn.href = `/ai?analysis_type=mri&analysis_id=${data.scan_id}`;
       }
+      if (window.renderPatientMRICompanion && data.patient_companion) {
+        window.renderPatientMRICompanion(data.patient_companion);
+      }
 
       // Render Original Scan (especially useful if file was DICOM)
       if (data.original_b64) {

@@ -171,6 +171,50 @@ class GroundedSynthesisEngine(BaseLLMProvider):
                 "When a session is marked Insufficient, all downstream feature extraction and inference are strictly withheld to preserve data integrity."
             )
 
+        elif any(w in query for w in ["questions for my doctor", "questions to ask", "ask my doctor", "doctor questions"]):
+            lines.append("### Questions to Ask Your Doctor Regarding Your Brain MRI Scan\n")
+            lines.append(
+                "When discussing your MRI scan with your neurologist, neurosurgeon, or primary care physician, here are targeted questions you can ask:\n\n"
+                "1. **\"What specific type or category of tissue change is visible on this scan?\"**\n"
+                "   - *Ask whether it appears intra-axial (inside brain tissue) or extra-axial (on the surface membranes).*\n"
+                "2. **\"Is a follow-up multi-sequence MRI with contrast dye (Gadolinium) recommended?\"**\n"
+                "   - *Contrast dye provides crucial diagnostic detail regarding blood-brain barrier permeability and vascularity.*\n"
+                "3. **\"Is there any mass effect, swelling (edema), or pressure on nearby critical cranial nerves?\"**\n"
+                "4. **\"What are the recommended next steps?\"**\n"
+                "   - *Options may include active surveillance ('watch-and-wait' with repeat imaging in 3-6 months), surgical biopsy, or medication.*\n"
+                "5. **\"Which red-flag symptoms should prompt me to contact your clinic immediately?\"**\n\n"
+                "> **Patient Note**: Write these questions down or print them out before your appointment. Do not hesitate to ask your doctor to explain any unfamiliar terms on your radiology report."
+            )
+
+        elif any(w in query for w in ["simple words", "simple terms", "plain english", "explain my scan in simple", "what does this mean"]):
+            lines.append("### Plain-English Brain MRI Explanation\n")
+            lines.append(
+                "A brain MRI uses strong magnetic fields and radio waves to take detailed cross-sectional pictures of your brain tissues.\n\n"
+                "- **Normal Brain Structure**: Composed of brain tissue (neurons and supportive glia), protective outer layers (meninges), fluid-filled spaces (ventricles), and a central hormone-regulating gland (pituitary).\n"
+                "- **What the AI Does**: CORTIA analyzes visual contrast and texture patterns to help you understand what region is highlighted:\n"
+                "  - **Gliomas**: Grow from supportive brain cells. They can range from benign to aggressive.\n"
+                "  - **Meningiomas**: Grow on the outer protective membranes. Over 85% are non-cancerous and very slow-growing.\n"
+                "  - **Pituitary Growths**: Grow in the gland at the base of the skull. Almost always non-cancerous.\n"
+                "  - **No Tumor**: The scan shows healthy brain proportions without visible mass formation.\n\n"
+                "> **Reassurance**: An AI scan finding is **not a final medical diagnosis**. It is an educational tool to help you understand your images and advocate for yourself when meeting your healthcare provider."
+            )
+
+        elif any(w in query for w in ["calmness", "relaxation", "meditation", "calm score", "how to relax", "mind score"]):
+            lines.append("### Understanding Your Brain Calmness & Relaxation Score\n")
+            lines.append(
+                "In CORTIA, your **Calmness & Relaxation Index (0–100%)** is driven by your **Alpha brainwaves (8.0 – 13.0 Hz)**:\n\n"
+                "- **The Alpha Rhythm (The 'Calm Mind' Signal)**:\n"
+                "  When your eyes are closed and your body is at rest without falling asleep, your brain naturally synchronizes into rhythmic alpha waves. "
+                "  As you relax deeply, relative alpha power rises, raising your Calmness Score.\n"
+                "- **Beta Waves (The 'Active / Thinking' Signal)**:\n"
+                "  When you open your eyes, read, solve problems, or experience muscle tension, alpha waves desynchronize into faster beta waves (13–30 Hz).\n\n"
+                "**How to Boost Your Calmness Index during a Session**:\n"
+                "1. Sit comfortably with back supported and relax your facial and jaw muscles.\n"
+                "2. Close your eyes gently to block visual stimulation.\n"
+                "3. Inhale deeply for 4 seconds, pause for 2 seconds, and exhale slowly for 4 seconds.\n"
+                "4. Watch your Calmness Index climb into the green zone (70%+)."
+            )
+
         elif any(w in query for w in ["grad-cam", "gradcam", "how grad-cam works"]):
             lines.append("### Gradient-Weighted Class Activation Mapping (Grad-CAM)\n")
             lines.append(

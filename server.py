@@ -42,6 +42,7 @@ from inference import BrainTumorModel, CLASS_LABELS, read_mri_file
 from gradcam import generate_gradcam_heatmap, preload_gradcam_model
 from logger import init_db, log_result, get_scan_history, get_scan_stats, clear_scan_history
 from report_generator import generate_pdf_report
+from patient_companion import get_patient_mri_companion, get_mind_calmness_metrics
 
 log = logging.getLogger(__name__)
 SUPPORTED_SUFFIXES = {'.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tif', '.tiff', '.dcm', '.dicom'}
@@ -217,7 +218,8 @@ def _process_upload(path, filename, model):
             patient_id = 'SCAN-' + uuid.uuid4().hex[:12]
         patient_name = metadata.get('patient_name') or 'De-identified'
         scan_id = log_result(filename, label, confidence, distribution, patient_id=patient_id, patient_name=patient_name, tumor_area_pct=metrics.get('tumor_area_pct', 0), peak_saliency=metrics.get('peak_saliency', 0))
-        return {'success': True, 'scan_id': scan_id, 'filename': filename, 'patient_id': patient_id, 'patient_name': patient_name, 'label': label, 'confidence': round(confidence, 1), 'is_tumor': label != 'No Tumor', 'probabilities': distribution, 'tumor_metrics': metrics, 'dicom_metadata': metadata, 'original_b64': to_base64_url(image), 'heatmap_b64': to_base64_url(overlay), 'explanation': {'available': overlay is not None, 'method': 'gradcam' if overlay is not None else None, 'class_index': class_index, 'measurement': 'saliency coverage, not lesion segmentation', 'reason': None if overlay is not None else 'Grad-CAM is unavailable for this prediction'}}
+        patient_companion_data = get_patient_mri_companion(label, round(confidence, 1), metrics.get('tumor_area_pct', 0), distribution)
+        return {'success': True, 'scan_id': scan_id, 'filename': filename, 'patient_id': patient_id, 'patient_name': patient_name, 'label': label, 'confidence': round(confidence, 1), 'is_tumor': label != 'No Tumor', 'probabilities': distribution, 'tumor_metrics': metrics, 'dicom_metadata': metadata, 'original_b64': to_base64_url(image), 'heatmap_b64': to_base64_url(overlay), 'explanation': {'available': overlay is not None, 'method': 'gradcam' if overlay is not None else None, 'class_index': class_index, 'measurement': 'saliency coverage, not lesion segmentation', 'reason': None if overlay is not None else 'Grad-CAM is unavailable for this prediction'}, 'patient_companion': patient_companion_data}
     finally:
         Path(path).unlink(missing_ok=True)
 
