@@ -1,0 +1,804 @@
+/* ==========================================================================
+   CORTIA — Unified Design System Stylesheet
+   Color inspiration: CORTIA logo (red/coral watercolor brain mark + warm cream)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Core Design Tokens */
+  --bg:           #F5F0EB;   /* warm cream — matches intro background */
+  --card:         #FFFFFF;   /* every card */
+  --border:       #DDD4CC;   /* every border */
+  --sidebar:      #231A17;   /* deep wine-brown sidebar */
+  --red:          #C94040;   /* ONE primary accent — pulled from logo brain mark */
+  --red-dark:     #A83232;   /* hover on red */
+  --red-light:    #F0D0D0;   /* badge/tint backgrounds */
+  --ink:          #1C1917;   /* headings, primary text */
+  --mid:          #6B5248;   /* secondary labels */
+  --sub:          #9C8880;   /* captions, metadata */
+  --green:        #5A8A5A;   /* success / normal / connected */
+  --amber:        #C07830;   /* warning / unavailable / caution */
+
+  /* Legacy & Semantic Aliases */
+  --cream:        var(--bg);
+  --cream-deep:   #EDE6DD;
+  --blush:        #F0DDD8;
+  --blush-mid:    #DEC5BE;
+  --white:        var(--card);
+  --warm-ink:     var(--ink);
+  --warm-mid:     var(--mid);
+  --warm-sub:     var(--sub);
+  --warm-border:  var(--border);
+  --cortia-red:   var(--red);
+  --cortia-red-dk:var(--red-dark);
+  --cortia-red-lt:var(--red-light);
+  --status-green: var(--green);
+  --status-amber: var(--amber);
+  --sidebar-bg:   var(--sidebar);
+  --sidebar-hover:#2E2220;
+  --sidebar-active:#3A2A26;
+
+  /* Zero out any legacy blue variables */
+  --md-blue-primary: var(--red);
+  --cortia-blue:     var(--red);
+  --blue:            var(--red);
+  --primary:         var(--red);
+}
+
+/* ==========================================================================
+   Base & Typography
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg) !important;
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, .brand-name, .page-title, .page-main-heading, .card-title,
+.metric-value, .stat-value, .stat-number, .heading-garamond, .portal-title {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+p, span, label, input, button, select, textarea, table, td, th, code, pre {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+a {
+  color: var(--red);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--red-dark);
+}
+
+/* ==========================================================================
+   GLOBAL LAYOUT (body = flex row: sidebar 220px + main flex column)
+   ========================================================================== */
+
+.neuro-app {
+  display: flex !important;
+  flex-direction: row !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  background-color: var(--bg) !important;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   SIDEBAR (220px fixed, background #231A17)
+   ========================================================================== */
+
+.sidebar,
+aside.neuro-rail {
+  width: 220px !important;
+  min-width: 220px !important;
+  max-width: 220px !important;
+  background-color: var(--sidebar) !important;
+  background: var(--sidebar) !important;
+  height: 100vh !important;
+  position: sticky !important;
+  top: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  z-index: 100 !important;
+  overflow-y: auto !important;
+}
+
+.sidebar-brand {
+  padding: 20px 18px 16px 18px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.sidebar-brand .brand-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  text-decoration: none !important;
+}
+
+.sidebar-brand .brand-icon {
+  width: 32px !important;
+  height: 32px !important;
+  background: var(--red) !important;
+  color: #FFFFFF !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  box-shadow: 0 2px 8px rgba(201, 64, 64, 0.35) !important;
+}
+
+.sidebar-brand .brand-name {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: #FFFFFF !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1 !important;
+}
+
+.sidebar-brand .brand-tagline {
+  font-size: 10px !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  margin-top: 6px !important;
+  line-height: 1.3 !important;
+  font-weight: 400 !important;
+}
+
+.sidebar-section {
+  padding: 16px 12px 6px 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+.sidebar-label {
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  padding: 0 8px 6px 8px !important;
+}
+
+.nav-item,
+.rail-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+  border-left: 2px solid transparent !important;
+}
+
+.nav-item:hover,
+.rail-item:hover {
+  background-color: #2E2220 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.nav-item.active,
+.rail-item.active,
+body[data-page="mri"] .sidebar a[data-path="/"],
+body[data-page="eeg"] .sidebar a[data-path="/eeg"],
+body[data-page="insights"] .sidebar a[data-path="/insights"],
+body[data-page="ai"] .sidebar a[data-path="/ai"],
+body[data-page="cortia"] .sidebar a[data-path="/cortia"] {
+  background-color: #3A2A26 !important;
+  color: #FFFFFF !important;
+  border-left: 2px solid var(--red) !important;
+  font-weight: 600 !important;
+}
+
+.nav-icon {
+  font-size: 14px !important;
+  width: 18px !important;
+  text-align: center !important;
+  opacity: 0.8 !important;
+}
+
+.sidebar-footer,
+.rail-footer {
+  margin-top: auto !important;
+  padding: 14px 16px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.runtime-badge {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.runtime-dot,
+.status-indicator {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background-color: var(--green) !important;
+  display: inline-block !important;
+  box-shadow: 0 0 6px rgba(90, 138, 90, 0.6) !important;
+}
+
+/* ==========================================================================
+   MAIN WORKSPACE & TOPBAR
+   ========================================================================== */
+
+main.neuro-content {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+  background-color: var(--bg) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Topbar — 56px, white, border-bottom 1px solid var(--border) */
+header.neuro-header {
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border-bottom: 1px solid var(--border) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 24px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 90 !important;
+  gap: 16px !important;
+  overflow: hidden !important;
+}
+
+.header-meta {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-shrink: 0 !important;
+}
+
+.header-meta .brand-title {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+.topbar-title-text {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+
+.brand-badge {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  padding: 2px 7px !important;
+  border-radius: 4px !important;
+  background-color: var(--cream-deep) !important;
+  color: var(--mid) !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+}
+
+.header-meta .brand-subtitle {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  color: var(--sub) !important;
+  font-weight: 400 !important;
+  padding-left: 10px !important;
+  border-left: 1px solid var(--border) !important;
+  white-space: nowrap !important;
+}
+
+.header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Mode toggle pill */
+.mode-toggle-pill,
+.neuro-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: var(--bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 20px !important;
+  padding: 2px 4px !important;
+  gap: 4px !important;
+  font-size: 12px !important;
+}
+
+.neuro-pill {
+  padding: 5px 12px !important;
+  color: var(--mid) !important;
+  font-weight: 500 !important;
+}
+
+.mode-toggle-btn {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 10px !important;
+  border-radius: 14px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--mid) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.mode-toggle-btn.active {
+  background: var(--red) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 1px 3px rgba(201, 64, 64, 0.3) !important;
+}
+
+/* Primary Button */
+.btn-primary,
+.btn-pacs-primary,
+button.btn-pacs-primary,
+a.btn-pacs-primary,
+.cortia-btn-primary {
+  background: var(--red) !important;
+  background-color: var(--red) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 7px 14px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(201, 64, 64, 0.2) !important;
+}
+
+.btn-primary:hover,
+.btn-pacs-primary:hover,
+.cortia-btn-primary:hover {
+  background: var(--red-dark) !important;
+  background-color: var(--red-dark) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Ghost / Secondary Button */
+.btn-ghost,
+.btn-secondary,
+.btn-pacs-secondary,
+button.btn-pacs-secondary,
+a.btn-pacs-secondary,
+.cortia-btn-secondary {
+  background: transparent !important;
+  color: var(--mid) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-ghost:hover,
+.btn-secondary:hover,
+.btn-pacs-secondary:hover,
+.cortia-btn-secondary:hover {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+  border-color: #C5BCB3 !important;
+}
+
+/* ==========================================================================
+   CONTENT AREA & HEADINGS
+   ========================================================================== */
+
+.page-title-section {
+  padding: 24px 24px 0 24px !important;
+  margin-bottom: 20px !important;
+}
+
+.page-title,
+.page-main-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 28px !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+  margin: 0 0 6px 0 !important;
+}
+
+.page-subtitle,
+.page-subheading {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  color: var(--sub) !important;
+  margin: 0 !important;
+}
+
+/* Workspace wrapper inside content */
+.workspace-content,
+.eeg-workspace,
+.insights-workspace-layout,
+.ai-workspace-layout,
+.pacs-workspace,
+.main-workspace {
+  padding: 0 24px 28px 24px !important;
+  background-color: var(--bg) !important;
+}
+
+/* ==========================================================================
+   CARDS (White background, border 1px solid var(--border), radius 10px)
+   ========================================================================== */
+
+.card,
+.neuro-card,
+.metric-card,
+.pacs-card,
+.eeg-card,
+.ai-card,
+.ai-sidebar-card,
+.ai-chat-card,
+.portal-card,
+.workspace-card {
+  background: var(--card) !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  padding: 18px 20px !important;
+  box-shadow: 0 1px 3px rgba(28, 25, 23, 0.08) !important;
+  transition: all 0.2s ease !important;
+}
+
+.card-title,
+.card-header h2,
+.card-header h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+  margin: 0 0 12px 0 !important;
+}
+
+/* Metric / Stat Cards */
+.metric-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+.metric-card .metric-label,
+.stat-card .stat-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: var(--sub) !important;
+  margin-bottom: 4px !important;
+}
+
+.metric-card .metric-value,
+.stat-card .stat-value,
+.stat-number {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 26px !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+  line-height: 1.1 !important;
+}
+
+/* ==========================================================================
+   TABLES (Headers var(--bg), row hover #FAF7F4, divider #EDE6DD)
+   ========================================================================== */
+
+table,
+.neuro-table,
+.audit-table,
+.history-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 12px !important;
+  color: var(--ink) !important;
+}
+
+table th,
+.neuro-table th {
+  background-color: var(--bg) !important;
+  color: var(--sub) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--border) !important;
+  text-align: left !important;
+}
+
+table td,
+.neuro-table td {
+  padding: 10px 14px !important;
+  border-bottom: 1px solid #EDE6DD !important;
+  color: var(--ink) !important;
+}
+
+table tr:hover td,
+.neuro-table tr:hover td {
+  background-color: #FAF7F4 !important;
+}
+
+/* Findings styling in table */
+.finding-glioma {
+  color: var(--red) !important;
+  font-weight: 600 !important;
+}
+.finding-meningioma,
+.finding-pituitary {
+  color: var(--amber) !important;
+  font-weight: 600 !important;
+}
+.finding-normal,
+.finding-notumor,
+.finding-no-tumor {
+  color: var(--green) !important;
+  font-weight: 600 !important;
+}
+
+/* POS / NEG Badges */
+.badge-pos,
+.flag-pos,
+.badge-positive {
+  background-color: var(--red-light) !important;
+  color: var(--red) !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  padding: 3px 8px !important;
+  border-radius: 6px !important;
+  display: inline-block !important;
+}
+
+.badge-neg,
+.flag-neg,
+.badge-negative {
+  background-color: #D8EDD8 !important;
+  color: var(--green) !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  padding: 3px 8px !important;
+  border-radius: 6px !important;
+  display: inline-block !important;
+}
+
+/* ==========================================================================
+   INPUTS, DROPDOWNS, SLIDERS & DROPZONES
+   ========================================================================== */
+
+input[type="text"],
+input[type="number"],
+input[type="search"],
+select,
+textarea {
+  background-color: var(--bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+  color: var(--ink) !important;
+  outline: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 2px rgba(201, 64, 64, 0.15) !important;
+}
+
+input[type="range"] {
+  accent-color: var(--red) !important;
+}
+
+/* Dropzone */
+.dropzone,
+.mri-dropzone,
+.file-dropzone {
+  border: 2px dashed var(--border) !important;
+  background-color: var(--bg) !important;
+  border-radius: 10px !important;
+  padding: 28px 20px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.dropzone:hover,
+.mri-dropzone:hover,
+.file-dropzone:hover,
+.dropzone.dragover,
+.mri-dropzone.dragover {
+  border-color: var(--red) !important;
+  background-color: var(--red-light) !important;
+}
+
+/* Calibration Chips */
+.cal-chip,
+.chip-btn {
+  background-color: var(--bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  color: var(--mid) !important;
+  cursor: pointer !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+}
+
+.cal-chip:hover,
+.chip-btn:hover {
+  border-color: var(--red) !important;
+  color: var(--red) !important;
+  background-color: var(--red-light) !important;
+}
+
+/* ==========================================================================
+   DARK VIEWER PANELS (Only elements allowed off-cream: #1A1412)
+   ========================================================================== */
+
+.viewer-pane,
+.dark-viewer,
+.mri-viewer,
+.mri-viewport,
+.eeg-canvas-panel,
+.oscilloscope-panel,
+.dark-viewport {
+  background-color: #1A1412 !important;
+  background: #1A1412 !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  position: relative !important;
+}
+
+.viewer-pane label,
+.dark-viewer label,
+.dark-viewport label {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.viewer-empty,
+.dark-viewer .empty-state {
+  color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Colormap gradient bar */
+.colormap-gradient,
+.colormap-bar {
+  height: 8px !important;
+  border-radius: 4px !important;
+  background: linear-gradient(to right, #2A0A0A, var(--red), #E8904A, #FFFFFF) !important;
+  width: 100% !important;
+}
+
+/* Probability Bars */
+.prob-fill,
+.probability-fill-bar {
+  background-color: var(--red) !important;
+  border-radius: 4px !important;
+}
+
+/* ==========================================================================
+   BADGES & STATUS PILLS
+   ========================================================================== */
+
+.status-badge.status-pos,
+.status-badge.status-unavailable,
+.badge-unavailable {
+  background-color: var(--red-light) !important;
+  color: var(--red) !important;
+  border-radius: 6px !important;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.status-badge.status-success,
+.status-badge.status-connected,
+.status-badge.status-neg,
+.badge-connected {
+  background-color: #D8EDD8 !important;
+  color: var(--green) !important;
+  border-radius: 6px !important;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.status-badge.status-warning,
+.status-badge.status-unknown {
+  background-color: #F5E6D0 !important;
+  color: var(--amber) !important;
+  border-radius: 6px !important;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   FLOATING "ASK CORTIA AI" BUTTON (FAB)
+   ========================================================================== */
+
+.cortia-ai-fab,
+.cortia-fab {
+  position: fixed !important;
+  bottom: 28px !important;
+  right: 28px !important;
+  background-color: var(--red) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 50px !important;
+  box-shadow: 0 4px 20px rgba(201, 64, 64, 0.35) !important;
+  padding: 11px 20px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  z-index: 9999 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  text-decoration: none !important;
+  transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.cortia-ai-fab:hover,
+.cortia-fab:hover {
+  background-color: var(--red-dark) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 24px rgba(201, 64, 64, 0.45) !important;
+  color: #FFFFFF !important;
+}

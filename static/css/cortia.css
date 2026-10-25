@@ -1,14 +1,15 @@
+@import url('/static/css/cortia-theme.css');
 /* ==========================================================================
    Cortia Cinematic Loading & Landing Screen Overlay
    ========================================================================== */
 
 :root {
-  --cortia-ground: #f4f4f1;
+  --cortia-ground: #F5F0EB;
   --cortia-ink: #202124;
   --cortia-crimson: #c43a55;
   --cortia-rose: #e2677f;
   --cortia-gold: #f2c46a;
-  --cortia-blue: #C94040;
+  --cortia-red: #C94040;
   --cortia-display: "Manrope", "Helvetica Neue", Arial, system-ui, sans-serif;
 }
 
@@ -163,7 +164,7 @@
 }
 
 .cortia-btn-primary {
-  background: var(--cortia-blue);
+  background: var(--red);
   color: #ffffff;
   padding: 12px 28px;
   border-radius: 9999px;

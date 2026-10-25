@@ -304,7 +304,7 @@ function renderMessage(msg) {
         <div class="citation-card">
           <div class="citation-card-header">
             <span>${c.title} (${c.publication_year || 'N/A'})</span>
-            ${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" style="font-size:0.75rem;color:var(--md-blue-primary);">[DOI / Link &rarr;]</a>` : ''}
+            ${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" style="font-size:0.75rem;color:var(--red);">[DOI / Link &rarr;]</a>` : ''}
           </div>
           <div class="citation-snippet">${c.relevance_snippet}</div>
         </div>
@@ -392,7 +392,7 @@ function formatMarkdown(text) {
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/`([^`]+)`/g, '<code style="background:#F1F3F4;padding:2px 4px;border-radius:4px;font-family:monospace;font-size:0.8125rem;">$1</code>')
-    .replace(/^\> (.*$)/gim, '<blockquote style="border-left:3px solid var(--md-blue-primary);margin:8px 0;padding-left:12px;color:var(--md-text-secondary);">$1</blockquote>')
+    .replace(/^\> (.*$)/gim, '<blockquote style="border-left:3px solid var(--red);margin:8px 0;padding-left:12px;color:var(--md-text-secondary);">$1</blockquote>')
     .replace(/\n\n/g, '</p><p style="margin:6px 0;">')
     .replace(/\n/g, '<br>');
 }

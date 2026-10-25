@@ -207,7 +207,7 @@ function renderMRIScanDetails(scan) {
         <span style="${isTop ? 'font-weight:600;color:var(--md-text-primary);' : 'color:var(--md-text-secondary);'}">${cls}:</span>
         <div style="display:flex;align-items:center;gap:8px;width:55%;">
           <div style="flex:1;background:#E8EAED;height:6px;border-radius:3px;overflow:hidden;">
-            <div style="width:${pct}%;background:${isTop ? 'var(--md-blue-primary)' : '#9AA0A6'};height:100%;"></div>
+            <div style="width:${pct}%;background:${isTop ? 'var(--red)' : '#DEC5BE'};height:100%;"></div>
           </div>
           <span style="font-family:monospace;width:40px;text-align:right;">${pct.toFixed(1)}%</span>
         </div>
@@ -351,7 +351,7 @@ function renderEEGSessionDetails(sess) {
       tr.innerHTML = `
         <td><strong>${formatFeatureName(name)}</strong></td>
         <td>${data.band_definition || '—'}</td>
-        <td style="font-family:monospace;font-weight:600;color:var(--md-blue-primary);">${data.mean.toFixed(4)}</td>
+        <td style="font-family:monospace;font-weight:600;color:var(--red);">${data.mean.toFixed(4)}</td>
         <td style="font-family:monospace;">${data.min.toFixed(3)} / ${data.max.toFixed(3)}</td>
         <td style="font-family:monospace;">&plusmn;${data.std.toFixed(4)}</td>
         <td><span class="feature-unit-chip">${data.unit || 'unit'}</span></td>

@@ -1,587 +1,1167 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CORTIA Insights — Explainable AI Centre</title>
-  <link rel="stylesheet" href="/static/css/common.css">
-  <link rel="stylesheet" href="/static/css/insights.css">
-  <link rel="stylesheet" href="/static/css/cortia-assistant.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/companion-mode.css">
-</head>
-<body>
-  <div class="neuro-app">
-
-    <!-- Navigation Sidebar -->
-        <!-- CORTIA Dark Sidebar (#231A17) -->
-        <!-- CORTIA Dark Sidebar (#231A17) -->
-    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
-      <div class="sidebar-brand">
-        <a class="brand-logo" href="/cortia">
-          <div class="brand-icon">🧠</div>
-          <div class="brand-name">CORTIA</div>
-        </a>
-        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Workspaces</div>
-        <a class="nav-item rail-item " href="/" title="MRI Analysis">
-          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
-        </a>
-        <a class="nav-item rail-item " href="/eeg" title="EEG Monitoring">
-          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
-        </a>
-        <a class="nav-item rail-item active" href="/insights" title="CORTIA Insights">
-          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
-        </a>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Assistant</div>
-        <a class="nav-item rail-item " href="/ai" title="CORTIA AI">
-          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
-        </a>
-        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
-          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
-        </a>
-      </div>
-
-      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
-        <a class="nav-item rail-item" href="/cortia" title="Cortia Portal">
-          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
-        </a>
-      </div>
-
-      <div class="sidebar-footer rail-footer">
-        <div class="runtime-badge">
-          <span class="runtime-dot status-indicator"></span>
-          Runtime v2.4 &bull; Active
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Workspace Content -->
-    <main id="main" class="neuro-content">
-
-      <!-- Header -->
-      <header class="neuro-header">
-        <div class="header-meta">
-          <div class="brand-title">CORTIA Insights</div>
-          <span class="brand-subtitle">Visual explanations, biopotential feature extraction, and verifiable evaluation records</span>
-        </div>
-
-        <div class="header-actions">
-          <div class="neuro-pill" title="Evaluation status">
-            <span class="status-indicator"></span>
-            <span>Active Evaluator</span>
-          </div>
-          <a href="/" class="btn-pacs-secondary">MRI Workspace</a>
-          <a href="/eeg" class="btn-pacs-secondary">EEG Workspace</a>
-          <a href="/ai" class="btn-pacs-primary">✦ Ask CORTIA AI</a>
-        </div>
-      </header>
-
-      <!-- Page Heading -->
-      <section class="page-title-section">
-        <div class="page-title-container">
-          <h1 class="page-main-heading">Explainable AI & Signal Intelligence Centre</h1>
-          <p class="page-subheading">
-            Investigate deep learning activation maps, verify single-channel EEG spectral features, audit model evaluation splits, and inspect full analysis histories.
-          </p>
-        </div>
-      </section>
-
-      <!-- Tabs Navigation -->
-      <div class="insights-tabs-nav" role="tablist">
-        <button class="insights-tab-btn active" data-tab="tab-overview" role="tab" aria-selected="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Overview
-        </button>
-        <button class="insights-tab-btn" data-tab="tab-mri" role="tab" aria-selected="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M12 3v18M3 12h18"/></svg>
-          MRI Explainability
-        </button>
-        <button class="insights-tab-btn" data-tab="tab-eeg" role="tab" aria-selected="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4"/></svg>
-          EEG Feature Explorer
-        </button>
-        <button class="insights-tab-btn" data-tab="tab-performance" role="tab" aria-selected="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          Model Performance Centre
-        </button>
-        <button class="insights-tab-btn" data-tab="tab-history" role="tab" aria-selected="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Analysis History
-        </button>
-      </div>
-
-      <!-- TAB 1: OVERVIEW -->
-      <section id="tab-overview" class="tab-pane active" role="tabpanel">
-        <div class="insights-overview-grid">
-          <div class="metric-highlight-card">
-            <div>
-              <div class="metric-highlight-title">MRI Classifier Benchmark</div>
-              <div class="metric-highlight-value" id="ov-mri-acc">95.3%</div>
-              <div class="metric-highlight-sub">MobileNetV2 Quantized &bull; 234 Test Scans</div>
-            </div>
-            <div style="margin-top:16px;">
-              <span class="badge badge-success">Verified Split</span>
-            </div>
-          </div>
-
-          <div class="metric-highlight-card">
-            <div>
-              <div class="metric-highlight-title">EEG Hardware Scope</div>
-              <div class="metric-highlight-value" style="font-size:1.5rem;">1-Channel BioAmp</div>
-              <div class="metric-highlight-sub">Maker UNO &bull; 250 Hz &bull; 10-bit ADC Counts</div>
-            </div>
-            <div style="margin-top:16px;">
-              <span class="badge" style="background:#FEF7E0;color:#B06000;">Uncalibrated Counts</span>
-            </div>
-          </div>
-
-          <div class="metric-highlight-card">
-            <div>
-              <div class="metric-highlight-title">EEG Model Status</div>
-              <div class="metric-highlight-value" style="font-size:1.5rem;color:#D93025;">No Model Installed</div>
-              <div class="metric-highlight-sub">Diagnostic inference strictly withheld</div>
-            </div>
-            <div style="margin-top:16px;">
-              <span class="badge badge-warning">Features Only</span>
-            </div>
-          </div>
-
-          <div class="metric-highlight-card">
-            <div>
-              <div class="metric-highlight-title">Explainability Method</div>
-              <div class="metric-highlight-value" style="font-size:1.5rem;">Grad-CAM</div>
-              <div class="metric-highlight-sub">Gradient saliency coverage &bull; Conv2D layer</div>
-            </div>
-            <div style="margin-top:16px;">
-              <span class="badge" style="background:var(--red-light);color:var(--red);">Visual Attention</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Data Integrity Safeguards -->
-        <div class="safeguards-box">
-          <div class="safeguards-title">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#C94040" stroke-width="2" width="20" height="20">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            Research Data Integrity Safeguards Enforced in CORTIA
-          </div>
-          <ul class="safeguards-list">
-            <li><strong>No Fabricated EEG Metrics:</strong> Sleep staging, anxiety indices, and depression scores are not computed or simulated because single-channel biopotentials lack the spatial reference required for these neuropsychiatric tasks.</li>
-            <li><strong>Explicit Data Source Labeling:</strong> Telemetry records clearly distinguish between physical serial hardware recordings and simulated waveforms.</li>
-            <li><strong>Saliency Attention vs. Segmentation:</strong> Grad-CAM highlights gradient-weighted features guiding classification focus; it is never represented as an automated lesion boundary or segmentation mask.</li>
-            <li><strong>Verifiable Evaluation Records:</strong> Accuracy and F1 metrics displayed in the Performance Centre are loaded directly from disk-validated test split evaluations, not hardcoded.</li>
-          </ul>
-        </div>
-
-        <!-- Recent Activity Quick Table -->
-        <div class="neuro-card">
-          <div class="card-header">
-            <h2 class="card-title">Recent Application Analyses</h2>
-            <button class="btn-pacs-secondary" onclick="document.querySelector('[data-tab=tab-history]').click();">View All History &rarr;</button>
-          </div>
-          <div style="overflow-x:auto;">
-            <table class="features-data-table" id="ov-recent-table">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Analysis Type</th>
-                  <th>Identifier / Title</th>
-                  <th>Status / Outcome</th>
-                  <th>Key Metric</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="ov-recent-body">
-                <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--md-text-secondary);">Loading recent analyses...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 2: MRI EXPLAINABILITY -->
-      <section id="tab-mri" class="tab-pane" role="tabpanel">
-        <div class="neuro-card" style="margin-bottom:20px;">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-              <h2 class="card-title" style="margin:0;">MRI Scan Saliency Inspector</h2>
-              <span class="badge" style="background:var(--red-light);color:var(--red);" id="mri-scan-badge">Scan #--</span>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <button class="btn-pacs-secondary" id="mri-load-latest-btn">Load Latest Scan</button>
-              <a href="/" class="btn-pacs-primary">Upload New Scan &rarr;</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="explain-viewer-container">
-          <!-- Viewer Stage -->
-          <div class="viewer-card">
-            <div class="viewer-toolbar">
-              <div class="viewer-controls-group">
-                <span style="font-size:0.8125rem;font-weight:600;color:var(--md-text-secondary);">View Mode:</span>
-                <div class="view-mode-toggle">
-                  <button class="mode-btn active" data-mode="side-by-side">Side-by-Side</button>
-                  <button class="mode-btn" data-mode="overlay">Overlay</button>
-                  <button class="mode-btn" data-mode="original">Original Only</button>
-                  <button class="mode-btn" data-mode="heatmap">Grad-CAM Only</button>
-                </div>
-              </div>
-
-              <div class="opacity-slider-wrap" id="opacity-control-wrap" style="display:none;">
-                <span>Overlay Opacity:</span>
-                <input type="range" class="opacity-slider" id="mri-opacity-slider" min="0" max="100" value="65">
-                <span id="opacity-val-label" style="font-family:monospace;">65%</span>
-              </div>
-            </div>
-
-            <!-- Visual Canvas Stage -->
-            <div class="viewer-canvas-stage" id="mri-canvas-stage">
-              <!-- Rendered via JS -->
-              <div style="color:#DADCE0;text-align:center;padding:40px;">
-                <p>No MRI analysis loaded.</p>
-                <button class="btn-pacs-primary" style="margin-top:12px;" onclick="loadLatestMRI()">Load Latest Scan</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Explanation Details Sidebar -->
-          <div style="display:flex;flex-direction:column;gap:16px;">
-            <div class="neuro-card">
-              <div class="card-header">
-                <h3 class="card-title">Classification Result</h3>
-              </div>
-              <div style="margin-bottom:16px;">
-                <div style="font-size:1.5rem;font-weight:700;color:var(--md-text-primary);" id="mri-pred-label">--</div>
-                <div style="font-size:0.875rem;color:var(--md-text-secondary);margin-top:4px;">
-                  Confidence: <strong id="mri-pred-conf" style="color:var(--md-blue-primary);">--%</strong>
-                </div>
-              </div>
-
-              <!-- Probabilities -->
-              <div style="font-size:0.8125rem;font-weight:600;color:var(--md-text-secondary);margin-bottom:8px;">Class Probabilities:</div>
-              <div id="mri-probs-container" style="display:flex;flex-direction:column;gap:8px;">
-                <!-- Filled via JS -->
-              </div>
-            </div>
-
-            <div class="neuro-card">
-              <div class="card-header">
-                <h3 class="card-title">Saliency Metrics</h3>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:12px;">
-                <div>
-                  <div style="font-size:0.75rem;color:var(--md-text-secondary);text-transform:uppercase;">Tumor Area Coverage</div>
-                  <div style="font-size:1.25rem;font-weight:700;color:var(--md-text-primary);" id="mri-area-pct">--%</div>
-                  <div style="font-size:0.6875rem;color:var(--md-text-secondary);">Relative area with saliency &gt; 0.52 threshold</div>
-                </div>
-                <div>
-                  <div style="font-size:0.75rem;color:var(--md-text-secondary);text-transform:uppercase;">Peak Saliency Intensity</div>
-                  <div style="font-size:1.25rem;font-weight:700;color:var(--md-text-primary);" id="mri-peak-sal">--</div>
-                  <div style="font-size:0.6875rem;color:var(--md-text-secondary);">Normalized activation magnitude (0.0 to 1.0)</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Ask CORTIA AI CTA -->
-            <div class="ask-ai-cta-card">
-              <div class="ask-ai-cta-text">
-                <div class="ask-ai-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <div style="font-size:0.875rem;font-weight:600;">Investigate with AI</div>
-                  <div style="font-size:0.75rem;color:var(--md-text-secondary);">Ask CORTIA AI to explain this Grad-CAM map</div>
-                </div>
-              </div>
-              <button class="btn-pacs-primary" id="mri-ask-ai-btn" style="white-space:nowrap;padding:8px 12px;font-size:0.8125rem;">Ask AI &rarr;</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 3: EEG FEATURE EXPLORER -->
-      <section id="tab-eeg" class="tab-pane" role="tabpanel">
-        <div class="neuro-card" style="margin-bottom:20px;">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-              <h2 class="card-title" style="margin:0;">Single-Channel EEG Feature Explorer</h2>
-              <span class="badge" id="eeg-session-badge" style="background:var(--red-light);color:var(--red);">Session --</span>
-              <span class="badge" id="eeg-source-badge" style="background:#E8EAED;color:#3C4043;">Source: --</span>
-              <span class="badge" id="eeg-quality-badge">Quality: --</span>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <button class="btn-pacs-secondary" id="eeg-load-latest-btn">Load Latest Session</button>
-              <a href="/eeg" class="btn-pacs-primary">Live EEG Workspace &rarr;</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quality & Reasons Banner -->
-        <div id="eeg-reasons-banner" class="safeguards-box" style="display:none;margin-bottom:20px;border-left-color:#F29900;">
-          <div class="safeguards-title" style="color:#B06000;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-            Signal Quality Notice &amp; Observed Issues
-          </div>
-          <div id="eeg-reasons-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
-        </div>
-
-        <!-- Features Table -->
-        <div class="neuro-card" style="margin-bottom:24px;">
-          <div class="card-header">
-            <h3 class="card-title">Computed Signal Spectral &amp; Statistical Descriptors</h3>
-            <span style="font-size:0.8125rem;color:var(--md-text-secondary);">4.0s window &bull; Welch PSD &bull; 1.0–40.0 Hz</span>
-          </div>
-          <div style="overflow-x:auto;">
-            <table class="features-data-table">
-              <thead>
-                <tr>
-                  <th>Feature Name</th>
-                  <th>Band Definition</th>
-                  <th>Calculated Mean</th>
-                  <th>Min / Max Span</th>
-                  <th>Standard Deviation</th>
-                  <th>Scientific Unit</th>
-                </tr>
-              </thead>
-              <tbody id="eeg-features-body">
-                <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--md-text-secondary);">No EEG session loaded. Click "Load Latest Session".</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Model Explanation Status Box -->
-        <div class="neuro-card" style="margin-bottom:24px;">
-          <div class="card-header">
-            <h3 class="card-title">EEG Classifier Feasibility &amp; Model Explanations</h3>
-            <span class="badge badge-warning">Zero Fabricated Predictions</span>
-          </div>
-          <div style="font-size:0.875rem;color:var(--md-text-secondary);line-height:1.6;">
-            <p style="margin-bottom:12px;">
-              <strong>Model Installation Status:</strong> <span style="color:#D93025;font-weight:600;">No trained EEG classifier model is installed.</span>
-              In accordance with research integrity standards, CORTIA does not output fabricated stress scores, depression indices, or attention percentages.
-            </p>
-            <div style="background:#F8F9FA;padding:16px;border-radius:8px;border:1px solid var(--md-border);margin-bottom:16px;">
-              <div style="font-weight:600;color:var(--md-text-primary);margin-bottom:8px;">Why are psychiatric and sleep models withheld on this hardware?</div>
-              <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;">
-                <li><strong>Sleep Architecture Staging:</strong> Mandates multi-channel polysomnography (C3/C4 central EEG for sleep spindles and K-complexes, dual EOG for rapid eye movements, and submental chin EMG for muscle atonia). Single-channel uncalibrated forehead telemetry cannot resolve sleep stages.</li>
-                <li><strong>Depression Screening (FAA):</strong> Frontal Alpha Asymmetry mathematically requires a homologous bilateral electrode pair (ln[F4] - ln[F3]). A single bipolar biopotential channel cannot measure inter-hemispheric differential power.</li>
-                <li><strong>Anxiety State Classification:</strong> Single-channel forehead biopotentials are contaminated by frontal electromyographic tension, requiring a 10-20 montage and normative referencing.</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Ask AI CTA -->
-          <div class="ask-ai-cta-card">
-            <div class="ask-ai-cta-text">
-              <div class="ask-ai-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-              </div>
-              <div>
-                <div style="font-size:0.875rem;font-weight:600;">Consult CORTIA AI on EEG Telemetry</div>
-                <div style="font-size:0.75rem;color:var(--md-text-secondary);">Ask questions regarding alpha relative power, digital filtering, or session metrics</div>
-              </div>
-            </div>
-            <button class="btn-pacs-primary" id="eeg-ask-ai-btn" style="white-space:nowrap;padding:8px 12px;font-size:0.8125rem;">Ask AI &rarr;</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 4: MODEL PERFORMANCE CENTRE -->
-      <section id="tab-performance" class="tab-pane" role="tabpanel">
-        <div class="neuro-card" style="margin-bottom:24px;">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title">Brain Tumor Classifier — Benchmark Evaluation</h2>
-              <span style="font-size:0.8125rem;color:var(--md-text-secondary);">MobileNetV2 (TFLite &bull; Quantized) &bull; Candidate Model: kaggle_boost15_234</span>
-            </div>
-            <span class="badge badge-success">Verified Evaluation Artifact</span>
-          </div>
-
-          <div class="insights-overview-grid" style="margin-top:16px;margin-bottom:20px;">
-            <div class="metric-highlight-card" style="padding:16px;">
-              <div class="metric-highlight-title">Test Set Accuracy</div>
-              <div class="metric-highlight-value" style="color:var(--md-blue-primary);">95.3%</div>
-              <div class="metric-highlight-sub">223 / 234 correct predictions</div>
-            </div>
-            <div class="metric-highlight-card" style="padding:16px;">
-              <div class="metric-highlight-title">Macro F1-Score</div>
-              <div class="metric-highlight-value">0.928</div>
-              <div class="metric-highlight-sub">Unweighted average across 4 classes</div>
-            </div>
-            <div class="metric-highlight-card" style="padding:16px;">
-              <div class="metric-highlight-title">Evaluated Test Scans</div>
-              <div class="metric-highlight-value">234</div>
-              <div class="metric-highlight-sub">Strict duplicate exclusions applied</div>
-            </div>
-            <div class="metric-highlight-card" style="padding:16px;">
-              <div class="metric-highlight-title">Export Parity</div>
-              <div class="metric-highlight-value" style="font-size:1.5rem;">100% Agreement</div>
-              <div class="metric-highlight-sub">TFLite vs Keras float predictions</div>
-            </div>
-          </div>
-
-          <!-- Per-Class Performance Table -->
-          <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px;">Class-Wise Evaluation Breakdown</h3>
-          <div style="overflow-x:auto;margin-bottom:24px;">
-            <table class="features-data-table">
-              <thead>
-                <tr>
-                  <th>Target Class</th>
-                  <th>Precision</th>
-                  <th>Recall (Sensitivity)</th>
-                  <th>F1-Score</th>
-                  <th>Test Support (Samples)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Glioma Tumor</strong></td>
-                  <td>81.5%</td>
-                  <td>95.7%</td>
-                  <td><strong>0.880</strong></td>
-                  <td>23 scans</td>
-                </tr>
-                <tr>
-                  <td><strong>Meningioma Tumor</strong></td>
-                  <td>98.2%</td>
-                  <td>99.1%</td>
-                  <td><strong>0.987</strong></td>
-                  <td>112 scans</td>
-                </tr>
-                <tr>
-                  <td><strong>No Tumor (Normal)</strong></td>
-                  <td>100.0%</td>
-                  <td>88.8%</td>
-                  <td><strong>0.940</strong></td>
-                  <td>80 scans</td>
-                </tr>
-                <tr>
-                  <td><strong>Pituitary Tumor</strong></td>
-                  <td>82.6%</td>
-                  <td>100.0%</td>
-                  <td><strong>0.905</strong></td>
-                  <td>19 scans</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Confusion Matrix -->
-          <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px;">Empirical Confusion Matrix (234 Test Scans)</h3>
-          <div class="matrix-container" style="max-width:680px;">
-            <div class="matrix-grid">
-              <!-- Header Row -->
-              <div class="matrix-cell header">True \ Pred</div>
-              <div class="matrix-cell header">Glioma</div>
-              <div class="matrix-cell header">Meningioma</div>
-              <div class="matrix-cell header">No Tumor</div>
-              <div class="matrix-cell header">Pituitary</div>
-
-              <!-- Row 1: Glioma -->
-              <div class="matrix-cell header">Glioma (23)</div>
-              <div class="matrix-cell diagonal"><span class="matrix-cell-val">22</span><span class="matrix-cell-sub">95.7%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">1</span><span class="matrix-cell-sub">4.3%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
-
-              <!-- Row 2: Meningioma -->
-              <div class="matrix-cell header">Meningioma (112)</div>
-              <div class="matrix-cell"><span class="matrix-cell-val">1</span><span class="matrix-cell-sub">0.9%</span></div>
-              <div class="matrix-cell diagonal"><span class="matrix-cell-val">111</span><span class="matrix-cell-sub">99.1%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
-
-              <!-- Row 3: No Tumor -->
-              <div class="matrix-cell header">No Tumor (80)</div>
-              <div class="matrix-cell"><span class="matrix-cell-val">3</span><span class="matrix-cell-sub">3.8%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">1</span><span class="matrix-cell-sub">1.2%</span></div>
-              <div class="matrix-cell diagonal"><span class="matrix-cell-val">71</span><span class="matrix-cell-sub">88.8%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">5</span><span class="matrix-cell-sub">6.2%</span></div>
-
-              <!-- Row 4: Pituitary -->
-              <div class="matrix-cell header">Pituitary (19)</div>
-              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
-              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
-              <div class="matrix-cell diagonal"><span class="matrix-cell-val">19</span><span class="matrix-cell-sub">100.0%</span></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 5: ANALYSIS HISTORY -->
-      <section id="tab-history" class="tab-pane" role="tabpanel">
-        <div class="neuro-card">
-          <div class="card-header">
-            <div>
-              <h2 class="card-title">Analysis &amp; Recording Audit Log</h2>
-              <span style="font-size:0.8125rem;color:var(--md-text-secondary);">Unified audit repository of MRI inferences and EEG biopotential sessions</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <select id="history-filter-select" style="padding:6px 12px;border:1px solid var(--md-border);border-radius:4px;font-size:0.875rem;background:#FFFFFF;">
-                <option value="all">All Analyses</option>
-                <option value="mri">MRI Scans Only</option>
-                <option value="eeg">EEG Sessions Only</option>
-              </select>
-              <button class="btn-pacs-secondary" id="history-refresh-btn">Refresh</button>
-            </div>
-          </div>
-
-          <div style="overflow-x:auto;">
-            <table class="features-data-table">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Modality</th>
-                  <th>Record Details</th>
-                  <th>Source / Mode</th>
-                  <th>Primary Metric</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="history-table-body">
-                <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--md-text-secondary);">Loading historical records...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-    </main>
-  </div>
-
-  <!-- Floating Assistant Drawer / Trigger -->
-  <div id="cortia-ai-floating-trigger" class="floating-assistant-btn" title="Open CORTIA AI Assistant">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-      <circle cx="9" cy="10" r="1" fill="currentColor" />
-      <circle cx="15" cy="10" r="1" fill="currentColor" />
-    </svg>
-    <span>Ask CORTIA AI</span>
-  </div>
-
-  <script src="/static/js/insights.js"></script>
-  <script src="/static/js/cortia-assistant.js"></script>
-  <script src="/static/js/companion-mode.js"></script>
-</body>
-</html>
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/cortia-theme.css">
+
+  
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CORTIA Insights — Explainable AI Centre</title>
+
+  <link rel="stylesheet" href="/static/css/common.css">
+
+  <link rel="stylesheet" href="/static/css/insights.css">
+
+  <link rel="stylesheet" href="/static/css/cortia-assistant.css">
+
+  
+  
+  
+  <link rel="stylesheet" href="/static/css/companion-mode.css">
+
+</head>
+
+<body data-page="insights">
+
+  <div class="neuro-app">
+
+
+
+    <!-- Navigation Sidebar -->
+
+        <!-- CORTIA Dark Sidebar (#231A17) -->
+
+        <!-- CORTIA Dark Sidebar (#231A17) -->
+
+    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
+      <div class="sidebar-brand">
+        <a class="brand-logo" href="/cortia">
+          <div class="brand-icon">🧠</div>
+          <div class="brand-name">CORTIA</div>
+        </a>
+        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Workspaces</div>
+        <a class="nav-item rail-item" data-path="/" href="/" title="MRI Analysis">
+          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
+        </a>
+        <a class="nav-item rail-item" data-path="/eeg" href="/eeg" title="EEG Monitoring">
+          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
+        </a>
+        <a class="nav-item rail-item" data-path="/insights" href="/insights" title="CORTIA Insights">
+          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Assistant</div>
+        <a class="nav-item rail-item" data-path="/ai" href="/ai" title="CORTIA AI">
+          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
+        </a>
+        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
+          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
+        <a class="nav-item rail-item" data-path="/cortia" href="/cortia" title="Cortia Portal">
+          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer rail-footer">
+        <div class="runtime-badge">
+          <span class="runtime-dot status-indicator"></span>
+          Runtime v2.4 &bull; Active
+        </div>
+      </div>
+    </aside>
+
+
+
+    <!-- Main Workspace Content -->
+
+    <main id="main" class="neuro-content">
+
+
+
+      <!-- Header -->
+
+      <header class="neuro-header" id="cortia-topbar">
+        <div class="header-meta">
+          <div class="brand-title">
+            <span class="topbar-title-text" id="topbar-title">MRI Analysis Dashboard</span>
+            <span class="brand-badge" id="topbar-badge">Clinical PACS</span>
+          </div>
+          <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Not for diagnostic use</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="mode-toggle-pill persona-toggle-wrap" id="persona-toggle-wrap">
+            <button type="button" class="mode-toggle-btn persona-toggle-btn active" data-mode="research" id="btn-mode-research">Research</button>
+            <button type="button" class="mode-toggle-btn persona-toggle-btn" data-mode="everyday" id="btn-mode-companion">Companion</button>
+          </div>
+
+          <div class="neuro-pill" id="topbar-status-pill" title="System status">
+            <span class="status-indicator"></span>
+            <span id="engine-status"><span id="backend"><span id="ai-provider-badge">Active</span></span></span>
+          </div>
+
+          <button type="button" class="btn-ghost" onclick="window.replayCortiaIntro ? window.replayCortiaIntro() : (window.location.href='/cortia')" title="Intro">Intro</button>
+          <a href="/cortia" class="btn-ghost" title="Portal">Portal</a>
+          <a href="/" class="btn-ghost" title="MRI">MRI</a>
+          <a href="/eeg" class="btn-ghost" title="EEG">EEG</a>
+          <a href="/insights" class="btn-ghost" title="Insights">Insights</a>
+          <a href="/ai" class="btn-primary" id="topbar-primary-btn" title="Ask CORTIA AI">✦ Ask CORTIA AI</a>
+        </div>
+      </header>
+
+
+
+      <!-- Page Heading -->
+
+      <section class="page-title-section">
+
+        <div class="page-title-container">
+
+          <h1 class="page-main-heading">Explainable AI & Signal Intelligence Centre</h1>
+
+          <p class="page-subheading">
+
+            Investigate deep learning activation maps, verify single-channel EEG spectral features, audit model evaluation splits, and inspect full analysis histories.
+
+          </p>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- Tabs Navigation -->
+
+      <div class="insights-tabs-nav" role="tablist">
+
+        <button class="insights-tab-btn active" data-tab="tab-overview" role="tab" aria-selected="true">
+
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+
+          Overview
+
+        </button>
+
+        <button class="insights-tab-btn" data-tab="tab-mri" role="tab" aria-selected="false">
+
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M12 3v18M3 12h18"/></svg>
+
+          MRI Explainability
+
+        </button>
+
+        <button class="insights-tab-btn" data-tab="tab-eeg" role="tab" aria-selected="false">
+
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M2 12h3l2-6 4 12 3-8 2 5 2-3h4"/></svg>
+
+          EEG Feature Explorer
+
+        </button>
+
+        <button class="insights-tab-btn" data-tab="tab-performance" role="tab" aria-selected="false">
+
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+
+          Model Performance Centre
+
+        </button>
+
+        <button class="insights-tab-btn" data-tab="tab-history" role="tab" aria-selected="false">
+
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+
+          Analysis History
+
+        </button>
+
+      </div>
+
+
+
+      <!-- TAB 1: OVERVIEW -->
+
+      <section id="tab-overview" class="tab-pane active" role="tabpanel">
+
+        <div class="insights-overview-grid">
+
+          <div class="metric-highlight-card">
+
+            <div>
+
+              <div class="metric-highlight-title">MRI Classifier Benchmark</div>
+
+              <div class="metric-highlight-value" id="ov-mri-acc">95.3%</div>
+
+              <div class="metric-highlight-sub">MobileNetV2 Quantized &bull; 234 Test Scans</div>
+
+            </div>
+
+            <div style="margin-top:16px;">
+
+              <span class="badge badge-success">Verified Split</span>
+
+            </div>
+
+          </div>
+
+
+
+          <div class="metric-highlight-card">
+
+            <div>
+
+              <div class="metric-highlight-title">EEG Hardware Scope</div>
+
+              <div class="metric-highlight-value" style="font-size:1.5rem;">1-Channel BioAmp</div>
+
+              <div class="metric-highlight-sub">Maker UNO &bull; 250 Hz &bull; 10-bit ADC Counts</div>
+
+            </div>
+
+            <div style="margin-top:16px;">
+
+              <span class="badge" style="background:#FEF7E0;color:#B06000;">Uncalibrated Counts</span>
+
+            </div>
+
+          </div>
+
+
+
+          <div class="metric-highlight-card">
+
+            <div>
+
+              <div class="metric-highlight-title">EEG Model Status</div>
+
+              <div class="metric-highlight-value" style="font-size:1.5rem;color:#D93025;">No Model Installed</div>
+
+              <div class="metric-highlight-sub">Diagnostic inference strictly withheld</div>
+
+            </div>
+
+            <div style="margin-top:16px;">
+
+              <span class="badge badge-warning">Features Only</span>
+
+            </div>
+
+          </div>
+
+
+
+          <div class="metric-highlight-card">
+
+            <div>
+
+              <div class="metric-highlight-title">Explainability Method</div>
+
+              <div class="metric-highlight-value" style="font-size:1.5rem;">Grad-CAM</div>
+
+              <div class="metric-highlight-sub">Gradient saliency coverage &bull; Conv2D layer</div>
+
+            </div>
+
+            <div style="margin-top:16px;">
+
+              <span class="badge" style="background:var(--red-light);color:var(--red);">Visual Attention</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Data Integrity Safeguards -->
+
+        <div class="safeguards-box">
+
+          <div class="safeguards-title">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="#C94040" stroke-width="2" width="20" height="20">
+
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+
+            </svg>
+
+            Research Data Integrity Safeguards Enforced in CORTIA
+
+          </div>
+
+          <ul class="safeguards-list">
+
+            <li><strong>No Fabricated EEG Metrics:</strong> Sleep staging, anxiety indices, and depression scores are not computed or simulated because single-channel biopotentials lack the spatial reference required for these neuropsychiatric tasks.</li>
+
+            <li><strong>Explicit Data Source Labeling:</strong> Telemetry records clearly distinguish between physical serial hardware recordings and simulated waveforms.</li>
+
+            <li><strong>Saliency Attention vs. Segmentation:</strong> Grad-CAM highlights gradient-weighted features guiding classification focus; it is never represented as an automated lesion boundary or segmentation mask.</li>
+
+            <li><strong>Verifiable Evaluation Records:</strong> Accuracy and F1 metrics displayed in the Performance Centre are loaded directly from disk-validated test split evaluations, not hardcoded.</li>
+
+          </ul>
+
+        </div>
+
+
+
+        <!-- Recent Activity Quick Table -->
+
+        <div class="neuro-card">
+
+          <div class="card-header">
+
+            <h2 class="card-title">Recent Application Analyses</h2>
+
+            <button class="btn-pacs-secondary" onclick="document.querySelector('[data-tab=tab-history]').click();">View All History &rarr;</button>
+
+          </div>
+
+          <div style="overflow-x:auto;">
+
+            <table class="features-data-table" id="ov-recent-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>Timestamp</th>
+
+                  <th>Analysis Type</th>
+
+                  <th>Identifier / Title</th>
+
+                  <th>Status / Outcome</th>
+
+                  <th>Key Metric</th>
+
+                  <th>Action</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="ov-recent-body">
+
+                <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--md-text-secondary);">Loading recent analyses...</td></tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- TAB 2: MRI EXPLAINABILITY -->
+
+      <section id="tab-mri" class="tab-pane" role="tabpanel">
+
+        <div class="neuro-card" style="margin-bottom:20px;">
+
+          <div class="card-header">
+
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+
+              <h2 class="card-title" style="margin:0;">MRI Scan Saliency Inspector</h2>
+
+              <span class="badge" style="background:var(--red-light);color:var(--red);" id="mri-scan-badge">Scan #--</span>
+
+            </div>
+
+            <div style="display:flex;gap:8px;align-items:center;">
+
+              <button class="btn-pacs-secondary" id="mri-load-latest-btn">Load Latest Scan</button>
+
+              <a href="/" class="btn-pacs-primary">Upload New Scan &rarr;</a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="explain-viewer-container">
+
+          <!-- Viewer Stage -->
+
+          <div class="viewer-card">
+
+            <div class="viewer-toolbar">
+
+              <div class="viewer-controls-group">
+
+                <span style="font-size:0.8125rem;font-weight:600;color:var(--md-text-secondary);">View Mode:</span>
+
+                <div class="view-mode-toggle">
+
+                  <button class="mode-btn active" data-mode="side-by-side">Side-by-Side</button>
+
+                  <button class="mode-btn" data-mode="overlay">Overlay</button>
+
+                  <button class="mode-btn" data-mode="original">Original Only</button>
+
+                  <button class="mode-btn" data-mode="heatmap">Grad-CAM Only</button>
+
+                </div>
+
+              </div>
+
+
+
+              <div class="opacity-slider-wrap" id="opacity-control-wrap" style="display:none;">
+
+                <span>Overlay Opacity:</span>
+
+                <input type="range" class="opacity-slider" id="mri-opacity-slider" min="0" max="100" value="65">
+
+                <span id="opacity-val-label" style="font-family:monospace;">65%</span>
+
+              </div>
+
+            </div>
+
+
+
+            <!-- Visual Canvas Stage -->
+
+            <div class="viewer-canvas-stage" id="mri-canvas-stage">
+
+              <!-- Rendered via JS -->
+
+              <div style="color:#DADCE0;text-align:center;padding:40px;">
+
+                <p>No MRI analysis loaded.</p>
+
+                <button class="btn-pacs-primary" style="margin-top:12px;" onclick="loadLatestMRI()">Load Latest Scan</button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Explanation Details Sidebar -->
+
+          <div style="display:flex;flex-direction:column;gap:16px;">
+
+            <div class="neuro-card">
+
+              <div class="card-header">
+
+                <h3 class="card-title">Classification Result</h3>
+
+              </div>
+
+              <div style="margin-bottom:16px;">
+
+                <div style="font-size:1.5rem;font-weight:700;color:var(--md-text-primary);" id="mri-pred-label">--</div>
+
+                <div style="font-size:0.875rem;color:var(--md-text-secondary);margin-top:4px;">
+
+                  Confidence: <strong id="mri-pred-conf" style="color:var(--red);">--%</strong>
+
+                </div>
+
+              </div>
+
+
+
+              <!-- Probabilities -->
+
+              <div style="font-size:0.8125rem;font-weight:600;color:var(--md-text-secondary);margin-bottom:8px;">Class Probabilities:</div>
+
+              <div id="mri-probs-container" style="display:flex;flex-direction:column;gap:8px;">
+
+                <!-- Filled via JS -->
+
+              </div>
+
+            </div>
+
+
+
+            <div class="neuro-card">
+
+              <div class="card-header">
+
+                <h3 class="card-title">Saliency Metrics</h3>
+
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:12px;">
+
+                <div>
+
+                  <div style="font-size:0.75rem;color:var(--md-text-secondary);text-transform:uppercase;">Tumor Area Coverage</div>
+
+                  <div style="font-size:1.25rem;font-weight:700;color:var(--md-text-primary);" id="mri-area-pct">--%</div>
+
+                  <div style="font-size:0.6875rem;color:var(--md-text-secondary);">Relative area with saliency &gt; 0.52 threshold</div>
+
+                </div>
+
+                <div>
+
+                  <div style="font-size:0.75rem;color:var(--md-text-secondary);text-transform:uppercase;">Peak Saliency Intensity</div>
+
+                  <div style="font-size:1.25rem;font-weight:700;color:var(--md-text-primary);" id="mri-peak-sal">--</div>
+
+                  <div style="font-size:0.6875rem;color:var(--md-text-secondary);">Normalized activation magnitude (0.0 to 1.0)</div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+            <!-- Ask CORTIA AI CTA -->
+
+            <div class="ask-ai-cta-card">
+
+              <div class="ask-ai-cta-text">
+
+                <div class="ask-ai-icon">
+
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+
+                  </svg>
+
+                </div>
+
+                <div>
+
+                  <div style="font-size:0.875rem;font-weight:600;">Investigate with AI</div>
+
+                  <div style="font-size:0.75rem;color:var(--md-text-secondary);">Ask CORTIA AI to explain this Grad-CAM map</div>
+
+                </div>
+
+              </div>
+
+              <button class="btn-pacs-primary" id="mri-ask-ai-btn" style="white-space:nowrap;padding:8px 12px;font-size:0.8125rem;">Ask AI &rarr;</button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- TAB 3: EEG FEATURE EXPLORER -->
+
+      <section id="tab-eeg" class="tab-pane" role="tabpanel">
+
+        <div class="neuro-card" style="margin-bottom:20px;">
+
+          <div class="card-header">
+
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+
+              <h2 class="card-title" style="margin:0;">Single-Channel EEG Feature Explorer</h2>
+
+              <span class="badge" id="eeg-session-badge" style="background:var(--red-light);color:var(--red);">Session --</span>
+
+              <span class="badge" id="eeg-source-badge" style="background:#E8EAED;color:#3C4043;">Source: --</span>
+
+              <span class="badge" id="eeg-quality-badge">Quality: --</span>
+
+            </div>
+
+            <div style="display:flex;gap:8px;align-items:center;">
+
+              <button class="btn-pacs-secondary" id="eeg-load-latest-btn">Load Latest Session</button>
+
+              <a href="/eeg" class="btn-pacs-primary">Live EEG Workspace &rarr;</a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Quality & Reasons Banner -->
+
+        <div id="eeg-reasons-banner" class="safeguards-box" style="display:none;margin-bottom:20px;border-left-color:#F29900;">
+
+          <div class="safeguards-title" style="color:#B06000;">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+
+            </svg>
+
+            Signal Quality Notice &amp; Observed Issues
+
+          </div>
+
+          <div id="eeg-reasons-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+
+        </div>
+
+
+
+        <!-- Features Table -->
+
+        <div class="neuro-card" style="margin-bottom:24px;">
+
+          <div class="card-header">
+
+            <h3 class="card-title">Computed Signal Spectral &amp; Statistical Descriptors</h3>
+
+            <span style="font-size:0.8125rem;color:var(--md-text-secondary);">4.0s window &bull; Welch PSD &bull; 1.0–40.0 Hz</span>
+
+          </div>
+
+          <div style="overflow-x:auto;">
+
+            <table class="features-data-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>Feature Name</th>
+
+                  <th>Band Definition</th>
+
+                  <th>Calculated Mean</th>
+
+                  <th>Min / Max Span</th>
+
+                  <th>Standard Deviation</th>
+
+                  <th>Scientific Unit</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="eeg-features-body">
+
+                <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--md-text-secondary);">No EEG session loaded. Click "Load Latest Session".</td></tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Model Explanation Status Box -->
+
+        <div class="neuro-card" style="margin-bottom:24px;">
+
+          <div class="card-header">
+
+            <h3 class="card-title">EEG Classifier Feasibility &amp; Model Explanations</h3>
+
+            <span class="badge badge-warning">Zero Fabricated Predictions</span>
+
+          </div>
+
+          <div style="font-size:0.875rem;color:var(--md-text-secondary);line-height:1.6;">
+
+            <p style="margin-bottom:12px;">
+
+              <strong>Model Installation Status:</strong> <span style="color:#D93025;font-weight:600;">No trained EEG classifier model is installed.</span>
+
+              In accordance with research integrity standards, CORTIA does not output fabricated stress scores, depression indices, or attention percentages.
+
+            </p>
+
+            <div style="background:#F8F9FA;padding:16px;border-radius:8px;border:1px solid var(--md-border);margin-bottom:16px;">
+
+              <div style="font-weight:600;color:var(--md-text-primary);margin-bottom:8px;">Why are psychiatric and sleep models withheld on this hardware?</div>
+
+              <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;">
+
+                <li><strong>Sleep Architecture Staging:</strong> Mandates multi-channel polysomnography (C3/C4 central EEG for sleep spindles and K-complexes, dual EOG for rapid eye movements, and submental chin EMG for muscle atonia). Single-channel uncalibrated forehead telemetry cannot resolve sleep stages.</li>
+
+                <li><strong>Depression Screening (FAA):</strong> Frontal Alpha Asymmetry mathematically requires a homologous bilateral electrode pair (ln[F4] - ln[F3]). A single bipolar biopotential channel cannot measure inter-hemispheric differential power.</li>
+
+                <li><strong>Anxiety State Classification:</strong> Single-channel forehead biopotentials are contaminated by frontal electromyographic tension, requiring a 10-20 montage and normative referencing.</li>
+
+              </ul>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Ask AI CTA -->
+
+          <div class="ask-ai-cta-card">
+
+            <div class="ask-ai-cta-text">
+
+              <div class="ask-ai-icon">
+
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+
+                </svg>
+
+              </div>
+
+              <div>
+
+                <div style="font-size:0.875rem;font-weight:600;">Consult CORTIA AI on EEG Telemetry</div>
+
+                <div style="font-size:0.75rem;color:var(--md-text-secondary);">Ask questions regarding alpha relative power, digital filtering, or session metrics</div>
+
+              </div>
+
+            </div>
+
+            <button class="btn-pacs-primary" id="eeg-ask-ai-btn" style="white-space:nowrap;padding:8px 12px;font-size:0.8125rem;">Ask AI &rarr;</button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- TAB 4: MODEL PERFORMANCE CENTRE -->
+
+      <section id="tab-performance" class="tab-pane" role="tabpanel">
+
+        <div class="neuro-card" style="margin-bottom:24px;">
+
+          <div class="card-header">
+
+            <div>
+
+              <h2 class="card-title">Brain Tumor Classifier — Benchmark Evaluation</h2>
+
+              <span style="font-size:0.8125rem;color:var(--md-text-secondary);">MobileNetV2 (TFLite &bull; Quantized) &bull; Candidate Model: kaggle_boost15_234</span>
+
+            </div>
+
+            <span class="badge badge-success">Verified Evaluation Artifact</span>
+
+          </div>
+
+
+
+          <div class="insights-overview-grid" style="margin-top:16px;margin-bottom:20px;">
+
+            <div class="metric-highlight-card" style="padding:16px;">
+
+              <div class="metric-highlight-title">Test Set Accuracy</div>
+
+              <div class="metric-highlight-value" style="color:var(--red);">95.3%</div>
+
+              <div class="metric-highlight-sub">223 / 234 correct predictions</div>
+
+            </div>
+
+            <div class="metric-highlight-card" style="padding:16px;">
+
+              <div class="metric-highlight-title">Macro F1-Score</div>
+
+              <div class="metric-highlight-value">0.928</div>
+
+              <div class="metric-highlight-sub">Unweighted average across 4 classes</div>
+
+            </div>
+
+            <div class="metric-highlight-card" style="padding:16px;">
+
+              <div class="metric-highlight-title">Evaluated Test Scans</div>
+
+              <div class="metric-highlight-value">234</div>
+
+              <div class="metric-highlight-sub">Strict duplicate exclusions applied</div>
+
+            </div>
+
+            <div class="metric-highlight-card" style="padding:16px;">
+
+              <div class="metric-highlight-title">Export Parity</div>
+
+              <div class="metric-highlight-value" style="font-size:1.5rem;">100% Agreement</div>
+
+              <div class="metric-highlight-sub">TFLite vs Keras float predictions</div>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Per-Class Performance Table -->
+
+          <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px;">Class-Wise Evaluation Breakdown</h3>
+
+          <div style="overflow-x:auto;margin-bottom:24px;">
+
+            <table class="features-data-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>Target Class</th>
+
+                  <th>Precision</th>
+
+                  <th>Recall (Sensitivity)</th>
+
+                  <th>F1-Score</th>
+
+                  <th>Test Support (Samples)</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                <tr>
+
+                  <td><strong>Glioma Tumor</strong></td>
+
+                  <td>81.5%</td>
+
+                  <td>95.7%</td>
+
+                  <td><strong>0.880</strong></td>
+
+                  <td>23 scans</td>
+
+                </tr>
+
+                <tr>
+
+                  <td><strong>Meningioma Tumor</strong></td>
+
+                  <td>98.2%</td>
+
+                  <td>99.1%</td>
+
+                  <td><strong>0.987</strong></td>
+
+                  <td>112 scans</td>
+
+                </tr>
+
+                <tr>
+
+                  <td><strong>No Tumor (Normal)</strong></td>
+
+                  <td>100.0%</td>
+
+                  <td>88.8%</td>
+
+                  <td><strong>0.940</strong></td>
+
+                  <td>80 scans</td>
+
+                </tr>
+
+                <tr>
+
+                  <td><strong>Pituitary Tumor</strong></td>
+
+                  <td>82.6%</td>
+
+                  <td>100.0%</td>
+
+                  <td><strong>0.905</strong></td>
+
+                  <td>19 scans</td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+
+
+          <!-- Confusion Matrix -->
+
+          <h3 style="font-size:1rem;font-weight:600;margin-bottom:12px;">Empirical Confusion Matrix (234 Test Scans)</h3>
+
+          <div class="matrix-container" style="max-width:680px;">
+
+            <div class="matrix-grid">
+
+              <!-- Header Row -->
+
+              <div class="matrix-cell header">True \ Pred</div>
+
+              <div class="matrix-cell header">Glioma</div>
+
+              <div class="matrix-cell header">Meningioma</div>
+
+              <div class="matrix-cell header">No Tumor</div>
+
+              <div class="matrix-cell header">Pituitary</div>
+
+
+
+              <!-- Row 1: Glioma -->
+
+              <div class="matrix-cell header">Glioma (23)</div>
+
+              <div class="matrix-cell diagonal"><span class="matrix-cell-val">22</span><span class="matrix-cell-sub">95.7%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">1</span><span class="matrix-cell-sub">4.3%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
+
+
+
+              <!-- Row 2: Meningioma -->
+
+              <div class="matrix-cell header">Meningioma (112)</div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">1</span><span class="matrix-cell-sub">0.9%</span></div>
+
+              <div class="matrix-cell diagonal"><span class="matrix-cell-val">111</span><span class="matrix-cell-sub">99.1%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
+
+
+
+              <!-- Row 3: No Tumor -->
+
+              <div class="matrix-cell header">No Tumor (80)</div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">3</span><span class="matrix-cell-sub">3.8%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">1</span><span class="matrix-cell-sub">1.2%</span></div>
+
+              <div class="matrix-cell diagonal"><span class="matrix-cell-val">71</span><span class="matrix-cell-sub">88.8%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">5</span><span class="matrix-cell-sub">6.2%</span></div>
+
+
+
+              <!-- Row 4: Pituitary -->
+
+              <div class="matrix-cell header">Pituitary (19)</div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
+
+              <div class="matrix-cell"><span class="matrix-cell-val">0</span><span class="matrix-cell-sub">0.0%</span></div>
+
+              <div class="matrix-cell diagonal"><span class="matrix-cell-val">19</span><span class="matrix-cell-sub">100.0%</span></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- TAB 5: ANALYSIS HISTORY -->
+
+      <section id="tab-history" class="tab-pane" role="tabpanel">
+
+        <div class="neuro-card">
+
+          <div class="card-header">
+
+            <div>
+
+              <h2 class="card-title">Analysis &amp; Recording Audit Log</h2>
+
+              <span style="font-size:0.8125rem;color:var(--md-text-secondary);">Unified audit repository of MRI inferences and EEG biopotential sessions</span>
+
+            </div>
+
+            <div style="display:flex;align-items:center;gap:8px;">
+
+              <select id="history-filter-select" style="padding:6px 12px;border:1px solid var(--md-border);border-radius:4px;font-size:0.875rem;background:#FFFFFF;">
+
+                <option value="all">All Analyses</option>
+
+                <option value="mri">MRI Scans Only</option>
+
+                <option value="eeg">EEG Sessions Only</option>
+
+              </select>
+
+              <button class="btn-pacs-secondary" id="history-refresh-btn">Refresh</button>
+
+            </div>
+
+          </div>
+
+
+
+          <div style="overflow-x:auto;">
+
+            <table class="features-data-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>Timestamp</th>
+
+                  <th>Modality</th>
+
+                  <th>Record Details</th>
+
+                  <th>Source / Mode</th>
+
+                  <th>Primary Metric</th>
+
+                  <th>Actions</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="history-table-body">
+
+                <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--md-text-secondary);">Loading historical records...</td></tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+    </main>
+
+  </div>
+
+
+
+  <!-- Floating Assistant Drawer / Trigger -->
+
+  <div id="cortia-ai-floating-trigger" class="floating-assistant-btn" title="Open CORTIA AI Assistant">
+
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+
+      <circle cx="9" cy="10" r="1" fill="currentColor" />
+
+      <circle cx="15" cy="10" r="1" fill="currentColor" />
+
+    </svg>
+
+    <span>Ask CORTIA AI</span>
+
+  </div>
+
+
+
+  <script src="/static/js/insights.js"></script>
+
+  <script src="/static/js/cortia-assistant.js"></script>
+
+  <script src="/static/js/companion-mode.js"></script>
+
+  <!-- Floating Ask CORTIA AI Button -->
+  <a href="/ai" class="cortia-ai-fab" title="Ask CORTIA AI Assistant">
+    <span class="fab-icon">✦</span>
+    <span>Ask CORTIA AI</span>
+  </a>
+
+  <script>
+    (function() {
+      document.addEventListener("DOMContentLoaded", function() {
+        var p = window.location.pathname.replace(/\/$/, '') || '/';
+        document.querySelectorAll('.sidebar a[data-path]').forEach(function(a) {
+          if (a.getAttribute('data-path') === p) {
+            a.classList.add('active');
+          } else {
+            a.classList.remove('active');
+          }
+        });
+        var titleEl = document.getElementById('topbar-title');
+        var badgeEl = document.getElementById('topbar-badge');
+        var subEl = document.getElementById('topbar-subtitle');
+        if (p === '/' || p === '/mri') {
+          if (titleEl) titleEl.textContent = 'MRI Analysis Dashboard';
+          if (badgeEl) badgeEl.textContent = 'Clinical PACS';
+          if (subEl) subEl.textContent = 'Clinical research environment • Not for diagnostic use';
+        } else if (p === '/eeg') {
+          if (titleEl) titleEl.textContent = 'EEG Signal Intelligence';
+          if (badgeEl) badgeEl.textContent = 'BioAmp EXG';
+          if (subEl) subEl.textContent = 'Physiological biopotential telemetry, spectral estimation • Simulated demo data';
+        } else if (p === '/insights') {
+          if (titleEl) titleEl.textContent = 'CORTIA Insights';
+          if (badgeEl) badgeEl.textContent = 'Explainable AI';
+          if (subEl) subEl.textContent = 'Visual explanations, biopotential feature extraction, and verifiable evaluation records';
+        } else if (p === '/ai') {
+          if (titleEl) titleEl.textContent = 'CORTIA AI';
+          if (badgeEl) badgeEl.textContent = 'Grounded Assistant';
+          if (subEl) subEl.textContent = 'Grounded in scientific literature, verified application state, and real telemetry records';
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
+
