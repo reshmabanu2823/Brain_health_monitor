@@ -149,17 +149,32 @@ body.sidebar-open .neuro-rail {
   text-decoration: none !important;
 }
 
-.sidebar-brand .brand-icon {
-  width: 32px !important;
-  height: 32px !important;
-  background: var(--red) !important;
-  color: #FFFFFF !important;
-  border-radius: 8px !important;
+/* Brand Icon (Original CORTIA Watercolor Brain Logo from Loading Page) */
+.sidebar-brand .brand-icon,
+.brand-icon {
+  width: 34px !important;
+  height: 34px !important;
+  background: var(--bg, #F5F0EB) !important;
+  border-radius: 9px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 16px !important;
-  box-shadow: 0 2px 8px rgba(201, 64, 64, 0.35) !important;
+  padding: 3px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28) !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.brand-icon .brand-brain-img {
+  width: 27px !important;
+  height: 27px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.brand-logo:hover .brand-icon {
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(201, 64, 64, 0.35) !important;
 }
 
 .sidebar-brand .brand-name {
