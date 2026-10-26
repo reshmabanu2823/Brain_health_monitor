@@ -183,9 +183,9 @@ def get_mri_scan(scan_id: str) -> dict | None:
 # EEG SESSIONS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def start_eeg_session(source: str = "SIMULATED", notes: str = "") -> str:
+def start_eeg_session(source: str = "SIMULATED", notes: str = "", session_id: str = None) -> str:
     """Call when a new EEG recording begins. Returns session id."""
-    session_id = new_id()
+    session_id = session_id or new_id()
     conn = get_connection()
     conn.execute("""
         INSERT INTO eeg_sessions
@@ -206,19 +206,27 @@ def end_eeg_session(
 ) -> None:
     """Call when a recording stops."""
     conn = get_connection()
-    conn.execute("""
-        UPDATE eeg_sessions
-        SET ended_at         = ?,
-            status           = 'completed',
-            duration_seconds = ?,
-            total_samples    = ?,
-            signal_quality   = ?,
-            features_json    = ?
-        WHERE id = ?
-    """, (
-        now_utc(), duration_seconds, total_samples,
-        signal_quality, features_json, session_id,
-    ))
+    row = conn.execute("SELECT id FROM eeg_sessions WHERE id = ?", (session_id,)).fetchone()
+    if not row:
+        conn.execute("""
+            INSERT INTO eeg_sessions
+                (id, started_at, ended_at, source, duration_seconds, total_samples, status, signal_quality, features_json)
+            VALUES (?, ?, ?, 'HARDWARE', ?, ?, 'completed', ?, ?)
+        """, (session_id, now_utc(), now_utc(), duration_seconds, total_samples, signal_quality, features_json))
+    else:
+        conn.execute("""
+            UPDATE eeg_sessions
+            SET ended_at         = ?,
+                status           = 'completed',
+                duration_seconds = ?,
+                total_samples    = ?,
+                signal_quality   = ?,
+                features_json    = ?
+            WHERE id = ?
+        """, (
+            now_utc(), duration_seconds, total_samples,
+            signal_quality, features_json, session_id,
+        ))
     conn.commit()
     conn.close()
 

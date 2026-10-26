@@ -142,6 +142,12 @@
               <button id="disconnect" class="btn-disconnect" type="button" disabled>
                 ■ Disconnect
               </button>
+              <div class="auto-record-wrap" title="When enabled, every test session is automatically documented and saved to SQLite">
+                <label class="auto-record-label" for="auto-record-toggle">
+                  <input type="checkbox" id="auto-record-toggle" checked />
+                  <span class="auto-record-text">Auto-Save Session</span>
+                </label>
+              </div>
             </div>
           </div>
 
@@ -262,12 +268,13 @@
                   <th>Source</th>
                   <th>Duration</th>
                   <th>Samples</th>
+                  <th>Signal Quality</th>
                   <th>Status</th>
-                  <th>Export</th>
+                  <th>Documentation &amp; Actions</th>
                 </tr>
               </thead>
               <tbody id="history">
-                <tr><td colspan="6" style="text-align: center;">No recordings stored in current workspace.</td></tr>
+                <tr><td colspan="7" style="text-align: center;">No recordings stored in current workspace.</td></tr>
               </tbody>
             </table>
           </div>
@@ -323,6 +330,123 @@
             </div>
           </div>
         </details>
+      </div>
+
+      <!-- CORTIA Test Session Documentation Modal -->
+      <div id="session-modal-backdrop" class="session-modal-backdrop" hidden>
+        <div id="session-modal" class="session-modal" role="dialog" aria-modal="true" aria-labelledby="session-modal-title">
+          <div class="session-modal-header">
+            <div class="modal-header-left">
+              <div class="modal-badge-row">
+                <span class="modal-badge-source" id="modal-src-badge">Maker UNO / BioAmp EXG</span>
+                <span class="modal-badge-status" id="modal-status-badge">Completed</span>
+              </div>
+              <h2 id="session-modal-title" class="session-modal-title">Neural Test Session Documentation</h2>
+              <div class="session-modal-subtitle" id="modal-session-id">Session ID: —</div>
+            </div>
+            <div class="modal-header-actions">
+              <button type="button" class="btn-modal-print" id="modal-btn-print" title="Print or save PDF report">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                  <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span>Print Report</span>
+              </button>
+              <button type="button" class="btn-modal-close" id="modal-btn-close" aria-label="Close report modal">✕</button>
+            </div>
+          </div>
+
+          <div class="session-modal-body">
+            <!-- 4 Fact Summary Cards -->
+            <div class="modal-fact-grid">
+              <div class="modal-fact-card">
+                <span class="fact-label">Hardware Source</span>
+                <strong class="fact-value" id="modal-fact-source">BioAmp EXG</strong>
+                <span class="fact-meta" id="modal-fact-port">10-bit ADC @ 250 Hz</span>
+              </div>
+              <div class="modal-fact-card">
+                <span class="fact-label">Acquisition Time</span>
+                <strong class="fact-value" id="modal-fact-duration">0.00 s</strong>
+                <span class="fact-meta" id="modal-fact-timestamp">Started: —</span>
+              </div>
+              <div class="modal-fact-card">
+                <span class="fact-label">Signal Quality</span>
+                <strong class="fact-value" id="modal-fact-quality">Acceptable</strong>
+                <span class="fact-meta" id="modal-fact-samples">0 samples</span>
+              </div>
+              <div class="modal-fact-card">
+                <span class="fact-label">Dominant Rhythm</span>
+                <strong class="fact-value" id="modal-fact-dominant">Alpha (8–13 Hz)</strong>
+                <span class="fact-meta" id="modal-fact-entropy">Spectral Entropy: —</span>
+              </div>
+            </div>
+
+            <!-- Documented Actual Biopotential Waveform -->
+            <div class="modal-section">
+              <div class="modal-section-header">
+                <h3>Actual Recorded Biopotential Waveform</h3>
+                <span class="modal-section-meta" id="modal-wave-meta">Zero-Phase Bandpass (1.0–40.0 Hz) · Synchronized</span>
+              </div>
+              <div class="modal-canvas-wrap">
+                <canvas id="modal-wave-canvas"></canvas>
+              </div>
+            </div>
+
+            <!-- 2 Columns: Frequency Bands & Power Spectral Density -->
+            <div class="modal-analysis-grid">
+              <div class="modal-section">
+                <div class="modal-section-header">
+                  <h3>Neural Frequency Distribution</h3>
+                  <span class="modal-section-meta">Relative Band Power</span>
+                </div>
+                <div id="modal-bands-container" class="bands-container"></div>
+              </div>
+
+              <div class="modal-section">
+                <div class="modal-section-header">
+                  <h3>Power Spectral Density (PSD)</h3>
+                  <span class="modal-section-meta">Welch Estimation (counts²/Hz)</span>
+                </div>
+                <div class="modal-canvas-wrap-psd">
+                  <canvas id="modal-psd-canvas"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Complexity & Time Domain Indicators -->
+            <div class="modal-section">
+              <div class="modal-section-header">
+                <h3>Electrophysiological &amp; Complexity Indicators</h3>
+              </div>
+              <div class="modal-metrics-pills" id="modal-metrics-pills"></div>
+            </div>
+
+            <!-- Protocol & Notes Documentation -->
+            <div class="modal-section">
+              <div class="modal-section-header">
+                <h3>Clinical Test Notes &amp; Protocol Documentation</h3>
+              </div>
+              <div class="modal-notes-box">
+                <textarea id="modal-notes-input" placeholder="Enter clinical protocol notes, subject state, or experiment tags..." rows="3"></textarea>
+                <div class="modal-notes-actions">
+                  <button type="button" id="modal-btn-save-notes" class="btn-pacs-sm">Save Notes</button>
+                  <span id="modal-notes-status" class="modal-status-text"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="session-modal-footer">
+            <div class="modal-footer-left">
+              <span class="modal-disclaimer">CORTIA Neural Workstation &bull; Data documented in local SQLite storage</span>
+            </div>
+            <div class="modal-footer-right">
+              <a id="modal-export-csv" class="btn-modal-action" href="#" download>Export CSV</a>
+              <a id="modal-export-json" class="btn-modal-action" href="#" target="_blank">Export Summary JSON</a>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Clean Footer -->
