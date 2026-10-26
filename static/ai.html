@@ -222,6 +222,12 @@
           </div>
         </div>
         <div class="header-actions-right">
+          <button type="button" class="btn-top-cloud" id="btn-cloud-config" title="Configure Cloud Medical AI Model (Gemini, Groq, OpenAI)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+            </svg>
+            <span id="topbar-cloud-label">Cloud Model: Local</span>
+          </button>
           <a href="/chats" target="_blank" class="btn-top-history btn-top-chat-history" id="btn-top-chats" title="Open Consultation Chat History in a new page">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -245,7 +251,11 @@
 
           <div class="ai-chat-header">
             <div style="display:flex;align-items:center;gap:10px;">
-              <h2 id="active-conv-title" style="font-size:1.05rem;font-weight:600;margin:0;">Research Inquiry</h2>
+              <h2 id="active-conv-title" style="font-size:1.05rem;font-weight:600;margin:0;">Clinical Consultation</h2>
+              <button type="button" id="ai-provider-badge" class="badge-provider" title="Click to configure Cloud Model">
+                <span class="provider-dot"></span>
+                <span id="provider-badge-text">Local Grounded Engine</span>
+              </button>
               <span id="active-context-badge" class="badge" style="display:none;background:var(--red-light);color:var(--red);">Context Attached</span>
             </div>
 
@@ -406,6 +416,81 @@
     })();
   </script>
   <script defer src="/static/js/cortia-sidebar.js?v=20261026_rev1"></script>
+
+  <!-- Cloud Model Configuration Modal -->
+  <div id="cloud-model-modal" class="cloud-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="cloud-modal-title">
+    <div class="cloud-modal-card">
+      <div class="cloud-modal-header">
+        <div>
+          <h3 id="cloud-modal-title" class="cloud-modal-heading">Connect Cloud Medical AI Model</h3>
+          <p class="cloud-modal-sub">Enable Google Gemini, Groq, or OpenAI to answer patient medical questions with full clinical context.</p>
+        </div>
+        <button type="button" class="cloud-modal-close" id="btn-close-cloud-modal" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="cloud-modal-body">
+        <!-- Provider Selection Grid -->
+        <label class="cloud-form-label">Select Cloud Provider</label>
+        <div class="cloud-providers-grid" id="cloud-providers-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Model Selection Dropdown -->
+        <div class="cloud-form-group" style="margin-top:16px;">
+          <label class="cloud-form-label" for="cloud-model-select">Model Architecture</label>
+          <select id="cloud-model-select" class="cloud-select">
+            <!-- Populated dynamically -->
+          </select>
+          <span class="cloud-form-hint" id="cloud-model-hint">Fast, lightweight medical reasoning model.</span>
+        </div>
+
+        <!-- API Key Input -->
+        <div class="cloud-form-group" id="cloud-api-key-group" style="margin-top:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <label class="cloud-form-label" for="cloud-api-key-input">Cloud API Key</label>
+            <a href="#" id="cloud-key-get-link" target="_blank" class="cloud-get-key-link">Get Free Key &rarr;</a>
+          </div>
+          <div class="cloud-input-wrapper">
+            <input type="password" id="cloud-api-key-input" class="cloud-input" placeholder="Paste your API key here (e.g. AIzaSy... or gsk_...)">
+            <button type="button" class="btn-toggle-key-vis" id="btn-toggle-key" title="Toggle visibility">&#128065;</button>
+          </div>
+          <span class="cloud-form-hint" id="cloud-key-hint">Keys are saved locally in your environment and never shared.</span>
+        </div>
+
+        <!-- Medical Data Scope Card -->
+        <div class="cloud-medical-scope-card">
+          <div class="scope-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            <strong>Connected Patient Medical Context</strong>
+          </div>
+          <p class="scope-desc">When answering medical questions, the cloud model is grounded with:</p>
+          <ul class="scope-points">
+            <li><strong>Latest MRI Tumor Diagnosis</strong> (Glioma, Meningioma, Pituitary, Normal + Confidence %)</li>
+            <li><strong>Grad-CAM Saliency Coverage</strong> (Focal visual attention map percentage)</li>
+            <li><strong>Physiological EEG Telemetry</strong> (Signal quality &amp; Delta/Theta/Alpha/Beta/Gamma bands)</li>
+            <li><strong>Patient Scan History</strong> (Audit logs from clinical records database)</li>
+          </ul>
+        </div>
+
+        <!-- Live Connection Feedback Box -->
+        <div id="cloud-test-feedback" class="cloud-feedback-box" style="display:none;margin-top:14px;"></div>
+      </div>
+
+      <div class="cloud-modal-footer">
+        <button type="button" class="btn-cloud-test" id="btn-test-cloud">
+          <span id="test-btn-spinner" class="spinner-sm" style="display:none;"></span>
+          Test Connection
+        </button>
+        <div style="display:flex;gap:10px;">
+          <button type="button" class="btn-cloud-cancel" id="btn-cancel-cloud">Cancel</button>
+          <button type="button" class="btn-cloud-save" id="btn-save-cloud">Save &amp; Connect</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

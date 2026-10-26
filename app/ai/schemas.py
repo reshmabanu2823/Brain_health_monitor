@@ -62,3 +62,33 @@ class CapabilitiesResponse(BaseModel):
     grounded_tools: List[str]
     starter_prompts: List[str]
     disclaimer: str
+
+
+class CloudConfigResponse(BaseModel):
+    active_provider: str
+    provider_name: str
+    model_name: Optional[str] = None
+    is_cloud: bool
+    has_api_key: bool
+    masked_key: str = ""
+    available_providers: List[Dict[str, Any]] = Field(default_factory=list)
+
+
+class CloudConfigRequest(BaseModel):
+    provider: str
+    api_key: Optional[str] = None
+    model_name: Optional[str] = None
+
+
+class CloudTestRequest(BaseModel):
+    provider: str
+    api_key: Optional[str] = None
+    model_name: Optional[str] = None
+
+
+class CloudTestResponse(BaseModel):
+    success: bool
+    latency_ms: Optional[int] = None
+    model: Optional[str] = None
+    message: Optional[str] = None
+    error: Optional[str] = None

@@ -21,15 +21,15 @@ from .tools import (
 
 log = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are CORTIA AI, a specialized neuroscience research and explainable AI assistant.
-Your role is to help researchers investigate neuroimaging analyses, physiological EEG biopotential telemetry, digital signal processing algorithms, and machine learning models.
+SYSTEM_PROMPT = """You are CORTIA AI, an expert neuro-oncology, neurology, and clinical AI medical consultant.
+Your role is to help patients, clinicians, and researchers understand brain imaging analyses, tumor pathology, physiological EEG biopotentials, treatment pathways, and medical implications.
 
-CRITICAL RESEARCH SAFEGUARDS AND GROUNDING RULES:
-1. SCIENTIFIC HONESTY: Never invent or hallucinate application state, scan results, EEG features, or model confidences. If data is unavailable, state clearly that it is unavailable and explain why.
-2. EEG HARDWARE CONSTRAINTS: The application uses a single-channel BioAmp EXG + Maker UNO setup (uncalibrated 10-bit ADC counts at 250 Hz, 1-40 Hz bandpass). There is NO trained EEG model currently installed. Never output fake stress, depression, anxiety, or sleep scores. Explain that psychiatric screening and sleep staging are infeasible on single-channel hardware.
-3. DATA SOURCE DISCLOSURE: Always distinguish between physical serial recording and simulated telemetry. If data is simulated, explicitly state that it is simulated.
-4. EXPLAINABILITY DISTINCTION: Grad-CAM represents visual attention/saliency density, NOT clinical tumor segmentation or histological margins. Never claim highlighted regions prove absence or presence of cancer.
-5. RESEARCH-ONLY: Never give diagnostic advice. All statements are strictly for research and observational purposes.
+CLINICAL & PATIENT CONSULTATION CAPABILITIES:
+1. COMPREHENSIVE MEDICAL ANSWERS: Provide detailed, medically grounded explanations for all patient symptoms, tumor types (Glioma, Meningioma, Pituitary, or normal variants), neuroanatomy, diagnostic workflows, standard treatments (surgical resection, radiotherapy, Stupp protocol chemotherapy, dexamethasone, anticonvulsants), and EEG physiological rhythms.
+2. PATIENT DATA GROUNDING: Whenever patient data is available in the verified context (MRI tumor classification, confidence %, Grad-CAM focal saliency area, EEG band powers, recent scans), directly reference the patient's specific numbers and findings to contextualize your explanation.
+3. CLEAR & COMPASSIONATE COMMUNICATION: Explain complex medical terminology in accessible, compassionate language. Help the patient understand what their diagnostic numbers mean in plain English.
+4. SUGGEST CONSTRUCTIVE NEXT STEPS: Provide concrete questions for the patient to discuss with their treating neurosurgeon, oncologist, or neurologist.
+5. RESEARCH & HARDWARE DISCLOSURE: The application uses single-channel biopotential telemetry (1.0 - 40.0 Hz bandpass); psychiatric screening or clinical sleep staging is infeasible on single-channel setups. Distinguish physical serial from simulated EEG recordings. Grad-CAM represents convolutional feature attention density, not histological tumor margins.
 """
 
 
@@ -41,6 +41,10 @@ class CortiaAIService:
         self.app_state = app_state
         self.retriever = KnowledgeRetriever()
         self.provider = get_llm_provider()
+
+    def reload_provider(self):
+        self.provider = get_llm_provider()
+        return self.provider
 
     def process_chat(self, req: ChatRequest) -> ChatResponse:
         conv_id = req.conversation_id or self.store.create_conversation(title=req.message[:50])
@@ -77,7 +81,7 @@ class CortiaAIService:
 
         query = req.message.lower()
 
-        # Handle explicit analysis context or query about latest MRI
+        # Handle explicit analysis context or latest MRI scan (always attached for medical context)
         mri_scan = None
         if req.analysis_type == "mri" and req.analysis_id:
             try:
@@ -85,9 +89,13 @@ class CortiaAIService:
                 tool_invocations.append(f"get_mri_scan_by_id({req.analysis_id})")
             except Exception:
                 pass
-        elif any(w in query for w in ["latest mri", "my mri", "mri result", "mri analysis", "tumor"]):
-            mri_scan = get_latest_mri_scan()
-            tool_invocations.append("get_latest_mri_scan()")
+        else:
+            try:
+                mri_scan = get_latest_mri_scan()
+                if mri_scan:
+                    tool_invocations.append("get_latest_mri_scan()")
+            except Exception:
+                pass
 
         if mri_scan:
             app_context_parts.append(
@@ -105,14 +113,18 @@ class CortiaAIService:
                 deep_link=f"/insights?type=mri&id={mri_scan['scan_id']}",
             ))
 
-        # Handle explicit analysis context or query about latest EEG
+        # Handle explicit analysis context or latest EEG telemetry
         eeg_summary = None
         if req.analysis_type == "eeg" and req.analysis_id:
             eeg_summary = get_eeg_session_summary(self.eeg_service, req.analysis_id)
             tool_invocations.append(f"get_eeg_session_summary({req.analysis_id})")
-        elif any(w in query for w in ["latest eeg", "my eeg", "eeg session", "eeg recording", "alpha", "quality", "filter"]):
-            eeg_summary = get_latest_eeg_summary(self.eeg_service)
-            tool_invocations.append("get_latest_eeg_summary()")
+        else:
+            try:
+                eeg_summary = get_latest_eeg_summary(self.eeg_service)
+                if eeg_summary:
+                    tool_invocations.append("get_latest_eeg_summary()")
+            except Exception:
+                pass
 
         if eeg_summary:
             src = eeg_summary.get("source", "unknown")
