@@ -257,7 +257,8 @@ body, p, span, label, input, select, textarea, button, table, td, th, a {
 
   padding: 0;
 
-  position: sticky;
+  position: fixed !important;
+  transform: translateX(-100%) !important;
 
   top: 0;
 
@@ -301,28 +302,31 @@ body, p, span, label, input, select, textarea, button, table, td, th, a {
 
 
 
+/* Brand Icon (Original CORTIA Watercolor Brain Logo from Loading Page) */
 .brand-icon {
+  width: 34px !important;
+  height: 34px !important;
+  background: var(--bg, #F5F0EB) !important;
+  border-radius: 9px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 3px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28) !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
 
-  width: 32px;
+.brand-icon .brand-brain-img {
+  width: 27px !important;
+  height: 27px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
 
-  height: 32px;
-
-  background: var(--red) !important;
-
-  border-radius: 8px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  font-size: 16px;
-
-  color: #FFFFFF;
-
-  flex-shrink: 0;
-
+.brand-logo:hover .brand-icon {
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(201, 64, 64, 0.35) !important;
 }
 
 
@@ -575,7 +579,8 @@ body, p, span, label, input, select, textarea, button, table, td, th, a {
 
   gap: 16px;
 
-  position: sticky;
+  position: sticky !important;
+  transform: none !important;
 
   top: 0;
 
@@ -586,6 +591,14 @@ body, p, span, label, input, select, textarea, button, table, td, th, a {
 }
 
 
+
+.header-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  height: 100%;
+}
 
 .header-meta {
 
@@ -1367,3 +1380,157 @@ input[type="range"], .pacs-slider, .range-slider {
 
 }
 
+
+
+/* ==========================================================================
+   CORTIA Universal Collapsible Sidebar & Hamburger System
+   ========================================================================== */
+
+/* 1. Backdrop Overlay */
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 12, 10, 0.48);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 998;
+}
+
+body.sidebar-open .sidebar-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 2. Dark Sidebar Rail Drawer */
+.neuro-rail,
+.sidebar {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 250px !important;
+  min-width: 250px !important;
+  max-width: 250px !important;
+  height: 100vh !important;
+  background: var(--sidebar, #231A17) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  z-index: 999 !important;
+  transform: translateX(-100%) !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease !important;
+  box-shadow: none !important;
+  overflow-y: auto !important;
+}
+
+body.sidebar-open .neuro-rail,
+body.sidebar-open .sidebar {
+  transform: translateX(0) !important;
+  box-shadow: 6px 0 28px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* 3. Main Content Area takes full width */
+.neuro-content,
+.main {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 !important;
+  margin-left: 0 !important;
+  min-width: 0 !important;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neuro-app,
+.app {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden;
+}
+
+/* 4. Hamburger Button in Header */
+.sidebar-toggle-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  border-radius: 9px !important;
+  background: var(--card, #FFFFFF) !important;
+  border: 1px solid var(--border, #DDD4CC) !important;
+  color: var(--ink, #1C1917) !important;
+  cursor: pointer !important;
+  margin-right: 14px !important;
+  padding: 0 !important;
+  transition: all 0.18s ease !important;
+  box-shadow: 0 1px 3px rgba(35, 26, 23, 0.06) !important;
+  flex-shrink: 0 !important;
+}
+.sidebar-toggle-btn:hover {
+  background: var(--blush, #F0DDD8) !important;
+  border-color: var(--cortia-red, #C94040) !important;
+  color: var(--cortia-red, #C94040) !important;
+  transform: translateY(-1px) !important;
+}
+.sidebar-toggle-btn svg {
+  display: block;
+}
+
+/* 5. Close Button inside Sidebar Brand */
+.sidebar-brand,
+.rail-brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-close-btn {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 26px !important;
+  line-height: 1 !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border-radius: 6px !important;
+  transition: all 0.15s ease !important;
+  position: absolute;
+  top: 14px;
+  right: 12px;
+}
+.sidebar-close-btn:hover {
+  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* 6. Floating Edge Fallback Button (if page has no neuro-header) */
+.sidebar-edge-fallback-btn {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 997;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--card, #FFFFFF);
+  border: 1px solid var(--border, #DDD4CC);
+  box-shadow: 0 2px 10px rgba(35, 26, 23, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink, #1C1917);
+  transition: all 0.2s ease;
+}
+.sidebar-edge-fallback-btn:hover {
+  background: var(--blush, #F0DDD8);
+  color: var(--cortia-red, #C94040);
+  border-color: var(--cortia-red, #C94040);
+  transform: scale(1.05);
+}

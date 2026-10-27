@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CORTIA — Scan Audit History</title>
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/cortia-theme.css">
+  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev3" />
+  <link rel="stylesheet" href="/static/css/style.css?v=20261025_rev3" />
+  <style>
+    .history-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .history-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 8px;
+    }
+    .history-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-action-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: var(--card, #FFFFFF);
+      border: 1px solid var(--border, #DDD4CC);
+      border-radius: 8px;
+      color: var(--ink, #1C1917);
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-action-back:hover {
+      border-color: var(--cortia-red, #C94040);
+      color: var(--cortia-red, #C94040);
+      background: var(--blush, #F0DDD8);
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .history-card {
+      background: var(--card, #FFFFFF);
+      border: 1px solid var(--border, #DDD4CC);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(35, 26, 23, 0.04);
+    }
+    .history-table-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border, #DDD4CC);
+    }
+    .pacs-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .pacs-table th {
+      background: var(--cream, #F5F0EB);
+      color: var(--mid, #6B5248);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border, #DDD4CC);
+    }
+    .pacs-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border, #DDD4CC);
+      color: var(--ink, #1C1917);
+      font-size: 13px;
+    }
+    .pacs-table tbody tr:hover {
+      background: rgba(240, 221, 216, 0.35);
+    }
+    .finding-glioma {
+      color: var(--cortia-red, #C94040);
+      font-weight: 600;
+    }
+    .finding-meningioma {
+      color: var(--status-amber, #C07830);
+      font-weight: 600;
+    }
+    .finding-pituitary {
+      color: var(--status-amber, #C07830);
+      font-weight: 600;
+    }
+    .finding-normal {
+      color: var(--status-green, #5A8A5A);
+      font-weight: 600;
+    }
+    .badge-pos {
+      background: var(--cortia-red-lt, #F0D0D0);
+      color: var(--cortia-red, #C94040);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-neg {
+      background: #D8EDD8;
+      color: var(--status-green, #5A8A5A);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body data-page="history">
+  <div class="neuro-app">
+    <!-- CORTIA Dark Sidebar -->
+    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
+      <div class="sidebar-brand">
+        <a class="brand-logo" href="/cortia">
+          <div class="brand-icon">
+            <img src="/static/cortia/cortia-brain.webp" alt="CORTIA" class="brand-brain-img">
+          </div>
+          <div class="brand-name">CORTIA</div>
+        </a>
+        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Workspaces</div>
+        <a class="nav-item rail-item" href="/" title="MRI Analysis">
+          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
+        </a>
+        <a class="nav-item rail-item" href="/eeg" title="EEG Monitoring">
+          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
+        </a>
+        <a class="nav-item rail-item" href="/insights" title="CORTIA Insights">
+          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Audit & Logs</div>
+        <a class="nav-item rail-item active" href="/history" title="Scan Audit History">
+          <span class="nav-icon">⏱</span> <span class="rail-label">Scan History</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Assistant</div>
+        <a class="nav-item rail-item" href="/ai" title="CORTIA AI">
+          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
+        </a>
+        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
+          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
+        <a class="nav-item rail-item" href="/cortia" title="Cortia Portal">
+          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer rail-footer">
+        <div class="runtime-badge">
+          <span class="runtime-dot status-indicator"></span>
+          Runtime v2.4 &bull; Active
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content Area -->
+    <main id="main" class="neuro-content">
+      <!-- Top App Bar -->
+      <header class="neuro-header" id="cortia-topbar">
+        <div class="header-left">
+          <button type="button" class="sidebar-toggle-btn" id="cortia-sidebar-toggle" aria-label="Toggle navigation menu" title="Toggle Navigation Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+          <div class="header-meta">
+            <div class="brand-title">
+              <span class="topbar-title-text" id="topbar-title">Scan Audit History</span>
+              <span class="brand-badge" id="topbar-badge">Clinical Audit Log</span>
+            </div>
+            <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Session audit records</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Scroll -->
+      <div class="content-scroll">
+        <div class="history-container">
+          <!-- Page Header Row -->
+          <div class="history-header-row">
+            <div>
+              <h1 class="page-title" style="font-size: 30px; margin-bottom: 4px;">Recent Scan Audit Log</h1>
+              <p class="page-subtitle" style="margin-bottom: 0;">Verifiable session archive of clinical PACS inferences, classifications, and diagnostic flags</p>
+            </div>
+            <div class="history-actions">
+              <button class="btn-pacs-sm" id="btn-refresh" style="padding: 8px 14px; border-radius: 8px;">Refresh Log</button>
+              <button class="btn-pacs-sm" id="btn-clear" style="padding: 8px 14px; border-radius: 8px; color: var(--cortia-red, #C94040); border-color: var(--cortia-red-lt, #F0D0D0);">Clear Audit</button>
+            </div>
+          </div>
+
+          <!-- Quick Stats Cards -->
+          <div class="stats-row">
+            <div class="card stat-card">
+              <span class="stat-label">Total Audit Records</span>
+              <strong class="stat-value" id="stat-total-scans">0</strong>
+              <span class="stat-sub">Scans logged in database</span>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Tumor Positive Rate</span>
+              <strong class="stat-value" style="color: var(--cortia-red);" id="stat-pos-rate">0.0%</strong>
+              <span class="stat-sub">Pathology detections</span>
+            </div>
+            <div class="card stat-card">
+              <span class="stat-label">Latest Log Time</span>
+              <strong class="stat-value" style="font-size: 20px;" id="stat-last-time">—</strong>
+              <span class="stat-sub">Most recent inference</span>
+            </div>
+          </div>
+
+          <!-- Main Table Card -->
+          <div class="history-card">
+            <div class="history-table-title">
+              <span class="card-title" style="font-size: 20px;">Session Scan Records</span>
+              <span class="brand-badge" id="records-count-badge">0 Records</span>
+            </div>
+            <div class="table-scroll-container">
+              <table class="pacs-table">
+                <thead>
+                  <tr>
+                    <th scope="col">TIMESTAMP</th>
+                    <th scope="col">FILE IDENTIFIER</th>
+                    <th scope="col">CLASSIFICATION FINDING</th>
+                    <th scope="col">CONFIDENCE INDEX</th>
+                    <th scope="col">DIAGNOSTIC FLAG</th>
+                  </tr>
+                </thead>
+                <tbody id="history-tbody">
+                  <tr>
+                    <td colspan="5" class="table-empty" style="text-align: center; padding: 32px; color: var(--sub);">
+                      Loading scan audit records...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    async function loadHistory() {
+      const tbody = document.getElementById('history-tbody');
+      const statTotal = document.getElementById('stat-total-scans');
+      const statPos = document.getElementById('stat-pos-rate');
+      const statLast = document.getElementById('stat-last-time');
+      const badgeCount = document.getElementById('records-count-badge');
+
+      try {
+        const res = await fetch('/api/scans');
+        const data = await res.json();
+
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 32px; color: var(--sub);">No scan audit entries recorded yet. Upload a scan in the MRI workspace to log an entry.</td></tr>';
+          if (statTotal) statTotal.textContent = '0';
+          if (statPos) statPos.textContent = '0.0%';
+          if (statLast) statLast.textContent = 'None';
+          if (badgeCount) badgeCount.textContent = '0 Records';
+          return;
+        }
+
+        let tumorCount = 0;
+        data.forEach(d => { if (d.is_tumor) tumorCount++; });
+        const posRate = ((tumorCount / data.length) * 100).toFixed(1);
+
+        if (statTotal) statTotal.textContent = data.length;
+        if (statPos) statPos.textContent = `${posRate}%`;
+        if (badgeCount) badgeCount.textContent = `${data.length} Records`;
+
+        const lastTimestamp = data[0].timestamp;
+        if (statLast && lastTimestamp) {
+          const d = new Date(lastTimestamp);
+          statLast.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        tbody.innerHTML = data.map(row => {
+          const finding = row.classification || row.result || row.label || 'Unknown';
+          const filename = row.file_identifier || row.filename || '-';
+          const isTumor = row.is_tumor !== undefined ? row.is_tumor : (row.diagnostic_flag === 'POS');
+          const flagClass = isTumor ? 'badge-pos' : 'badge-neg';
+          const flagText = isTumor ? '[+] POS' : '[-] NEG';
+          const dateStr = new Date(row.timestamp).toISOString().replace('T', ' ').substring(0, 19);
+
+          let findingClass = 'finding-normal';
+          const l = finding.toLowerCase();
+          if (l.includes('glioma')) findingClass = 'finding-glioma';
+          else if (l.includes('meningioma')) findingClass = 'finding-meningioma';
+          else if (l.includes('pituitary')) findingClass = 'finding-pituitary';
+
+          return `
+            <tr>
+              <td>${dateStr}</td>
+              <td style="font-family: var(--font-mono, monospace); font-size: 12px;">${filename}</td>
+              <td class="${findingClass}">${finding}</td>
+              <td style="font-weight: 600;">${(row.confidence || 0).toFixed(1)}%</td>
+              <td><span class="${flagClass}">${flagText}</span></td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--cortia-red); padding: 24px;">Failed to load audit records: ${err.message}</td></tr>`;
+      }
+    }
+
+    document.getElementById('btn-refresh').addEventListener('click', loadHistory);
+
+    document.getElementById('btn-clear').addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to clear all scan audit records?')) return;
+      try {
+        const res = await fetch('/api/scans/clear', { method: 'POST' });
+        if (!res.ok) throw new Error('Clear failed');
+        loadHistory();
+      } catch (e) {
+        alert(`Error clearing audit history: ${e.message}`);
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', loadHistory);
+  </script>
+  <script defer src="/static/js/cortia-sidebar.js?v=20261026_rev1"></script>
+</body>
+</html>

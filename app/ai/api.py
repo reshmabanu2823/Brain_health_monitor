@@ -4,7 +4,21 @@ from pathlib import Path
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 import database as cortia_db
-from .schemas import CapabilitiesResponse, ChatRequest, ChatResponse, ConversationSummary
+from .config import (
+    get_current_ai_config,
+    test_cloud_provider,
+    write_env_file,
+)
+from .schemas import (
+    CapabilitiesResponse,
+    ChatRequest,
+    ChatResponse,
+    ConversationSummary,
+    CloudConfigResponse,
+    CloudConfigRequest,
+    CloudTestRequest,
+    CloudTestResponse,
+)
 from .service import CortiaAIService
 
 router = APIRouter(prefix="/api/ai", tags=["ai"])
@@ -152,3 +166,56 @@ def get_capabilities(service: CortiaAIService = Depends(get_ai_service)):
         ],
         disclaimer="CORTIA AI is a research assistant grounded in scientific literature and local application telemetry. It does not provide medical diagnoses.",
     )
+
+
+@router.get("/config", response_model=CloudConfigResponse)
+def get_cloud_config():
+    """Retrieve current AI provider configuration and available cloud models."""
+    cfg = get_current_ai_config()
+    return CloudConfigResponse(**cfg)
+
+
+@router.post("/config", response_model=CloudConfigResponse)
+def update_cloud_config(req: CloudConfigRequest, service: CortiaAIService = Depends(get_ai_service)):
+    """Save cloud AI provider and API key, updating .env and reloading service."""
+    updates = {"CORTIA_AI_PROVIDER": req.provider}
+    if req.api_key is not None and req.api_key.strip():
+        key = req.api_key.strip()
+        if req.provider == "gemini":
+            updates["GEMINI_API_KEY"] = key
+            updates["CORTIA_AI_API_KEY"] = key
+        elif req.provider == "groq":
+            updates["GROQ_API_KEY"] = key
+        elif req.provider == "openai":
+            updates["OPENAI_API_KEY"] = key
+        elif req.provider == "openrouter":
+            updates["OPENROUTER_API_KEY"] = key
+
+    if req.model_name and req.model_name.strip():
+        model = req.model_name.strip()
+        if req.provider == "gemini":
+            updates["CORTIA_GEMINI_MODEL"] = model
+        elif req.provider == "groq":
+            updates["CORTIA_GROQ_MODEL"] = model
+        elif req.provider == "openai":
+            updates["CORTIA_OPENAI_MODEL"] = model
+        elif req.provider == "openrouter":
+            updates["CORTIA_OPENROUTER_MODEL"] = model
+
+    # Write to .env and update os.environ
+    write_env_file(updates)
+    for k, v in updates.items():
+        os.environ[k] = v
+
+    # Reload active provider immediately on service
+    service.reload_provider()
+
+    cfg = get_current_ai_config()
+    return CloudConfigResponse(**cfg)
+
+
+@router.post("/config/test", response_model=CloudTestResponse)
+def test_cloud_key(req: CloudTestRequest):
+    """Test connection to cloud provider without persisting."""
+    res = test_cloud_provider(req.provider, req.api_key or "", req.model_name)
+    return CloudTestResponse(**res)

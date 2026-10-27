@@ -324,74 +324,116 @@
 
 
 
-/* ── Section C: Main MRI Workspace (Upload + Dual Viewers) ── */
+/* ── Section C: Main MRI Workspace (Centered Upload Box vs Active Viewers) ── */
 
-.workspace, .workspace-grid {
-
-  display: grid;
-
-  grid-template-columns: 280px 1fr;
-
-  gap: 20px;
-
-  align-items: stretch;
-
+/* Default State: Main Upload Box centered in the workspace */
+.workspace-grid {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 36px auto 32px auto !important;
+  transition: all 0.3s ease;
 }
 
+.workspace-grid .upload-card {
+  width: 100% !important;
+  max-width: 380px !important;
+  margin: 0 auto !important;
+  padding: 28px 24px !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: max-width 0.3s ease, width 0.3s ease;
+}
 
+.workspace-grid .upload-card .drop-target {
+  padding: 32px 20px !important;
+}
+
+/* Hide MRI Viewer & Inference Activation Map by default until an image is uploaded */
+.workspace-grid .viewports-card {
+  display: none !important;
+}
+
+/* Hide downstream analysis cards by default until an image is uploaded */
+.details-grid,
+.crosshair-wide-card {
+  display: none !important;
+}
+
+/* ── Active Scan State: Displayed ONLY after an image is uploaded ── */
+.workspace-grid.has-scan {
+  display: grid !important;
+  grid-template-columns: 280px 1fr !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+  margin: 0 0 24px 0 !important;
+}
+
+.workspace-grid.has-scan .upload-card {
+  width: 280px !important;
+  max-width: 280px !important;
+  margin: 0 !important;
+  padding: 20px !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.workspace-grid.has-scan .upload-card .drop-target {
+  padding: 20px 14px !important;
+}
+
+.workspace-grid.has-scan .viewports-card {
+  display: flex !important;
+  flex-direction: column !important;
+  animation: fadeInWorkspace 0.35s ease forwards;
+}
+
+/* Show downstream analysis details when container has scan */
+.dashboard-container.has-scan .details-grid {
+  display: grid !important;
+  animation: fadeInWorkspace 0.35s ease forwards;
+}
+
+.dashboard-container.has-scan .crosshair-wide-card {
+  display: block !important;
+  animation: fadeInWorkspace 0.35s ease forwards;
+}
+
+@keyframes fadeInWorkspace {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @media (max-width: 1024px) {
-
-  .workspace, .workspace-grid {
-
-    grid-template-columns: 1fr;
-
+  .workspace-grid.has-scan {
+    grid-template-columns: 1fr !important;
   }
-
+  .workspace-grid.has-scan .upload-card {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }
-
-
 
 /* Base Card Section */
-
 .card-section, .upload-panel, .viewer-panel {
-
   background: var(--white) !important;
-
   border: 1px solid var(--warm-border);
-
   border-radius: 10px;
-
   padding: 20px;
-
   box-shadow: var(--shadow-sm);
-
 }
-
-
 
 .upload-card, .upload-panel {
-
-  width: 280px;
-
   display: flex;
-
   flex-direction: column;
-
   gap: 16px;
-
-}
-
-
-
-@media (max-width: 1024px) {
-
-  .upload-card, .upload-panel {
-
-    width: 100%;
-
-  }
-
 }
 
 
@@ -471,13 +513,12 @@
 
 
 .drop-icon, .upload-icon {
-
-  font-size: 26px;
-
+  width: 38px !important;
+  height: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
   color: var(--cortia-red);
-
-  margin-bottom: 2px;
-
+  margin-bottom: 6px;
 }
 
 
@@ -1990,3 +2031,20 @@
 
 }
 
+
+.btn-clear-scan {
+  background: transparent;
+  border: none;
+  color: var(--warm-sub);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: auto;
+  border-radius: 4px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.btn-clear-scan:hover {
+  color: var(--cortia-red);
+  background: var(--cortia-red-lt);
+}

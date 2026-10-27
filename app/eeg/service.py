@@ -29,6 +29,9 @@ class EEGService:
         self.error = None
         self.analysis = None
         self.recording = None
+        self.recording_started = None
+        self.auto_record = False
+        self.auto_notes = None
         self.last_received = None
         self.prediction = self.unavailable('No EEG model installed')
         self.malformed = self.discontinuities = self.received = self.evicted = 0
@@ -37,7 +40,7 @@ class EEGService:
     def unavailable(reason):
         return {'available': False, 'reason': reason}
 
-    def connect(self, source, port=None):
+    def connect(self, source, port=None, auto_record=False, notes=None):
         with self.control:
             if self.thread and self.thread.is_alive():
                 raise ValueError('Disconnect current source before reconnecting')
@@ -49,12 +52,14 @@ class EEGService:
                 self.analysis = None
                 self.prediction = self.unavailable('Waiting for valid real EEG window')
                 self.source, self.state, self.error = source, 'connecting', None
+                self.auto_record = bool(auto_record)
+                self.auto_notes = notes
                 self.malformed = self.discontinuities = self.received = self.evicted = 0
                 self.last_received = None
             self.thread = threading.Thread(target=self._run, args=(port,), name='bhm-eeg', daemon=True)
             self.thread.start()
 
-    def disconnect(self):
+    def disconnect(self, status='interrupted'):
         with self.control:
             self.stop.set()
             if self.thread:
@@ -62,8 +67,10 @@ class EEGService:
                 if self.thread.is_alive():
                     raise RuntimeError('Acquisition worker did not stop; port remains owned')
             with self.lock:
-                self._finish_recording('interrupted')
+                self._finish_recording(status)
                 self.state = 'disconnected'
+                self.auto_record = False
+                self.auto_notes = None
                 self.buffer.clear()
                 self.analysis = None
                 self.prediction = self.unavailable('Device disconnected')
@@ -76,6 +83,15 @@ class EEGService:
             rid = self.store.start(self.source, cfg_dict, notes=notes)
             self.recording = rid
             self.recording_started = time.monotonic()
+            try:
+                import database as cortia_db
+                cortia_db.start_eeg_session(
+                    source="SIMULATED" if self.source != 'serial' else 'HARDWARE',
+                    notes=notes or '',
+                    session_id=rid
+                )
+            except Exception:
+                pass
             return rid
 
     def _finish_recording(self, status):
@@ -86,6 +102,19 @@ class EEGService:
             try:
                 summary = self.store.get_summary(rid)
                 self.store.update_summary(rid, summary)
+                try:
+                    import database as cortia_db
+                    import json
+                    feat_dict = summary.get('feature_summary', {})
+                    cortia_db.end_eeg_session(
+                        session_id=rid,
+                        duration_seconds=summary.get('duration_seconds', 0),
+                        total_samples=summary.get('sample_count', 0),
+                        signal_quality=summary.get('quality_summary', {}).get('quality_state', 'Acceptable'),
+                        features_json=json.dumps(feat_dict, default=str),
+                    )
+                except Exception:
+                    pass
             except Exception:
                 log.exception('Could not precompute recording summary')
 
@@ -199,6 +228,11 @@ class EEGService:
     def _demo(self):
         with self.lock:
             self.state = 'connected'
+        if self.auto_record and not self.recording:
+            try:
+                self.start_recording(notes=self.auto_notes or "Auto-recorded session (Simulated)")
+            except Exception:
+                log.exception('Could not auto-start recording')
         start = time.monotonic()
         seq = 0
         while not self.stop.wait(.02):
@@ -239,7 +273,13 @@ class EEGService:
                         batch.append((seq, seconds, adc))
                     if batch:
                         with self.lock:
+                            first_connect = self.state != 'connected'
                             self.state, self.error = 'connected', None
+                        if first_connect and self.auto_record and not self.recording:
+                            try:
+                                self.start_recording(notes=self.auto_notes or f"Auto-recorded session (BioAmp EXG · {port})")
+                            except Exception:
+                                log.exception('Could not auto-start recording')
                         self._accept(batch)
                         last_valid = time.monotonic()
                     if time.monotonic() - last_valid > 3:

@@ -27,6 +27,8 @@ def local_control(request: Request):
 class ConnectRequest(BaseModel):
     source: Literal['serial', 'simulated']
     port: str | None = Field(default=None, max_length=256)
+    auto_record: bool = Field(default=False)
+    notes: str | None = Field(default=None, max_length=2000)
 
 
 class StartRecordingRequest(BaseModel):
@@ -52,7 +54,7 @@ def connect(body: ConnectRequest, s=Depends(service)):
     if body.source == 'serial' and body.port not in {p.device for p in list_ports.comports()}:
         raise HTTPException(422, 'Choose an available serial port from /api/device/ports')
     try:
-        s.connect(body.source, body.port)
+        s.connect(body.source, body.port, auto_record=body.auto_record, notes=body.notes)
         return {'state': 'starting', 'source': body.source}
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
@@ -61,6 +63,11 @@ def connect(body: ConnectRequest, s=Depends(service)):
 @router.post('/api/device/disconnect', dependencies=[Depends(local_control)])
 def disconnect(s=Depends(service)):
     try:
+        if getattr(s, 'recording', None):
+            try:
+                s.stop_recording()
+            except Exception:
+                pass
         s.disconnect()
         return {'state': 'disconnected'}
     except RuntimeError as exc:
@@ -228,6 +235,14 @@ def recordings(limit: int = Query(100, ge=1, le=100), s=Depends(service)):
 def recording_summary(rid: str, s=Depends(service)):
     try:
         return s.store.get_summary(rid)
+    except KeyError as exc:
+        raise HTTPException(404, 'Recording not found') from exc
+
+
+@router.get('/api/eeg/recordings/{rid}/details')
+def recording_details(rid: str, max_points: int = Query(600, ge=50, le=2000), s=Depends(service)):
+    try:
+        return s.store.get_session_details(rid, max_waveform_points=max_points)
     except KeyError as exc:
         raise HTTPException(404, 'Recording not found') from exc
 

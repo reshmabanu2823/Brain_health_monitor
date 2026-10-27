@@ -392,3 +392,368 @@
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* ==========================================================================
+   Cloud Model Integration & Configuration Modal (CORTIA Unified Design)
+   ========================================================================== */
+
+.btn-top-cloud {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 8px 14px !important;
+  background: var(--card, #FFFFFF) !important;
+  border: 1px solid var(--border, #DDD4CC) !important;
+  border-radius: 9px !important;
+  color: var(--ink, #1C1917) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+  box-shadow: 0 1px 3px rgba(35, 26, 23, 0.06) !important;
+  text-decoration: none !important;
+}
+.btn-top-cloud:hover {
+  background: var(--blush, #F0DDD8) !important;
+  border-color: var(--cortia-red, #C94040) !important;
+  color: var(--cortia-red, #C94040) !important;
+  transform: translateY(-1px) !important;
+}
+.btn-top-cloud.cloud-connected {
+  background: #EBF5EE !important;
+  border-color: #2E7D32 !important;
+  color: #1B5E20 !important;
+}
+
+.badge-provider {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 4px 10px !important;
+  border-radius: 12px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  background: var(--cream-deep, #E8DFD5) !important;
+  color: var(--ink-subtle, #5F6368) !important;
+  border: 1px solid var(--border, #DDD4CC) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+.badge-provider:hover {
+  background: var(--blush, #F0DDD8) !important;
+  color: var(--cortia-red, #C94040) !important;
+}
+.badge-provider.cloud-active {
+  background: #E8F5E9 !important;
+  border-color: #A5D6A7 !important;
+  color: #2E7D32 !important;
+}
+.provider-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #9E9E9E;
+  display: inline-block;
+}
+.badge-provider.cloud-active .provider-dot {
+  background: #2E7D32;
+  box-shadow: 0 0 6px #4CAF50;
+}
+
+/* Modal Backdrop */
+.cloud-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 12, 10, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.cloud-modal-backdrop.open {
+  display: flex !important;
+  animation: fadeInModal 0.22s ease forwards;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.cloud-modal-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border, #DDD4CC);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 48px rgba(35, 26, 23, 0.25);
+  padding: 26px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cloud-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border, #DDD4CC);
+  padding-bottom: 14px;
+}
+.cloud-modal-heading {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink, #1C1917);
+  margin: 0 0 4px 0;
+}
+.cloud-modal-sub {
+  font-size: 12px;
+  color: var(--ink-subtle, #5F6368);
+  margin: 0;
+  line-height: 1.4;
+}
+.cloud-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--ink-subtle, #5F6368);
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+.cloud-modal-close:hover {
+  color: var(--cortia-red, #C94040);
+}
+
+.cloud-form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink, #1C1917);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+
+/* Provider Selection Cards Grid */
+.cloud-providers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+  gap: 10px;
+}
+.cloud-provider-card {
+  border: 1.5px solid var(--border, #DDD4CC);
+  background: var(--bg, #F5F0EB);
+  border-radius: 10px;
+  padding: 10px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.cloud-provider-card:hover {
+  border-color: var(--cortia-red, #C94040);
+  background: #FFFFFF;
+}
+.cloud-provider-card.active {
+  border-color: var(--cortia-red, #C94040);
+  background: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(201, 64, 64, 0.18);
+}
+.provider-card-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+.provider-card-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink, #1C1917);
+}
+.provider-card-tag {
+  font-size: 9px;
+  color: var(--cortia-red, #C94040);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Form Controls */
+.cloud-select, .cloud-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border, #DDD4CC);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--ink, #1C1917);
+  background: #FFFFFF;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+.cloud-select:focus, .cloud-input:focus {
+  border-color: var(--cortia-red, #C94040);
+  box-shadow: 0 0 0 3px rgba(201, 64, 64, 0.12);
+}
+
+.cloud-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.cloud-input-wrapper .cloud-input {
+  padding-right: 40px;
+}
+.btn-toggle-key-vis {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--ink-subtle, #5F6368);
+  padding: 4px;
+}
+
+.cloud-get-key-link {
+  font-size: 11px;
+  color: var(--cortia-red, #C94040);
+  text-decoration: none;
+  font-weight: 600;
+}
+.cloud-get-key-link:hover {
+  text-decoration: underline;
+}
+
+.cloud-form-hint {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-subtle, #5F6368);
+  margin-top: 4px;
+}
+
+/* Medical Data Scope Box */
+.cloud-medical-scope-card {
+  background: var(--bg, #F5F0EB);
+  border: 1px solid var(--border, #DDD4CC);
+  border-left: 4px solid var(--cortia-red, #C94040);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.scope-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink, #1C1917);
+  margin-bottom: 4px;
+}
+.scope-desc {
+  font-size: 11px;
+  color: var(--ink-subtle, #5F6368);
+  margin: 0 0 6px 0;
+}
+.scope-points {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 11px;
+  color: var(--ink, #1C1917);
+  line-height: 1.5;
+}
+
+/* Feedback alert */
+.cloud-feedback-box {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cloud-feedback-box.success {
+  background: #E8F5E9;
+  border: 1px solid #A5D6A7;
+  color: #1B5E20;
+}
+.cloud-feedback-box.error {
+  background: #FFEBEE;
+  border: 1px solid #EF9A9A;
+  color: #B71C1C;
+}
+
+/* Footer buttons */
+.cloud-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border, #DDD4CC);
+  padding-top: 14px;
+  margin-top: 4px;
+}
+.btn-cloud-test {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #FFFFFF;
+  border: 1px solid var(--border, #DDD4CC);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink, #1C1917);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-cloud-test:hover {
+  background: var(--cream-deep, #E8DFD5);
+}
+.btn-cloud-cancel {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-subtle, #5F6368);
+  cursor: pointer;
+}
+.btn-cloud-save {
+  padding: 8px 18px;
+  background: var(--cortia-red, #C94040);
+  border: 1px solid var(--cortia-red, #C94040);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(201, 64, 64, 0.28);
+}
+.btn-cloud-save:hover {
+  background: #B33434;
+}
+
+.spinner-sm {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

@@ -51,6 +51,7 @@
   }
 
   function injectPersonaSwitcher() {
+    if (document.body && document.body.dataset.page === 'mri') return;
     const headerActions = document.querySelector('.neuro-header .header-actions');
     if (!headerActions || document.getElementById('persona-toggle-wrap')) return;
 
@@ -90,6 +91,7 @@
   }
 
   function injectHowItWorksBanner() {
+    if (document.body && document.body.dataset.page === 'mri') return;
     const pageTitle = document.querySelector('.page-title-section');
     if (!pageTitle || document.getElementById('how-it-works-banner')) return;
 

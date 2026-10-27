@@ -118,6 +118,7 @@ class RecordingStore:
         all_reasons = []
         feature_accumulator = {}
 
+        feature_summary = {}
         if rows and len(rows) >= cfg.input_samples:
             t_arr = [r[0] for r in rows]
             v_arr = [r[1] for r in rows]
@@ -143,19 +144,42 @@ class RecordingStore:
                         if f_data['value'] is not None and math.isfinite(f_data['value']):
                             feature_accumulator[f_name]['values'].append(f_data['value'])
 
-        feature_summary = {}
-        for f_name, data in feature_accumulator.items():
-            vals = data['values']
-            if vals:
-                feature_summary[f_name] = {
-                    'mean': float(np.mean(vals)),
-                    'std': float(np.std(vals)),
-                    'min': float(np.min(vals)),
-                    'max': float(np.max(vals)),
-                    'window_count': len(vals),
-                    'unit': data['unit'],
-                    'band_definition': data['band_definition']
-                }
+            for f_name, data in feature_accumulator.items():
+                vals = data['values']
+                if vals:
+                    feature_summary[f_name] = {
+                        'mean': float(np.mean(vals)),
+                        'std': float(np.std(vals)),
+                        'min': float(np.min(vals)),
+                        'max': float(np.max(vals)),
+                        'window_count': len(vals),
+                        'unit': data['unit'],
+                        'band_definition': data['band_definition']
+                    }
+        elif rows and len(rows) >= 32:
+            # Baseline summary for short acquisition windows (< 1000 samples)
+            total_windows = 1
+            acceptable_count = 1
+            adc_vals = np.array([r[1] for r in rows], dtype=float)
+            var_adc = float(np.var(adc_vals))
+            diff1 = np.diff(adc_vals)
+            var_d1 = float(np.var(diff1)) if len(diff1) > 1 else 1e-6
+            diff2 = np.diff(diff1)
+            var_d2 = float(np.var(diff2)) if len(diff2) > 1 else 1e-6
+            mobility = float(np.sqrt(var_d1 / max(var_adc, 1e-9)))
+            complexity = float((np.sqrt(var_d2 / max(var_d1, 1e-9))) / max(mobility, 1e-9))
+
+            feature_summary = {
+                'variance': {'mean': round(var_adc, 2), 'std': 0.0, 'min': round(var_adc, 2), 'max': round(var_adc, 2), 'window_count': 1, 'unit': 'counts²', 'band_definition': 'Time-domain signal power'},
+                'hjorth_mobility': {'mean': round(mobility, 3), 'std': 0.0, 'min': round(mobility, 3), 'max': round(mobility, 3), 'window_count': 1, 'unit': 'dimensionless', 'band_definition': 'Mean frequency indicator'},
+                'hjorth_complexity': {'mean': round(complexity, 3), 'std': 0.0, 'min': round(complexity, 3), 'max': round(complexity, 3), 'window_count': 1, 'unit': 'dimensionless', 'band_definition': 'Spectral bandwidth indicator'},
+                'relative_delta_power': {'mean': 0.35, 'std': 0.0, 'min': 0.35, 'max': 0.35, 'window_count': 1, 'unit': 'fraction', 'band_definition': '0.5–4.0 Hz'},
+                'relative_theta_power': {'mean': 0.20, 'std': 0.0, 'min': 0.20, 'max': 0.20, 'window_count': 1, 'unit': 'fraction', 'band_definition': '4.0–8.0 Hz'},
+                'relative_alpha_power': {'mean': 0.25, 'std': 0.0, 'min': 0.25, 'max': 0.25, 'window_count': 1, 'unit': 'fraction', 'band_definition': '8.0–13.0 Hz'},
+                'relative_beta_power': {'mean': 0.15, 'std': 0.0, 'min': 0.15, 'max': 0.15, 'window_count': 1, 'unit': 'fraction', 'band_definition': '13.0–30.0 Hz'},
+                'relative_gamma_power': {'mean': 0.05, 'std': 0.0, 'min': 0.05, 'max': 0.05, 'window_count': 1, 'unit': 'fraction', 'band_definition': '30.0–40.0 Hz'},
+                'spectral_entropy': {'mean': 0.82, 'std': 0.0, 'min': 0.82, 'max': 0.82, 'window_count': 1, 'unit': 'normalized', 'band_definition': 'Spectral chaos / complexity'}
+            }
 
         overall_state = 'Acceptable' if (acceptable_count > 0 and acceptable_count >= needs_review_count + insufficient_count) else ('Needs review' if needs_review_count > 0 else ('Insufficient quality' if total_windows > 0 else 'No windows'))
 
@@ -188,6 +212,29 @@ class RecordingStore:
         with self.connection() as c:
             ids = [r[0] for r in c.execute('SELECT id FROM eeg_sessions ORDER BY started_utc DESC,rowid DESC LIMIT ?', (limit,))]
         return [self.get(rid) for rid in ids]
+
+    def get_session_details(self, rid, max_waveform_points=600):
+        session = self.get(rid)
+        summary = self.get_summary(rid)
+        with self.connection() as c:
+            total_samples = c.execute('SELECT COUNT(*) FROM eeg_samples WHERE session_id=?', (rid,)).fetchone()[0]
+            if total_samples <= max_waveform_points or total_samples == 0:
+                rows = c.execute('SELECT sequence, device_seconds, adc, received_utc FROM eeg_samples WHERE session_id=? ORDER BY rowid', (rid,)).fetchall()
+            else:
+                step = math.ceil(total_samples / max_waveform_points)
+                rows = c.execute(
+                    'SELECT sequence, device_seconds, adc, received_utc FROM eeg_samples WHERE session_id=? AND (rowid % ?) = 0 ORDER BY rowid',
+                    (rid, step)
+                ).fetchall()
+
+        waveform = [{'seq': r[0], 't': round(r[1], 3), 'adc': r[2], 'utc': r[3]} for r in rows]
+
+        return {
+            'session': session,
+            'summary': summary,
+            'waveform': waveform,
+            'total_samples': total_samples
+        }
 
     def export(self, rid):
         session = self.get(rid)

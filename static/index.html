@@ -33,11 +33,11 @@
 
 
 
-  <link rel="stylesheet" href="/static/css/common.css?v=20261021_rev5" />
+  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev6" />
 
 
 
-  <link rel="stylesheet" href="/static/css/style.css?v=20261021_rev5" />
+  <link rel="stylesheet" href="/static/css/style.css?v=20261025_rev6" />
 
 
 
@@ -50,11 +50,11 @@
   
 
 
-  <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev1" />
+  <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev6" />
 
 
 
-  <script defer src="/static/js/cortia.js?v=20261025_rev1"></script>
+  <script defer src="/static/js/cortia.js?v=20261025_rev6"></script>
 
 
 
@@ -66,6 +66,186 @@
 
 
 
+  <style id="mri-centered-styles">
+    /* ── Main MRI Workspace: Default Centered Hero State ── */
+    .workspace-grid:not(.has-scan) {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 32px auto 40px auto !important;
+      transition: all 0.3s ease;
+    }
+    .workspace-grid:not(.has-scan) .upload-card {
+      width: 100% !important;
+      max-width: 380px !important;
+      margin: 0 auto !important;
+      padding: 28px !important;
+      border-radius: 16px !important;
+      box-shadow: 0 4px 24px rgba(35, 26, 23, 0.06) !important;
+      background: var(--card, #FFFFFF) !important;
+      border: 1px solid var(--border, #DDD4CC) !important;
+    }
+    .workspace-grid:not(.has-scan) .upload-card .drop-target {
+      padding: 28px 16px !important;
+      border-radius: 12px !important;
+      background: #F3EEEA !important;
+    }
+    .workspace-grid:not(.has-scan) .upload-card .drop-icon,
+    .workspace-grid:not(.has-scan) .upload-card .upload-icon {
+      width: 38px !important;
+      height: 38px !important;
+      max-width: 38px !important;
+      max-height: 38px !important;
+      color: var(--cortia-red, #C94040) !important;
+      margin-bottom: 6px !important;
+    }
+    .workspace-grid:not(.has-scan) .viewports-card {
+      display: none !important;
+    }
+    .dashboard-container:not(.has-scan) .details-grid,
+    .dashboard-container:not(.has-scan) .crosshair-wide-card {
+      display: none !important;
+    }
+
+    /* ── Active State: Revealed ONLY after an image is uploaded ── */
+    .workspace-grid.has-scan {
+      display: grid !important;
+      grid-template-columns: 280px 1fr !important;
+      gap: 20px !important;
+      align-items: stretch !important;
+      margin: 0 0 24px 0 !important;
+    }
+    .workspace-grid.has-scan .upload-card {
+      width: 280px !important;
+      max-width: 280px !important;
+      margin: 0 !important;
+      padding: 20px !important;
+      border-radius: 12px !important;
+    }
+    .workspace-grid.has-scan .upload-card .drop-target {
+      padding: 20px 14px !important;
+    }
+    .workspace-grid.has-scan .viewports-card {
+      display: flex !important;
+      flex-direction: column !important;
+      animation: fadeInWorkspace 0.35s ease forwards;
+    }
+    .dashboard-container.has-scan .details-grid {
+      display: grid !important;
+      animation: fadeInWorkspace 0.35s ease forwards;
+    }
+    .dashboard-container.has-scan .crosshair-wide-card {
+      display: block !important;
+      animation: fadeInWorkspace 0.35s ease forwards;
+    }
+    @keyframes fadeInWorkspace {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 1024px) {
+      .workspace-grid.has-scan {
+        grid-template-columns: 1fr !important;
+      }
+      .workspace-grid.has-scan .upload-card {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+  
+    .btn-top-history {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      padding: 9px 16px !important;
+      background: var(--card, #FFFFFF) !important;
+      border: 1px solid var(--border, #DDD4CC) !important;
+      border-radius: 10px !important;
+      color: var(--ink, #1C1917) !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      text-decoration: none !important;
+      box-shadow: 0 1px 4px rgba(35, 26, 23, 0.05) !important;
+      transition: all 0.2s ease !important;
+      cursor: pointer !important;
+    }
+    .btn-top-history svg {
+      color: var(--cortia-red, #C94040) !important;
+      transition: transform 0.2s ease !important;
+    }
+    .btn-top-history:hover {
+      border-color: var(--cortia-red, #C94040) !important;
+      color: var(--cortia-red, #C94040) !important;
+      background: var(--blush, #F0DDD8) !important;
+      box-shadow: 0 3px 10px rgba(201, 64, 64, 0.15) !important;
+      transform: translateY(-1px) !important;
+    }
+    .btn-top-history:hover svg {
+      transform: rotate(-20deg) !important;
+    }
+
+  
+    .page-title-section {
+      position: relative !important;
+      text-align: center !important;
+      margin: 12px auto 28px auto !important;
+      width: 100% !important;
+    }
+    .page-title-wrap {
+      text-align: center !important;
+      margin: 0 auto !important;
+      max-width: 680px !important;
+    }
+    .page-title-wrap .page-title {
+      font-size: 32px !important;
+      font-weight: 600 !important;
+      color: var(--ink, #1C1917) !important;
+      margin-bottom: 6px !important;
+      letter-spacing: -0.01em !important;
+      text-align: center !important;
+    }
+    .page-title-wrap .page-subtitle {
+      font-size: 14px !important;
+      color: var(--mid, #6B5248) !important;
+      line-height: 1.5 !important;
+      margin: 0 auto !important;
+      text-align: center !important;
+    }
+    .page-title-history-wrap {
+      position: absolute !important;
+      right: 0 !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+    .btn-top-chat-history {
+      background: var(--card, #FFFFFF) !important;
+      border: 1px solid var(--border, #DDD4CC) !important;
+    }
+    .btn-top-chat-history svg {
+      color: var(--cortia-red, #C94040) !important;
+    }
+    .btn-top-chat-history:hover {
+      background: var(--cortia-red, #C94040) !important;
+      border-color: var(--cortia-red, #C94040) !important;
+      color: #FFFFFF !important;
+    }
+    .btn-top-chat-history:hover svg {
+      color: #FFFFFF !important;
+      transform: scale(1.1) !important;
+    }
+    @media (max-width: 900px) {
+      .page-title-history-wrap {
+        position: static !important;
+        transform: none !important;
+        margin-top: 14px !important;
+      }
+    }
+
+  </style>
 </head>
 
 
@@ -237,7 +417,9 @@
     <aside class="sidebar neuro-rail" aria-label="Main Navigation">
       <div class="sidebar-brand">
         <a class="brand-logo" href="/cortia">
-          <div class="brand-icon">🧠</div>
+          <div class="brand-icon">
+            <img src="/static/cortia/cortia-brain.webp" alt="CORTIA" class="brand-brain-img">
+          </div>
           <div class="brand-name">CORTIA</div>
         </a>
         <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
@@ -303,31 +485,21 @@
 
 
       <header class="neuro-header" id="cortia-topbar">
-        <div class="header-meta">
-          <div class="brand-title">
-            <span class="topbar-title-text" id="topbar-title">MRI Analysis Dashboard</span>
-            <span class="brand-badge" id="topbar-badge">Clinical PACS</span>
+        <div class="header-left">
+          <button type="button" class="sidebar-toggle-btn" id="cortia-sidebar-toggle" aria-label="Toggle navigation menu" title="Toggle Navigation Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+          <div class="header-meta">
+            <div class="brand-title">
+              <span class="topbar-title-text" id="topbar-title">MRI Analysis Dashboard</span>
+              <span class="brand-badge" id="topbar-badge">Clinical PACS</span>
+            </div>
+            <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Not for diagnostic use</span>
           </div>
-          <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Not for diagnostic use</span>
-        </div>
-
-        <div class="header-actions">
-          <div class="mode-toggle-pill persona-toggle-wrap" id="persona-toggle-wrap">
-            <button type="button" class="mode-toggle-btn persona-toggle-btn active" data-mode="research" id="btn-mode-research">Research</button>
-            <button type="button" class="mode-toggle-btn persona-toggle-btn" data-mode="everyday" id="btn-mode-companion">Companion</button>
-          </div>
-
-          <div class="neuro-pill" id="topbar-status-pill" title="System status">
-            <span class="status-indicator"></span>
-            <span id="engine-status"><span id="backend"><span id="ai-provider-badge">Active</span></span></span>
-          </div>
-
-          <button type="button" class="btn-ghost" onclick="window.replayCortiaIntro ? window.replayCortiaIntro() : (window.location.href='/cortia')" title="Intro">Intro</button>
-          <a href="/cortia" class="btn-ghost" title="Portal">Portal</a>
-          <a href="/" class="btn-ghost" title="MRI">MRI</a>
-          <a href="/eeg" class="btn-ghost" title="EEG">EEG</a>
-          <a href="/insights" class="btn-ghost" title="Insights">Insights</a>
-          <a href="/ai" class="btn-primary" id="topbar-primary-btn" title="Ask CORTIA AI">✦ Ask CORTIA AI</a>
         </div>
       </header>
 
@@ -337,22 +509,21 @@
 
 
 
-      <!-- Section A: Page Heading -->
-
-
-
+      <!-- Section A: Page Heading (Centered, Patient POV) -->
       <section class="page-title-section">
-
-
-
-        <h1 class="page-title">MRI Analysis Dashboard</h1>
-
-
-
-        <p class="page-subtitle">AI-powered brain tumor classification for research purposes</p>
-
-
-
+        <div class="page-title-wrap">
+          <h1 class="page-title">MRI Analysis Dashboard</h1>
+          <p class="page-subtitle">Understand your brain MRI scan with clear visual explanations and AI-guided health insights</p>
+        </div>
+        <div class="page-title-history-wrap">
+          <a href="/history" target="_blank" class="btn-top-history" id="btn-top-history" title="Open Scan Audit History in a new page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Scan Audit History &rarr;
+          </a>
+        </div>
       </section>
 
 
@@ -471,109 +642,7 @@
 
       </section>
 
-
-
-
-
-
-
-      <!-- Section B: Four Compact Metric Cards -->
-
-
-
-      <section class="readouts" role="region" aria-label="Dashboard Summary Metrics">
-
-
-
-        <div class="card stat-card">
-
-
-
-          <span class="stat-label">System Logs</span>
-
-
-
-          <strong class="stat-value" id="tele-total">0</strong>
-
-
-
-          <span class="stat-sub">Audit scan records</span>
-
-
-
-        </div>
-
-
-
-        <div class="card stat-card">
-
-
-
-          <span class="stat-label">Positive Rate</span>
-
-
-
-          <strong class="stat-value stat-val-pos" id="tele-pos-rate">0.0%</strong>
-
-
-
-          <span class="stat-sub">Tumor detections</span>
-
-
-
-        </div>
-
-
-
-        <div class="card stat-card">
-
-
-
-          <span class="stat-label">Test Accuracy</span>
-
-
-
-          <strong class="stat-value stat-val-acc" id="tele-accuracy">95.3%</strong>
-
-
-
-          <span class="stat-sub">Candidate boost15_234</span>
-
-
-
-        </div>
-
-
-
-        <div class="card stat-card">
-
-
-
-          <span class="stat-label">Model Backbone</span>
-
-
-
-          <strong class="stat-value stat-val-backbone" id="model-backbone">EfficientNetV2-S</strong>
-
-
-
-          <span class="stat-sub">TFLite inference engine</span>
-
-
-
-        </div>
-
-
-
-      </section>
-
-
-
-
-
-
-
-      <!-- Dashboard Main Body -->
+<!-- Dashboard Main Body -->
 
 
 
@@ -621,7 +690,7 @@
 
 
 
-              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <svg class="upload-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
 
 
 
@@ -662,13 +731,8 @@
 
 
             <div id="file-badge" class="file-badge" style="display: none;">
-
-
-
               <span id="selected-filename">FILE: -</span>
-
-
-
+              <button type="button" id="btn-clear-scan" title="Remove scan" class="btn-clear-scan" aria-label="Remove scan">&times;</button>
             </div>
 
 
@@ -677,43 +741,7 @@
 
 
 
-            <!-- Calibration Samples -->
-
-
-
-            <div class="samples-panel">
-
-
-
-              <span class="samples-label">Calibration Samples</span>
-
-
-
-              <div class="samples-buttons">
-
-
-
-                <button class="btn-sample" data-sample="/static/samples/glioma.jpg">Glioma</button>
-
-
-
-                <button class="btn-sample" data-sample="/static/samples/meningioma.jpg">Meningioma</button>
-
-
-
-                <button class="btn-sample" data-sample="/static/samples/notumor.jpg">No Tumor</button>
-
-
-
-                <button class="btn-sample" data-sample="/static/samples/pituitary.jpg">Pituitary</button>
-
-
-
-              </div>
-
-
-
-            </div>
+            
 
 
 
@@ -745,7 +773,7 @@
 
 
 
-          <div class="card-section viewports-card">
+          <div class="card-section viewports-card" style="display: none;">
 
 
 
@@ -1161,7 +1189,7 @@
 
 
 
-        <section class="details-grid" aria-label="Analysis Details">
+        <section class="details-grid" aria-label="Analysis Details" style="display: none;">
 
 
 
@@ -1489,7 +1517,7 @@
 
 
 
-        <section class="card-section crosshair-wide-card" aria-label="Crosshair Saliency Inspector">
+        <section class="card-section crosshair-wide-card" aria-label="Crosshair Saliency Inspector" style="display: none;">
 
 
 
@@ -1581,131 +1609,7 @@
 
 
 
-        <!-- Section E: Recent Scan Audit Log -->
-
-
-
-        <section class="card-section audit-card" aria-label="Recent Scan Audit Log">
-
-
-
-          <div class="table-header">
-
-
-
-            <div class="table-header-title">
-
-
-
-              <span>Recent Scan Audit Log</span>
-
-
-
-              <span class="brand-badge" style="background-color: var(--md-sys-color-surface-variant); color: var(--md-sys-color-text-secondary);">Session History</span>
-
-
-
-            </div>
-
-
-
-            <div style="display: flex; gap: 8px;">
-
-
-
-              <button class="btn-pacs-sm" id="btn-refresh-history">Refresh Log</button>
-
-
-
-              <button class="btn-pacs-sm" id="btn-clear-history" style="color: #D93025;">Clear Audit</button>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-
-          <div class="table-scroll-container">
-
-
-
-            <table class="pacs-table">
-
-
-
-              <thead>
-
-
-
-                <tr>
-
-
-
-                  <th scope="col">TIMESTAMP</th>
-
-
-
-                  <th scope="col">FILE IDENTIFIER</th>
-
-
-
-                  <th scope="col">CLASSIFICATION FINDING</th>
-
-
-
-                  <th scope="col">CONFIDENCE INDEX</th>
-
-
-
-                  <th scope="col">DIAGNOSTIC FLAG</th>
-
-
-
-                </tr>
-
-
-
-              </thead>
-
-
-
-              <tbody id="history-tbody">
-
-
-
-                <tr>
-
-
-
-                  <td colspan="5" class="table-empty">No scan log entries recorded in session audit log.</td>
-
-
-
-                </tr>
-
-
-
-              </tbody>
-
-
-
-            </table>
-
-
-
-          </div>
-
-
-
-        </section>
+        
 
 
 
@@ -1973,7 +1877,7 @@
 
 
 
-  <script src="/static/js/app.js?v=20261021_rev5"></script>
+  <script src="/static/js/app.js?v=20261025_rev6"></script>
 
 
 
@@ -2025,6 +1929,7 @@
       });
     })();
   </script>
+  <script defer src="/static/js/cortia-sidebar.js?v=20261026_rev1"></script>
 </body>
 
 

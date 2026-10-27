@@ -61,10 +61,12 @@ class GeminiProvider(BaseLLMProvider):
 
 
 class OpenAIProvider(BaseLLMProvider):
-    def __init__(self, api_key: str, model_name: str = "gpt-4o-mini", base_url: Optional[str] = None):
+    def __init__(self, api_key: str, model_name: str = "gpt-4o-mini", base_url: Optional[str] = None, display_name: str = "OpenAI", extra_headers: Optional[Dict[str, str]] = None):
         self.api_key = api_key
+        self.display_name = display_name
         self.model_name = os.getenv("CORTIA_OPENAI_MODEL", model_name)
         self.base_url = (base_url or os.getenv("CORTIA_AI_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
+        self.extra_headers = extra_headers or {}
 
     def generate(self, system_instruction: str, messages: List[Dict[str, str]], context: str) -> Dict[str, Any]:
         sys_content = system_instruction
@@ -79,6 +81,7 @@ class OpenAIProvider(BaseLLMProvider):
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
+        headers.update(self.extra_headers)
         payload = {
             "model": self.model_name,
             "messages": api_messages,
@@ -96,12 +99,39 @@ class OpenAIProvider(BaseLLMProvider):
                     return {"success": False, "error": f"LLM provider error (status {res.status_code})."}
                 data = res.json()
                 text = data["choices"][0]["message"]["content"]
-                return {"success": True, "text": text, "provider": f"OpenAI ({self.model_name})"}
+                return {"success": True, "text": text, "provider": f"{self.display_name} ({self.model_name})"}
         except httpx.TimeoutException:
             return {"success": False, "error": "AI request timed out."}
         except Exception as exc:
             log.exception("OpenAI call exception: %s", exc)
             return {"success": False, "error": f"AI provider connection failed: {str(exc)}"}
+
+
+
+
+class GroqProvider(OpenAIProvider):
+    """Ultra-fast inference via Groq Cloud running Meta LLaMA 3.3 70B."""
+    def __init__(self, api_key: str, model_name: str = "llama-3.3-70b-versatile"):
+        chosen_model = os.getenv("CORTIA_GROQ_MODEL", model_name)
+        super().__init__(
+            api_key=api_key,
+            model_name=chosen_model,
+            base_url="https://api.groq.com/openai/v1",
+            display_name="Groq Cloud"
+        )
+
+
+class OpenRouterProvider(OpenAIProvider):
+    """Unified access to open and free cloud models via OpenRouter."""
+    def __init__(self, api_key: str, model_name: str = "meta-llama/llama-3.3-70b-instruct:free"):
+        chosen_model = os.getenv("CORTIA_OPENROUTER_MODEL", model_name)
+        super().__init__(
+            api_key=api_key,
+            model_name=chosen_model,
+            base_url="https://openrouter.ai/api/v1",
+            display_name="OpenRouter Cloud",
+            extra_headers={"HTTP-Referer": "http://localhost:8000", "X-Title": "CORTIA"}
+        )
 
 
 class GroundedSynthesisEngine(BaseLLMProvider):
@@ -291,13 +321,33 @@ class GroundedSynthesisEngine(BaseLLMProvider):
 
 def get_llm_provider() -> BaseLLMProvider:
     """Instantiate configured LLM provider according to environment variables, falling back to Grounded Engine."""
+    provider_id = (os.getenv("CORTIA_AI_PROVIDER") or "").lower().strip()
+
     gemini_key = os.getenv("CORTIA_AI_API_KEY") or os.getenv("GEMINI_API_KEY")
+    groq_key = os.getenv("GROQ_API_KEY")
+    openai_key = os.getenv("OPENAI_API_KEY")
+    openrouter_key = os.getenv("OPENROUTER_API_KEY")
+
+    if provider_id == "gemini" and gemini_key:
+        return GeminiProvider(api_key=gemini_key)
+    if provider_id == "groq" and groq_key:
+        return GroqProvider(api_key=groq_key)
+    if provider_id == "openai" and openai_key:
+        return OpenAIProvider(api_key=openai_key)
+    if provider_id == "openrouter" and openrouter_key:
+        return OpenRouterProvider(api_key=openrouter_key)
+    if provider_id == "local":
+        return GroundedSynthesisEngine()
+
+    # Auto-detection priority
     if gemini_key:
         return GeminiProvider(api_key=gemini_key)
-
-    openai_key = os.getenv("OPENAI_API_KEY")
+    if groq_key:
+        return GroqProvider(api_key=groq_key)
     if openai_key:
         return OpenAIProvider(api_key=openai_key)
+    if openrouter_key:
+        return OpenRouterProvider(api_key=openrouter_key)
 
     # Local fallback engine ensures the assistant always functions reliably
     return GroundedSynthesisEngine()

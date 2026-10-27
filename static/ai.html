@@ -26,6 +26,112 @@
 
   <link rel="stylesheet" href="/static/css/cortia-assistant.css">
 
+
+  <style>
+    body[data-page="ai"] .cortia-ai-fab,
+    body[data-page="ai"] .floating-assistant-btn,
+    body[data-page="ai"] #cortia-ai-floating-trigger,
+    .cortia-ai-fab,
+    .floating-assistant-btn,
+    #cortia-ai-floating-trigger {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+    }
+  </style>
+
+  <style>
+    .ai-workspace-layout {
+      display: flex !important;
+      justify-content: center !important;
+      max-width: 1040px !important;
+      margin: 16px auto 32px auto !important;
+      width: 100% !important;
+      height: calc(100vh - 120px) !important;
+    }
+    .ai-chat-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: 1 !important;
+    }
+    .ai-sidebar-card {
+      display: none !important;
+    }
+    .header-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-top-history {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      padding: 8px 16px !important;
+      background: var(--card, #FFFFFF) !important;
+      border: 1px solid var(--border, #DDD4CC) !important;
+      border-radius: 10px !important;
+      color: var(--ink, #1C1917) !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      text-decoration: none !important;
+      box-shadow: 0 1px 4px rgba(35, 26, 23, 0.05) !important;
+      transition: all 0.2s ease !important;
+      cursor: pointer !important;
+    }
+    .btn-top-history svg {
+      color: var(--cortia-red, #C94040) !important;
+      transition: transform 0.2s ease !important;
+    }
+    .btn-top-history:hover {
+      border-color: var(--cortia-red, #C94040) !important;
+      color: #FFFFFF !important;
+      background: var(--cortia-red, #C94040) !important;
+      box-shadow: 0 3px 10px rgba(201, 64, 64, 0.2) !important;
+      transform: translateY(-1px) !important;
+    }
+    .btn-top-history:hover svg {
+      color: #FFFFFF !important;
+      transform: scale(1.1) !important;
+    }
+    .btn-new-chat-inline {
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 7px;
+      background: var(--cortia-red, #C94040);
+      color: #FFFFFF;
+      border: 1px solid var(--cortia-red, #C94040);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-new-chat-inline:hover {
+      background: #B33232;
+      border-color: #B33232;
+    }
+    .btn-action-history-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 7px;
+      border: 1px solid var(--border, #DDD4CC);
+      background: #FFFFFF;
+      color: var(--ink, #1C1917);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-action-history-pill:hover {
+      background: var(--blush, #F0DDD8);
+      border-color: var(--cortia-red, #C94040);
+      color: var(--cortia-red, #C94040);
+    }
+    .btn-action-history-pill svg {
+      color: var(--cortia-red, #C94040);
+    }
+  </style>
 </head>
 
 <body data-page="ai">
@@ -43,7 +149,9 @@
     <aside class="sidebar neuro-rail" aria-label="Main Navigation">
       <div class="sidebar-brand">
         <a class="brand-logo" href="/cortia">
-          <div class="brand-icon">🧠</div>
+          <div class="brand-icon">
+            <img src="/static/cortia/cortia-brain.webp" alt="CORTIA" class="brand-brain-img">
+          </div>
           <div class="brand-name">CORTIA</div>
         </a>
         <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
@@ -97,31 +205,35 @@
       <!-- Header -->
 
       <header class="neuro-header" id="cortia-topbar">
-        <div class="header-meta">
-          <div class="brand-title">
-            <span class="topbar-title-text" id="topbar-title">MRI Analysis Dashboard</span>
-            <span class="brand-badge" id="topbar-badge">Clinical PACS</span>
+        <div class="header-left">
+          <button type="button" class="sidebar-toggle-btn" id="cortia-sidebar-toggle" aria-label="Toggle navigation menu" title="Toggle Navigation Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+          <div class="header-meta">
+            <div class="brand-title">
+              <span class="topbar-title-text" id="topbar-title">CORTIA AI</span>
+              <span class="brand-badge" id="topbar-badge">Grounded Assistant</span>
+            </div>
+            <span class="brand-subtitle" id="topbar-subtitle">Grounded in scientific literature, verified application state, and real telemetry records</span>
           </div>
-          <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Not for diagnostic use</span>
         </div>
-
-        <div class="header-actions">
-          <div class="mode-toggle-pill persona-toggle-wrap" id="persona-toggle-wrap">
-            <button type="button" class="mode-toggle-btn persona-toggle-btn active" data-mode="research" id="btn-mode-research">Research</button>
-            <button type="button" class="mode-toggle-btn persona-toggle-btn" data-mode="everyday" id="btn-mode-companion">Companion</button>
-          </div>
-
-          <div class="neuro-pill" id="topbar-status-pill" title="System status">
-            <span class="status-indicator"></span>
-            <span id="engine-status"><span id="backend"><span id="ai-provider-badge">Active</span></span></span>
-          </div>
-
-          <button type="button" class="btn-ghost" onclick="window.replayCortiaIntro ? window.replayCortiaIntro() : (window.location.href='/cortia')" title="Intro">Intro</button>
-          <a href="/cortia" class="btn-ghost" title="Portal">Portal</a>
-          <a href="/" class="btn-ghost" title="MRI">MRI</a>
-          <a href="/eeg" class="btn-ghost" title="EEG">EEG</a>
-          <a href="/insights" class="btn-ghost" title="Insights">Insights</a>
-          <a href="/ai" class="btn-primary" id="topbar-primary-btn" title="Ask CORTIA AI">✦ Ask CORTIA AI</a>
+        <div class="header-actions-right">
+          <button type="button" class="btn-top-cloud" id="btn-cloud-config" title="Configure Cloud Medical AI Model (Gemini, Groq, OpenAI)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+            </svg>
+            <span id="topbar-cloud-label">Cloud Model: Local</span>
+          </button>
+          <a href="/chats" target="_blank" class="btn-top-history btn-top-chat-history" id="btn-top-chats" title="Open Consultation Chat History in a new page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Chat History &rarr;
+          </a>
         </div>
       </header>
 
@@ -131,54 +243,32 @@
 
       <div class="ai-workspace-layout" style="margin-top:16px;">
 
-
-
-        <!-- Left Conversation History Sidebar -->
-
-        <aside class="ai-sidebar-card">
-
-          <div class="ai-sidebar-header">
-
-            <span style="font-weight:600;font-size:0.875rem;">Conversations</span>
-
-            <button id="new-conv-btn" class="btn-pacs-primary" style="padding:6px 10px;font-size:0.75rem;">+ New Chat</button>
-
-          </div>
-
-          <div class="ai-conv-list" id="conv-list-container">
-
-            <!-- Populated via JS -->
-
-          </div>
-
-          <div style="padding:12px;border-top:1px solid var(--md-border);background:#F8F9FA;">
-
-            <button id="clear-all-convs-btn" class="btn-pacs-secondary" style="width:100%;font-size:0.75rem;color:#D93025;">Clear All History</button>
-
-          </div>
-
-        </aside>
-
-
-
-        <!-- Main Chat Area -->
+<!-- Main Chat Area -->
 
         <section class="ai-chat-card">
 
           <!-- Chat Header -->
 
           <div class="ai-chat-header">
-
             <div style="display:flex;align-items:center;gap:10px;">
-
-              <h2 id="active-conv-title" style="font-size:1rem;font-weight:600;margin:0;">Research Inquiry</h2>
-
+              <h2 id="active-conv-title" style="font-size:1.05rem;font-weight:600;margin:0;">Clinical Consultation</h2>
+              <button type="button" id="ai-provider-badge" class="badge-provider" title="Click to configure Cloud Model">
+                <span class="provider-dot"></span>
+                <span id="provider-badge-text">Local Grounded Engine</span>
+              </button>
               <span id="active-context-badge" class="badge" style="display:none;background:var(--red-light);color:var(--red);">Context Attached</span>
-
             </div>
 
-            <button id="delete-curr-conv-btn" class="btn-pacs-secondary" style="padding:4px 8px;font-size:0.75rem;">Delete Chat</button>
-
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button id="new-conv-btn" class="btn-new-chat-inline" title="Start a new chat inquiry">+ New Chat</button>
+              <button id="delete-curr-conv-btn" class="btn-pacs-secondary" style="padding:6px 12px;font-size:0.75rem;" title="Delete current conversation">Delete Chat</button>
+              <a href="/chats" target="_blank" class="btn-action-history-pill" title="View all past consultation chats">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Chat History &rarr;
+              </a>
+            </div>
           </div>
 
 
@@ -291,13 +381,7 @@
 
   <script src="/static/js/cortia-assistant.js"></script>
 
-  <!-- Floating Ask CORTIA AI Button -->
-  <a href="/ai" class="cortia-ai-fab" title="Ask CORTIA AI Assistant">
-    <span class="fab-icon">✦</span>
-    <span>Ask CORTIA AI</span>
-  </a>
-
-  <script>
+<script>
     (function() {
       document.addEventListener("DOMContentLoaded", function() {
         var p = window.location.pathname.replace(/\/$/, '') || '/';
@@ -331,6 +415,82 @@
       });
     })();
   </script>
+  <script defer src="/static/js/cortia-sidebar.js?v=20261026_rev1"></script>
+
+  <!-- Cloud Model Configuration Modal -->
+  <div id="cloud-model-modal" class="cloud-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="cloud-modal-title">
+    <div class="cloud-modal-card">
+      <div class="cloud-modal-header">
+        <div>
+          <h3 id="cloud-modal-title" class="cloud-modal-heading">Connect Cloud Medical AI Model</h3>
+          <p class="cloud-modal-sub">Enable Google Gemini, Groq, or OpenAI to answer patient medical questions with full clinical context.</p>
+        </div>
+        <button type="button" class="cloud-modal-close" id="btn-close-cloud-modal" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="cloud-modal-body">
+        <!-- Provider Selection Grid -->
+        <label class="cloud-form-label">Select Cloud Provider</label>
+        <div class="cloud-providers-grid" id="cloud-providers-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Model Selection Dropdown -->
+        <div class="cloud-form-group" style="margin-top:16px;">
+          <label class="cloud-form-label" for="cloud-model-select">Model Architecture</label>
+          <select id="cloud-model-select" class="cloud-select">
+            <!-- Populated dynamically -->
+          </select>
+          <span class="cloud-form-hint" id="cloud-model-hint">Fast, lightweight medical reasoning model.</span>
+        </div>
+
+        <!-- API Key Input -->
+        <div class="cloud-form-group" id="cloud-api-key-group" style="margin-top:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <label class="cloud-form-label" for="cloud-api-key-input">Cloud API Key</label>
+            <a href="#" id="cloud-key-get-link" target="_blank" class="cloud-get-key-link">Get Free Key &rarr;</a>
+          </div>
+          <div class="cloud-input-wrapper">
+            <input type="password" id="cloud-api-key-input" class="cloud-input" placeholder="Paste your API key here (e.g. AIzaSy... or gsk_...)">
+            <button type="button" class="btn-toggle-key-vis" id="btn-toggle-key" title="Toggle visibility">&#128065;</button>
+          </div>
+          <span class="cloud-form-hint" id="cloud-key-hint">Keys are saved locally in your environment and never shared.</span>
+        </div>
+
+        <!-- Medical Data Scope Card -->
+        <div class="cloud-medical-scope-card">
+          <div class="scope-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            <strong>Connected Patient Medical Context</strong>
+          </div>
+          <p class="scope-desc">When answering medical questions, the cloud model is grounded with:</p>
+          <ul class="scope-points">
+            <li><strong>Latest MRI Tumor Diagnosis</strong> (Glioma, Meningioma, Pituitary, Normal + Confidence %)</li>
+            <li><strong>Grad-CAM Saliency Coverage</strong> (Focal visual attention map percentage)</li>
+            <li><strong>Physiological EEG Telemetry</strong> (Signal quality &amp; Delta/Theta/Alpha/Beta/Gamma bands)</li>
+            <li><strong>Patient Scan History</strong> (Audit logs from clinical records database)</li>
+          </ul>
+        </div>
+
+        <!-- Live Connection Feedback Box -->
+        <div id="cloud-test-feedback" class="cloud-feedback-box" style="display:none;margin-top:14px;"></div>
+      </div>
+
+      <div class="cloud-modal-footer">
+        <button type="button" class="btn-cloud-test" id="btn-test-cloud">
+          <span id="test-btn-spinner" class="spinner-sm" style="display:none;"></span>
+          Test Connection
+        </button>
+        <div style="display:flex;gap:10px;">
+          <button type="button" class="btn-cloud-cancel" id="btn-cancel-cloud">Cancel</button>
+          <button type="button" class="btn-cloud-save" id="btn-save-cloud">Save &amp; Connect</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

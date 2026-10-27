@@ -43,7 +43,9 @@
     <aside class="sidebar neuro-rail" aria-label="Main Navigation">
       <div class="sidebar-brand">
         <a class="brand-logo" href="/cortia">
-          <div class="brand-icon">🧠</div>
+          <div class="brand-icon">
+            <img src="/static/cortia/cortia-brain.webp" alt="CORTIA" class="brand-brain-img">
+          </div>
           <div class="brand-name">CORTIA</div>
         </a>
         <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
@@ -97,31 +99,21 @@
       <!-- Header -->
 
       <header class="neuro-header" id="cortia-topbar">
-        <div class="header-meta">
-          <div class="brand-title">
-            <span class="topbar-title-text" id="topbar-title">MRI Analysis Dashboard</span>
-            <span class="brand-badge" id="topbar-badge">Clinical PACS</span>
+        <div class="header-left">
+          <button type="button" class="sidebar-toggle-btn" id="cortia-sidebar-toggle" aria-label="Toggle navigation menu" title="Toggle Navigation Menu">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+          <div class="header-meta">
+            <div class="brand-title">
+              <span class="topbar-title-text" id="topbar-title">MRI Analysis Dashboard</span>
+              <span class="brand-badge" id="topbar-badge">Clinical PACS</span>
+            </div>
+            <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Not for diagnostic use</span>
           </div>
-          <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Not for diagnostic use</span>
-        </div>
-
-        <div class="header-actions">
-          <div class="mode-toggle-pill persona-toggle-wrap" id="persona-toggle-wrap">
-            <button type="button" class="mode-toggle-btn persona-toggle-btn active" data-mode="research" id="btn-mode-research">Research</button>
-            <button type="button" class="mode-toggle-btn persona-toggle-btn" data-mode="everyday" id="btn-mode-companion">Companion</button>
-          </div>
-
-          <div class="neuro-pill" id="topbar-status-pill" title="System status">
-            <span class="status-indicator"></span>
-            <span id="engine-status"><span id="backend"><span id="ai-provider-badge">Active</span></span></span>
-          </div>
-
-          <button type="button" class="btn-ghost" onclick="window.replayCortiaIntro ? window.replayCortiaIntro() : (window.location.href='/cortia')" title="Intro">Intro</button>
-          <a href="/cortia" class="btn-ghost" title="Portal">Portal</a>
-          <a href="/" class="btn-ghost" title="MRI">MRI</a>
-          <a href="/eeg" class="btn-ghost" title="EEG">EEG</a>
-          <a href="/insights" class="btn-ghost" title="Insights">Insights</a>
-          <a href="/ai" class="btn-primary" id="topbar-primary-btn" title="Ask CORTIA AI">✦ Ask CORTIA AI</a>
         </div>
       </header>
 
@@ -1161,6 +1153,7 @@
       });
     })();
   </script>
+  <script defer src="/static/js/cortia-sidebar.js?v=20261026_rev1"></script>
 </body>
 
 </html>

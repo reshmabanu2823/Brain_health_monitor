@@ -15,6 +15,11 @@
   });
 
   function initAssistantModal() {
+    // Never show floating assistant bubble or drawer on the AI workspace page
+    const path = (window.location.pathname || '').replace(/\/$/, '');
+    if (path === '/ai' || (document.body && document.body.dataset.page === 'ai')) {
+      return;
+    }
     let trigger = document.getElementById('cortia-ai-floating-trigger');
     if (!trigger) {
       trigger = document.createElement('div');
