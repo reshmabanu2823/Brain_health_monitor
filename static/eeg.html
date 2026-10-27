@@ -184,7 +184,183 @@
           </div>
         </section>
 
-        <!-- 3. Brain Waves & Frequency Analysis Grid -->
+        <!-- 3. Brain Activity Summary & Research Indicators (Five Visual Gauges) -->
+        <section class="eeg-card eeg-indicators-panel">
+          <div class="card-heading">
+            <div>
+              <h2>Brain Activity &amp; Research Indicators</h2>
+              <p>EEG-derived quantitative indicators &amp; dominant spectral rhythm (single-channel telemetry)</p>
+            </div>
+            <span class="badge-research-protocol">Experimental Research Protocol</span>
+          </div>
+
+          <!-- Dominant Frequency Band Summary Banner -->
+          <div class="dominant-band-banner" id="live-dominant-banner">
+            <div class="dominant-band-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12h3l2-5 4 11 3-8 3 5 3-3h4"/>
+              </svg>
+            </div>
+            <div class="dominant-band-content">
+              <div class="dominant-band-top">
+                <span class="dominant-label">Dominant Measured Activity:</span>
+                <strong class="dominant-name" id="live-dominant-name">Awaiting Active Window...</strong>
+                <span class="dominant-metrics" id="live-dominant-metrics">—</span>
+              </div>
+              <p class="dominant-desc" id="live-dominant-desc">Connect an active EEG stream to identify the primary electrophysiological frequency band.</p>
+            </div>
+          </div>
+
+          <!-- Five Polished Visual Gauges Grid -->
+          <div class="eeg-gauges-grid">
+            <!-- Gauge 1: Calm Index -->
+            <div class="eeg-gauge-card" id="card-gauge-calm">
+              <div class="gauge-card-header">
+                <div>
+                  <h3 class="gauge-title">Calm Index</h3>
+                  <span class="gauge-subtag">Relative Alpha (8–13 Hz)</span>
+                </div>
+                <button type="button" class="btn-gauge-info" aria-label="Calm Index info" data-target="info-calm">ℹ</button>
+              </div>
+              <div class="gauge-visual-wrap">
+                <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                  <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                  <path class="gauge-fill" id="live-gauge-calm-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                </svg>
+                <div class="gauge-readout">
+                  <span class="gauge-number" id="live-gauge-calm-val">—</span>
+                  <span class="gauge-unit">%</span>
+                </div>
+              </div>
+              <div class="gauge-footer-meta">
+                <span class="gauge-badge-exp">Experimental</span>
+                <span class="gauge-quality-pill" id="live-gauge-calm-qual">Awaiting</span>
+              </div>
+              <div class="gauge-info-drawer" id="info-calm" hidden>
+                <div class="drawer-formula">Formula: (Relative Alpha / 0.45) &times; 100%</div>
+                <p>Derived from relative alpha spectral power bounded between 0% and 100%. Research indicator only; does not establish clinical relaxation or emotional wellbeing.</p>
+              </div>
+            </div>
+
+            <!-- Gauge 2: Focus Index -->
+            <div class="eeg-gauge-card" id="card-gauge-focus">
+              <div class="gauge-card-header">
+                <div>
+                  <h3 class="gauge-title">Focus Index</h3>
+                  <span class="gauge-subtag">Beta / (Theta + Alpha)</span>
+                </div>
+                <button type="button" class="btn-gauge-info" aria-label="Focus Index info" data-target="info-focus">ℹ</button>
+              </div>
+              <div class="gauge-visual-wrap">
+                <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                  <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                  <path class="gauge-fill" id="live-gauge-focus-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                </svg>
+                <div class="gauge-readout">
+                  <span class="gauge-number" id="live-gauge-focus-val">—</span>
+                  <span class="gauge-unit">ratio</span>
+                </div>
+              </div>
+              <div class="gauge-footer-meta">
+                <span class="gauge-badge-exp">Experimental</span>
+                <span class="gauge-quality-pill" id="live-gauge-focus-qual">Awaiting</span>
+              </div>
+              <div class="gauge-info-drawer" id="info-focus" hidden>
+                <div class="drawer-formula">Formula: Beta / (Theta + Alpha)</div>
+                <p>Ratio of high-frequency beta power to slow-to-mid rhythms. Used in experimental neurofeedback paradigms. Does not prove cognitive concentration.</p>
+              </div>
+            </div>
+
+            <!-- Gauge 3: Mental Workload Ratio -->
+            <div class="eeg-gauge-card" id="card-gauge-workload">
+              <div class="gauge-card-header">
+                <div>
+                  <h3 class="gauge-title">Mental Workload</h3>
+                  <span class="gauge-subtag">Theta / Alpha Ratio</span>
+                </div>
+                <button type="button" class="btn-gauge-info" aria-label="Mental Workload info" data-target="info-workload">ℹ</button>
+              </div>
+              <div class="gauge-visual-wrap">
+                <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                  <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                  <path class="gauge-fill" id="live-gauge-workload-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                </svg>
+                <div class="gauge-readout">
+                  <span class="gauge-number" id="live-gauge-workload-val">—</span>
+                  <span class="gauge-unit">ratio</span>
+                </div>
+              </div>
+              <div class="gauge-footer-meta">
+                <span class="gauge-badge-exp">Exploratory</span>
+                <span class="gauge-quality-pill" id="live-gauge-workload-qual">Awaiting</span>
+              </div>
+              <div class="gauge-info-drawer" id="info-workload" hidden>
+                <div class="drawer-formula">Formula: Theta Power / Alpha Power</div>
+                <p>Dimensionless ratio reflecting frontocentral theta dynamics relative to parietal alpha synchronization. Sensitive to task demands and electrode placement.</p>
+              </div>
+            </div>
+
+            <!-- Gauge 4: Fatigue / Drowsiness Ratio -->
+            <div class="eeg-gauge-card" id="card-gauge-fatigue">
+              <div class="gauge-card-header">
+                <div>
+                  <h3 class="gauge-title">Fatigue / Drowsiness</h3>
+                  <span class="gauge-subtag">(Theta + Alpha) / Beta</span>
+                </div>
+                <button type="button" class="btn-gauge-info" aria-label="Fatigue Ratio info" data-target="info-fatigue">ℹ</button>
+              </div>
+              <div class="gauge-visual-wrap">
+                <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                  <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                  <path class="gauge-fill" id="live-gauge-fatigue-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                </svg>
+                <div class="gauge-readout">
+                  <span class="gauge-number" id="live-gauge-fatigue-val">—</span>
+                  <span class="gauge-unit">ratio</span>
+                </div>
+              </div>
+              <div class="gauge-footer-meta">
+                <span class="gauge-badge-exp">Exploratory</span>
+                <span class="gauge-quality-pill" id="live-gauge-fatigue-qual">Awaiting</span>
+              </div>
+              <div class="gauge-info-drawer" id="info-fatigue" hidden>
+                <div class="drawer-formula">Formula: (Theta + Alpha) / Beta</div>
+                <p>Reflects proportional slowing of background activity. Single-channel estimates can be swayed by blink transients, movement, and electrode drift.</p>
+              </div>
+            </div>
+
+            <!-- Gauge 5: Attention Ratio (Theta / Beta) -->
+            <div class="eeg-gauge-card" id="card-gauge-attention">
+              <div class="gauge-card-header">
+                <div>
+                  <h3 class="gauge-title">Attention Ratio</h3>
+                  <span class="gauge-subtag">Theta / Beta (TBR)</span>
+                </div>
+                <button type="button" class="btn-gauge-info" aria-label="Attention Ratio info" data-target="info-attention">ℹ</button>
+              </div>
+              <div class="gauge-visual-wrap">
+                <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                  <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                  <path class="gauge-fill" id="live-gauge-attention-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                </svg>
+                <div class="gauge-readout">
+                  <span class="gauge-number" id="live-gauge-attention-val">—</span>
+                  <span class="gauge-unit">ratio</span>
+                </div>
+              </div>
+              <div class="gauge-footer-meta">
+                <span class="gauge-badge-exp">Research Metric</span>
+                <span class="gauge-quality-pill" id="live-gauge-attention-qual">Awaiting</span>
+              </div>
+              <div class="gauge-info-drawer" id="info-attention" hidden>
+                <div class="drawer-formula">Formula: Theta Power / Beta Power</div>
+                <p>Standard electrophysiological research metric (TBR). Highly influenced by channel montage and subject age; explicitly NOT an ADHD diagnostic instrument.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Brain Waves & Frequency Analysis Grid -->
         <div class="eeg-two-col-grid">
           <!-- Frequency Bands -->
           <section class="eeg-card">
@@ -320,63 +496,374 @@
           </div>
 
           <div class="session-modal-body">
-            <!-- 4 Fact Summary Cards -->
-            <div class="modal-fact-grid">
-              <div class="modal-fact-card">
-                <span class="fact-label">Hardware Source</span>
-                <strong class="fact-value" id="modal-fact-source">BioAmp EXG</strong>
-                <span class="fact-meta" id="modal-fact-port">10-bit ADC @ 250 Hz</span>
-              </div>
-              <div class="modal-fact-card">
-                <span class="fact-label">Acquisition Time</span>
-                <strong class="fact-value" id="modal-fact-duration">0.00 s</strong>
-                <span class="fact-meta" id="modal-fact-timestamp">Started: —</span>
-              </div>
-              <div class="modal-fact-card">
-                <span class="fact-label">Signal Quality</span>
-                <strong class="fact-value" id="modal-fact-quality">Acceptable</strong>
-                <span class="fact-meta" id="modal-fact-samples">0 samples</span>
-              </div>
-              <div class="modal-fact-card">
-                <span class="fact-label">Dominant Rhythm</span>
-                <strong class="fact-value" id="modal-fact-dominant">Alpha (8–13 Hz)</strong>
-                <span class="fact-meta" id="modal-fact-entropy">Spectral Entropy: —</span>
-              </div>
-            </div>
-
-            <!-- Documented Actual Biopotential Waveform -->
-            <div class="modal-section">
+            <!-- SECTION A: Session Overview -->
+            <div class="modal-section doc-section-a">
               <div class="modal-section-header">
-                <h3>Actual Recorded Biopotential Waveform</h3>
-                <span class="modal-section-meta" id="modal-wave-meta">Zero-Phase Bandpass (1.0–40.0 Hz) · Synchronized</span>
+                <div>
+                  <span class="doc-section-tag">Section A</span>
+                  <h3>Session Overview &amp; Hardware Telemetry</h3>
+                </div>
+                <span class="modal-section-meta" id="modal-fact-timestamp">Started: —</span>
               </div>
-              <div class="modal-canvas-wrap">
-                <canvas id="modal-wave-canvas"></canvas>
+
+              <!-- 4 Fact Summary Cards -->
+              <div class="modal-fact-grid">
+                <div class="modal-fact-card">
+                  <span class="fact-label">Hardware Source</span>
+                  <strong class="fact-value" id="modal-fact-source">BioAmp EXG</strong>
+                  <span class="fact-meta" id="modal-fact-port">10-bit ADC @ 250 Hz</span>
+                </div>
+                <div class="modal-fact-card">
+                  <span class="fact-label">Acquisition Time</span>
+                  <strong class="fact-value" id="modal-fact-duration">0.00 s</strong>
+                  <span class="fact-meta" id="modal-fact-samples">0 samples</span>
+                </div>
+                <div class="modal-fact-card">
+                  <span class="fact-label">Signal Quality State</span>
+                  <strong class="fact-value" id="modal-fact-quality">Acceptable</strong>
+                  <span class="fact-meta" id="modal-fact-valid-ratio">0/0 valid windows</span>
+                </div>
+                <div class="modal-fact-card">
+                  <span class="fact-label">Dominant Rhythm</span>
+                  <strong class="fact-value" id="modal-fact-dominant">Alpha (8–13 Hz)</strong>
+                  <span class="fact-meta" id="modal-fact-entropy">Spectral Entropy: —</span>
+                </div>
+              </div>
+
+              <!-- Overview Narrative -->
+              <div class="doc-narrative-box" id="modal-overview-narrative">
+                Loading session telemetry overview...
               </div>
             </div>
 
-            <!-- 2 Columns: Frequency Bands & Power Spectral Density -->
-            <div class="modal-analysis-grid">
-              <div class="modal-section">
-                <div class="modal-section-header">
-                  <h3>Neural Frequency Distribution</h3>
-                  <span class="modal-section-meta">Relative Band Power</span>
+            <!-- SESSION GAUGES & DOMINANT BRAIN ACTIVITY SUMMARY -->
+            <div class="modal-section doc-gauges-section">
+              <div class="modal-section-header">
+                <div>
+                  <span class="doc-section-tag">Indicators Dashboard</span>
+                  <h3>Session Research Indicators &amp; Activity Summary</h3>
                 </div>
-                <div id="modal-bands-container" class="bands-container"></div>
+                <span class="modal-section-meta">Averaged across valid analysis windows</span>
               </div>
 
-              <div class="modal-section">
-                <div class="modal-section-header">
-                  <h3>Power Spectral Density (PSD)</h3>
-                  <span class="modal-section-meta">Welch Estimation (counts²/Hz)</span>
+              <!-- Brain Activity Summary Card (Dominant Band) -->
+              <div class="dominant-band-card" id="modal-dominant-card">
+                <div class="dominant-band-top-row">
+                  <div class="dominant-band-title-group">
+                    <span class="dominant-pill-badge">Primary Activity</span>
+                    <h4 class="dominant-heading" id="modal-dominant-heading">Dominant Measured Band: —</h4>
+                  </div>
+                  <div class="dominant-power-stats" id="modal-dominant-stats">
+                    <span class="dominant-stat-pill" id="modal-dominant-rel">—% Rel Power</span>
+                    <span class="dominant-stat-pill" id="modal-dominant-abs">— counts²</span>
+                  </div>
                 </div>
-                <div class="modal-canvas-wrap-psd">
-                  <canvas id="modal-psd-canvas"></canvas>
+                <p class="dominant-narrative-text" id="modal-dominant-narrative">
+                  Awaiting frequency-band decomposition...
+                </p>
+              </div>
+
+              <!-- Five Polished Session Radial Gauges -->
+              <div class="session-gauges-grid">
+                <!-- Gauge 1: Calm Index -->
+                <div class="session-gauge-card" id="modal-card-gauge-calm">
+                  <div class="gauge-card-header">
+                    <div>
+                      <h4 class="gauge-title">Calm Index</h4>
+                      <span class="gauge-subtag">Relative Alpha (8–13 Hz)</span>
+                    </div>
+                    <span class="gauge-badge-exp">Experimental</span>
+                  </div>
+                  <div class="gauge-visual-wrap">
+                    <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                      <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                      <path class="gauge-fill" id="modal-gauge-calm-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                    </svg>
+                    <div class="gauge-readout">
+                      <span class="gauge-number" id="modal-gauge-calm-val">—</span>
+                      <span class="gauge-unit">%</span>
+                    </div>
+                  </div>
+                  <div class="gauge-footer-meta">
+                    <span class="gauge-formula-tag">(Alpha / 0.45) &times; 100</span>
+                    <span class="gauge-quality-pill" id="modal-gauge-calm-qual">Normal</span>
+                  </div>
+                </div>
+
+                <!-- Gauge 2: Focus Index -->
+                <div class="session-gauge-card" id="modal-card-gauge-focus">
+                  <div class="gauge-card-header">
+                    <div>
+                      <h4 class="gauge-title">Focus Index</h4>
+                      <span class="gauge-subtag">Beta / (Theta + Alpha)</span>
+                    </div>
+                    <span class="gauge-badge-exp">Experimental</span>
+                  </div>
+                  <div class="gauge-visual-wrap">
+                    <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                      <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                      <path class="gauge-fill" id="modal-gauge-focus-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                    </svg>
+                    <div class="gauge-readout">
+                      <span class="gauge-number" id="modal-gauge-focus-val">—</span>
+                      <span class="gauge-unit">ratio</span>
+                    </div>
+                  </div>
+                  <div class="gauge-footer-meta">
+                    <span class="gauge-formula-tag">Beta / (Theta + Alpha)</span>
+                    <span class="gauge-quality-pill" id="modal-gauge-focus-qual">Normal</span>
+                  </div>
+                </div>
+
+                <!-- Gauge 3: Mental Workload Ratio -->
+                <div class="session-gauge-card" id="modal-card-gauge-workload">
+                  <div class="gauge-card-header">
+                    <div>
+                      <h4 class="gauge-title">Mental Workload</h4>
+                      <span class="gauge-subtag">Theta / Alpha Ratio</span>
+                    </div>
+                    <span class="gauge-badge-exp">Exploratory</span>
+                  </div>
+                  <div class="gauge-visual-wrap">
+                    <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                      <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                      <path class="gauge-fill" id="modal-gauge-workload-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                    </svg>
+                    <div class="gauge-readout">
+                      <span class="gauge-number" id="modal-gauge-workload-val">—</span>
+                      <span class="gauge-unit">ratio</span>
+                    </div>
+                  </div>
+                  <div class="gauge-footer-meta">
+                    <span class="gauge-formula-tag">Theta / Alpha</span>
+                    <span class="gauge-quality-pill" id="modal-gauge-workload-qual">Normal</span>
+                  </div>
+                </div>
+
+                <!-- Gauge 4: Fatigue / Drowsiness Ratio -->
+                <div class="session-gauge-card" id="modal-card-gauge-fatigue">
+                  <div class="gauge-card-header">
+                    <div>
+                      <h4 class="gauge-title">Fatigue / Drowsiness</h4>
+                      <span class="gauge-subtag">(Theta + Alpha) / Beta</span>
+                    </div>
+                    <span class="gauge-badge-exp">Exploratory</span>
+                  </div>
+                  <div class="gauge-visual-wrap">
+                    <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                      <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                      <path class="gauge-fill" id="modal-gauge-fatigue-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                    </svg>
+                    <div class="gauge-readout">
+                      <span class="gauge-number" id="modal-gauge-fatigue-val">—</span>
+                      <span class="gauge-unit">ratio</span>
+                    </div>
+                  </div>
+                  <div class="gauge-footer-meta">
+                    <span class="gauge-formula-tag">(Theta + Alpha) / Beta</span>
+                    <span class="gauge-quality-pill" id="modal-gauge-fatigue-qual">Normal</span>
+                  </div>
+                </div>
+
+                <!-- Gauge 5: Attention Ratio (Theta / Beta) -->
+                <div class="session-gauge-card" id="modal-card-gauge-attention">
+                  <div class="gauge-card-header">
+                    <div>
+                      <h4 class="gauge-title">Attention Ratio</h4>
+                      <span class="gauge-subtag">Theta / Beta (TBR)</span>
+                    </div>
+                    <span class="gauge-badge-exp">Research Metric</span>
+                  </div>
+                  <div class="gauge-visual-wrap">
+                    <svg class="radial-gauge-svg" viewBox="0 0 140 85">
+                      <path class="gauge-track" d="M 20 75 A 50 50 0 0 1 120 75" />
+                      <path class="gauge-fill" id="modal-gauge-attention-fill" d="M 20 75 A 50 50 0 0 1 120 75" stroke-dasharray="157.08" stroke-dashoffset="157.08" />
+                    </svg>
+                    <div class="gauge-readout">
+                      <span class="gauge-number" id="modal-gauge-attention-val">—</span>
+                      <span class="gauge-unit">ratio</span>
+                    </div>
+                  </div>
+                  <div class="gauge-footer-meta">
+                    <span class="gauge-formula-tag">Theta / Beta</span>
+                    <span class="gauge-quality-pill" id="modal-gauge-attention-qual">Normal</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Complexity & Time Domain Indicators -->
+            <!-- SECTION B: Summary of the Five Indicators -->
+            <div class="modal-section doc-section-b">
+              <div class="modal-section-header">
+                <div>
+                  <span class="doc-section-tag">Section B</span>
+                  <h3>Summary of the Five Research Indicators</h3>
+                </div>
+                <span class="modal-section-meta">Mathematical definitions, electrophysiological basis &amp; caveats</span>
+              </div>
+              <div id="modal-indicators-cards" class="indicators-detail-grid">
+                <!-- Dynamically populated via report.py / js -->
+              </div>
+            </div>
+
+            <!-- SECTION C: Frequency-Band Analysis -->
+            <div class="modal-section doc-section-c">
+              <div class="modal-section-header">
+                <div>
+                  <span class="doc-section-tag">Section C</span>
+                  <h3>Frequency-Band Analysis</h3>
+                </div>
+                <span class="modal-section-meta">Relative vs. Absolute Power Decomposition</span>
+              </div>
+
+              <!-- Bands Table -->
+              <div style="overflow-x: auto; margin-bottom: 16px;">
+                <table class="feature-table doc-bands-table">
+                  <thead>
+                    <tr>
+                      <th>Band</th>
+                      <th>Range (Hz)</th>
+                      <th>Relative Power (%)</th>
+                      <th>Absolute Power (counts²)</th>
+                      <th>Electrophysiological Context</th>
+                    </tr>
+                  </thead>
+                  <tbody id="modal-bands-table-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Band Explanation Box -->
+              <div class="doc-narrative-box" id="modal-band-narrative" style="margin-bottom: 16px;">
+                Decomposing neural power across canonical frequency bands...
+              </div>
+
+              <!-- Dual Canvas: Waveform + PSD -->
+              <div class="modal-analysis-grid">
+                <div class="modal-sub-canvas-box">
+                  <div class="modal-section-header">
+                    <h4>Recorded Biopotential Waveform</h4>
+                    <span class="modal-section-meta" id="modal-wave-meta">Zero-Phase Bandpass (1.0–40.0 Hz)</span>
+                  </div>
+                  <div class="modal-canvas-wrap">
+                    <canvas id="modal-wave-canvas"></canvas>
+                  </div>
+                </div>
+
+                <div class="modal-sub-canvas-box">
+                  <div class="modal-section-header">
+                    <h4>Power Spectral Density (PSD)</h4>
+                    <span class="modal-section-meta">Welch Estimation (counts²/Hz)</span>
+                  </div>
+                  <div class="modal-canvas-wrap-psd">
+                    <canvas id="modal-psd-canvas"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION D: Changes During the Session -->
+            <div class="modal-section doc-section-d">
+              <div class="modal-section-header">
+                <div>
+                  <span class="doc-section-tag">Section D</span>
+                  <h3>Changes During the Session (Temporal Dynamics)</h3>
+                </div>
+                <span class="modal-section-meta" id="modal-timeline-meta">Sliding analysis windows</span>
+              </div>
+
+              <!-- Intra-session Timeline Canvas -->
+              <div class="modal-timeline-canvas-wrap" style="position: relative; height: 180px; background: #16110F; border-radius: 8px; border: 1px solid #2B1E1A; margin-bottom: 12px; overflow: hidden;">
+                <canvas id="modal-timeline-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                <div id="modal-timeline-empty" class="empty" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.4); font-size: 12px;" hidden>Single analysis window; no intra-session timeline recorded.</div>
+              </div>
+
+              <!-- Temporal Dynamics Narrative -->
+              <div class="doc-narrative-box" id="modal-dynamics-narrative">
+                Analyzing indicator trajectory across recording epochs...
+              </div>
+            </div>
+
+            <!-- SECTION E: Signal Quality and Reliability -->
+            <div class="modal-section doc-section-e">
+              <div class="modal-section-header">
+                <div>
+                  <span class="doc-section-tag">Section E</span>
+                  <h3>Signal Quality &amp; Reliability Assessment</h3>
+                </div>
+                <span class="modal-section-meta">Multi-rule heuristic audit</span>
+              </div>
+
+              <div class="quality-audit-grid" id="modal-quality-audit-grid">
+                <!-- Quality Heuristic Cards populated dynamically -->
+              </div>
+
+              <div class="doc-narrative-box" id="modal-quality-narrative" style="margin-top: 12px;">
+                Evaluating amplitude limits, baseline wander, and spectral distribution...
+              </div>
+            </div>
+
+            <!-- SECTION F: Overall Research Interpretation -->
+            <div class="modal-section doc-section-f">
+              <div class="modal-section-header">
+                <div>
+                  <span class="doc-section-tag">Section F</span>
+                  <h3>Overall Research Interpretation</h3>
+                </div>
+                <span class="badge-research-protocol">Non-Diagnostic Research Synthesis</span>
+              </div>
+
+              <div class="doc-narrative-box" id="modal-interpretation-narrative">
+                Synthesizing session metrics and physiological features...
+              </div>
+
+              <!-- Clear Non-Diagnostic Disclaimer Box -->
+              <div class="doc-regulatory-notice">
+                <div class="regulatory-notice-icon">⚠️</div>
+                <div class="regulatory-notice-text">
+                  <strong>Explicit Regulatory &amp; Research Disclaimer:</strong>
+                  CORTIA is an experimental neuroscience and engineering platform. These indicators are exploratory research metrics derived from single-channel surface biopotentials. They do NOT constitute medical diagnoses, cannot detect ADHD, anxiety, depression, epilepsy, or cognitive impairment, and must never be used for clinical decision-making. No unified "brain score" is scientifically valid across arbitrary recording conditions.
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION G: Historical Session Comparisons -->
+            <div class="modal-section doc-section-g">
+              <div class="modal-section-header">
+                <div>
+                  <span class="doc-section-tag">Section G</span>
+                  <h3>Historical Session Comparisons</h3>
+                </div>
+                <span class="modal-section-meta">Longitudinal comparison against prior matching recordings</span>
+              </div>
+
+              <div style="overflow-x: auto;">
+                <table class="feature-table doc-comparisons-table">
+                  <thead>
+                    <tr>
+                      <th>Session ID</th>
+                      <th>Date / Time</th>
+                      <th>Calm Index</th>
+                      <th>Focus Index</th>
+                      <th>Workload Ratio</th>
+                      <th>Fatigue Ratio</th>
+                      <th>Attention (TBR)</th>
+                      <th>Dominant Band</th>
+                    </tr>
+                  </thead>
+                  <tbody id="modal-comparisons-body">
+                    <tr><td colspan="8" style="text-align: center; color: var(--mid);">Awaiting historical comparison data...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="doc-comparison-caveat">
+                <strong>Longitudinal Interpretation Notice:</strong> Inter-session differences in single-channel EEG reflect a combination of physiological state shifts, slight differences in electrode placement, and scalp impedance fluctuations. Direct longitudinal comparisons should only be made under identical subject preparation protocols.
+              </div>
+            </div>
+
+            <!-- Electrophysiological & Complexity Indicators -->
             <div class="modal-section">
               <div class="modal-section-header">
                 <h3>Electrophysiological &amp; Complexity Indicators</h3>

@@ -1073,6 +1073,506 @@
   border-color: #B5A89F;
 }
 
+/* ==========================================================================
+   CORTIA EEG: FIVE BRAIN-ACTIVITY GAUGES & COMPREHENSIVE SESSION REPORT STYLES
+   ========================================================================== */
+
+.badge-research-protocol {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1E3A2F;
+  background: #EAF0E6;
+  border: 1px solid #D2DEC9;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+/* Dominant Frequency Band Banner */
+.dominant-band-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #F4F7F2;
+  border: 1px solid #DCE6D7;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.dominant-band-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #192B23;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dominant-band-content {
+  flex: 1;
+  min-width: 0;
+}
+.dominant-band-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.dominant-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #556B5D;
+}
+.dominant-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #192B23;
+}
+.dominant-metrics {
+  font-size: 12px;
+  font-weight: 600;
+  color: #385E4E;
+  background: #E3EDE0;
+  padding: 1px 8px;
+  border-radius: 4px;
+}
+.dominant-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #4A5D52;
+  margin: 0;
+}
+
+/* Gauges Grid Layout */
+.eeg-gauges-grid,
+.session-gauges-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+@media (max-width: 1200px) {
+  .eeg-gauges-grid,
+  .session-gauges-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .eeg-gauges-grid,
+  .session-gauges-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Gauge Card Styling */
+.eeg-gauge-card,
+.session-gauge-card {
+  background: #FFFFFF;
+  border: 1px solid #E5DFD7;
+  border-radius: 14px;
+  padding: 14px 14px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.eeg-gauge-card:hover,
+.session-gauge-card:hover {
+  border-color: #D3C9BD;
+  box-shadow: 0 4px 12px rgba(28, 25, 23, 0.04);
+}
+.gauge-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.gauge-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1C1917;
+  margin: 0;
+  line-height: 1.2;
+}
+.gauge-subtag {
+  font-size: 11px;
+  color: #7D736A;
+  display: block;
+  margin-top: 2px;
+}
+.btn-gauge-info {
+  background: #F4EFEB;
+  border: 1px solid #E5DFD7;
+  color: #6B5248;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+.btn-gauge-info:hover {
+  background: #192B23;
+  color: #FFFFFF;
+  border-color: #192B23;
+}
+
+/* Radial Gauge SVG Visual */
+.gauge-visual-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 150px;
+  margin: 0 auto;
+  aspect-ratio: 140 / 85;
+}
+.radial-gauge-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.gauge-track {
+  fill: none;
+  stroke: #EAE6DF;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+.gauge-fill {
+  fill: none;
+  stroke: #192B23;
+  stroke-width: 9;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease;
+}
+.gauge-readout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+  pointer-events: none;
+}
+.gauge-number {
+  font-size: 22px;
+  font-weight: 700;
+  color: #192B23;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.gauge-unit {
+  font-size: 11px;
+  font-weight: 600;
+  color: #7D736A;
+  margin-left: 2px;
+  margin-bottom: 2px;
+}
+
+/* Gauge Footer */
+.gauge-footer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #F4EFEB;
+}
+.gauge-badge-exp {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #7B6858;
+  background: #F6F1EC;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.gauge-formula-tag {
+  font-size: 10px;
+  font-family: monospace;
+  color: #7B6858;
+}
+.gauge-quality-pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #EAF0E6;
+  color: #2E5C41;
+}
+.gauge-quality-pill.insufficient {
+  background: #FEECEB;
+  color: #C94040;
+}
+.gauge-quality-pill.review {
+  background: #FFF4E5;
+  color: #B45309;
+}
+
+/* Collapsible Info Drawer inside Gauge Card */
+.gauge-info-drawer {
+  margin-top: 10px;
+  padding: 10px;
+  background: #FBF9F6;
+  border: 1px solid #EAE3DA;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #4A403A;
+  animation: modalFadeIn 0.15s ease;
+}
+.gauge-info-drawer[hidden] {
+  display: none !important;
+}
+.drawer-formula {
+  font-family: monospace;
+  font-weight: 600;
+  color: #192B23;
+  background: #ECE5DE;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   DOCUMENTATION MODAL SECTIONS (SECTIONS A THROUGH G)
+   ========================================================================== */
+
+.doc-section-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1E3A2F;
+  background: #EAF0E6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.doc-narrative-box {
+  background: #FAF7F4;
+  border: 1px solid #ECE4DC;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #2C2420;
+}
+.doc-narrative-box p {
+  margin: 0 0 10px 0;
+}
+.doc-narrative-box p:last-child {
+  margin-bottom: 0;
+}
+
+/* Dominant Band Card in Modal */
+.dominant-band-card {
+  background: #F4F7F2;
+  border: 1px solid #D5E2D0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+.dominant-band-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.dominant-band-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dominant-pill-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #192B23;
+  color: #FFFFFF;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.dominant-heading {
+  font-size: 17px;
+  font-weight: 700;
+  color: #192B23;
+  margin: 0;
+}
+.dominant-power-stats {
+  display: flex;
+  gap: 8px;
+}
+.dominant-stat-pill {
+  font-size: 12px;
+  font-weight: 600;
+  background: #FFFFFF;
+  border: 1px solid #CBDBC5;
+  color: #1E3A2F;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+.dominant-narrative-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #2C3E33;
+  margin: 0;
+}
+
+/* Indicators Detail Grid (Section B) */
+.indicators-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.indicator-detail-card {
+  background: #FAF7F4;
+  border: 1px solid #ECE4DC;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.indicator-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.indicator-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1C1917;
+  margin: 0;
+}
+.indicator-card-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #192B23;
+}
+.indicator-formula-box {
+  background: #FFFFFF;
+  border: 1px solid #EAE3DA;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: monospace;
+  font-size: 12px;
+  color: #6B5248;
+}
+.indicator-text-block {
+  font-size: 12px;
+  line-height: 1.55;
+  color: #3C332D;
+}
+.indicator-caveat {
+  font-size: 11px;
+  color: #8C6A5A;
+  background: #FDF4F0;
+  border-left: 3px solid #C94040;
+  padding: 6px 10px;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Regulatory Notice Box (Section F) */
+.doc-regulatory-notice {
+  display: flex;
+  gap: 12px;
+  background: #FFF8E6;
+  border: 1px solid #FFE082;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 14px;
+}
+.regulatory-notice-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.regulatory-notice-text {
+  font-size: 12px;
+  line-height: 1.55;
+  color: #6B5200;
+}
+
+/* Quality Audit Heuristics (Section E) */
+.quality-audit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+.audit-card {
+  background: #FAF7F4;
+  border: 1px solid #ECE4DC;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.audit-card-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #7D736A;
+  text-transform: uppercase;
+}
+.audit-card-val {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1C1917;
+}
+.audit-card-status {
+  font-size: 11px;
+  font-weight: 600;
+}
+.audit-card-status.good { color: #2E7D32; }
+.audit-card-status.warn { color: #B45309; }
+.audit-card-status.bad { color: #C94040; }
+
+/* Historical Comparisons (Section G) */
+.doc-comparisons-table {
+  margin-bottom: 12px;
+}
+.doc-comparisons-table th {
+  font-size: 11px;
+  padding: 8px 10px;
+}
+.doc-comparisons-table td {
+  font-size: 12px;
+  padding: 8px 10px;
+}
+.doc-comparison-caveat {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #6B5248;
+  background: #FDFBF9;
+  border: 1px solid #ECE5DE;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+/* Sub canvas container */
+.modal-sub-canvas-box {
+  background: #FAF7F4;
+  border: 1px solid #ECE4DC;
+  border-radius: 10px;
+  padding: 12px;
+}
+
 /* Print styles for clinical report documentation */
 @media print {
   body * {

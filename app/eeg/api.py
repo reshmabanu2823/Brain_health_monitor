@@ -242,7 +242,14 @@ def recording_summary(rid: str, s=Depends(service)):
 @router.get('/api/eeg/recordings/{rid}/details')
 def recording_details(rid: str, max_points: int = Query(600, ge=50, le=2000), s=Depends(service)):
     try:
-        return s.store.get_session_details(rid, max_waveform_points=max_points)
+        details = s.store.get_session_details(rid, max_waveform_points=max_points)
+        try:
+            from .report import get_historical_comparisons
+            recent = s.store.list(limit=20)
+            details['comparisons'] = get_historical_comparisons(rid, recent, s.store)
+        except Exception:
+            details['comparisons'] = {'available': False, 'reason': 'Comparative analysis unavailable'}
+        return details
     except KeyError as exc:
         raise HTTPException(404, 'Recording not found') from exc
 

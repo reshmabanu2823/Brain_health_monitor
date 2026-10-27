@@ -92,13 +92,18 @@ class RecordingStore:
         r['measured_rate_hz'] = (r['sample_count'] - 1) / r['duration_seconds'] if r['duration_seconds'] > 0 and r['sample_count'] > 1 else None
         return r
 
-    def get_summary(self, rid):
+    def get_summary(self, rid, refresh_docs=True):
         session = self.get(rid)
-        if session.get('summary'):
+        from .indicators import calculate_eeg_indicators, determine_dominant_band
+        from .report import generate_session_documentation
+
+        # If summary was previously cached and has documentation, return it unless refresh needed
+        if session.get('summary') and not refresh_docs:
             try:
                 s = json.loads(session['summary'])
                 s['notes'] = session.get('notes') or ''
-                return s
+                if 'documentation' in s and 'indicators' in s:
+                    return s
             except Exception:
                 pass
 
@@ -117,6 +122,7 @@ class RecordingStore:
         insufficient_count = 0
         all_reasons = []
         feature_accumulator = {}
+        window_timeline = []
 
         feature_summary = {}
         if rows and len(rows) >= cfg.input_samples:
@@ -136,6 +142,22 @@ class RecordingStore:
 
                 if w_res.get('quality_reasons'):
                     all_reasons.extend(w_res['quality_reasons'])
+
+                w_bands = w_res.get('bands') or {}
+                w_ind = calculate_eeg_indicators(w_bands, quality_state=q_state)
+                window_timeline.append({
+                    'window_index': total_windows,
+                    'timestamp_s': round(float(t_arr[start_idx]), 2),
+                    'quality_state': q_state,
+                    'indicators': {k: {'value': v['value'], 'display_value': v['display_value'], 'available': v['available']} for k, v in w_ind.items()},
+                    'bands': {
+                        b: {
+                            'relative': round(w_bands.get(b, {}).get('relative', 0.0), 4) if w_bands.get(b, {}).get('relative') is not None else None,
+                            'absolute': round(w_bands.get(b, {}).get('absolute', 0.0), 2) if w_bands.get(b, {}).get('absolute') is not None else None
+                        }
+                        for b in ['delta', 'theta', 'alpha', 'beta', 'gamma_partial']
+                    }
+                })
 
                 if w_res.get('valid') and w_res.get('feature_metrics'):
                     for f_name, f_data in w_res['feature_metrics'].items():
@@ -183,6 +205,38 @@ class RecordingStore:
 
         overall_state = 'Acceptable' if (acceptable_count > 0 and acceptable_count >= needs_review_count + insufficient_count) else ('Needs review' if needs_review_count > 0 else ('Insufficient quality' if total_windows > 0 else 'No windows'))
 
+        bands_for_calc = {
+            'delta': {'relative': feature_summary.get('delta_relative_power', {}).get('mean', feature_summary.get('relative_delta_power', {}).get('mean', 0.35)), 'absolute': feature_summary.get('delta_absolute_power', {}).get('mean')},
+            'theta': {'relative': feature_summary.get('theta_relative_power', {}).get('mean', feature_summary.get('relative_theta_power', {}).get('mean', 0.20)), 'absolute': feature_summary.get('theta_absolute_power', {}).get('mean')},
+            'alpha': {'relative': feature_summary.get('alpha_relative_power', {}).get('mean', feature_summary.get('relative_alpha_power', {}).get('mean', 0.25)), 'absolute': feature_summary.get('alpha_absolute_power', {}).get('mean')},
+            'beta': {'relative': feature_summary.get('beta_relative_power', {}).get('mean', feature_summary.get('relative_beta_power', {}).get('mean', 0.15)), 'absolute': feature_summary.get('beta_absolute_power', {}).get('mean')},
+            'gamma_partial': {'relative': feature_summary.get('gamma_partial_relative_power', {}).get('mean', feature_summary.get('relative_gamma_power', {}).get('mean', 0.05)), 'absolute': feature_summary.get('gamma_partial_absolute_power', {}).get('mean')}
+        }
+        computed_indicators = calculate_eeg_indicators(bands_for_calc, quality_state=overall_state)
+        computed_dominant = determine_dominant_band(bands_for_calc, quality_state=overall_state)
+
+        # JSON-serializable indicators dict
+        indicators_json = {}
+        for k, v in computed_indicators.items():
+            defn = v['definition']
+            indicators_json[k] = {
+                'key': k,
+                'name': defn.name,
+                'short_title': defn.short_title,
+                'value': v['value'],
+                'display_value': v['display_value'],
+                'unit': v['unit'],
+                'formula': defn.formula,
+                'available': v['available'],
+                'quality_state': v['quality_state'],
+                'short_desc': defn.short_desc,
+                'full_explanation': defn.full_explanation,
+                'limitations': defn.limitations,
+                'scale_type': defn.scale_type,
+                'min_scale': defn.min_scale,
+                'max_scale': defn.max_scale
+            }
+
         summary_obj = {
             'session_id': rid,
             'source': session['source'],
@@ -202,10 +256,16 @@ class RecordingStore:
             },
             'preprocessing_config': prep_rec,
             'feature_summary': feature_summary,
+            'indicators': indicators_json,
+            'dominant_band': computed_dominant,
+            'window_timeline': window_timeline,
             'model_output': {'available': False, 'reason': 'No trained EEG model installed; labeled dataset required'},
             'notes': session.get('notes') or '',
             'summarized_utc': utc_now()
         }
+
+        # Generate comprehensive neural documentation report
+        summary_obj['documentation'] = generate_session_documentation(session, summary_obj, window_timeline)
         return summary_obj
 
     def list(self, limit=100):

@@ -237,6 +237,10 @@ def analyze(timestamps, values, config):
         'window_length_s': config.window_seconds
     }
 
+    from .indicators import calculate_eeg_indicators, determine_dominant_band
+    indicators = calculate_eeg_indicators(bands, quality_state=quality_state)
+    dominant_band = determine_dominant_band(bands, quality_state=quality_state)
+
     return {
         'valid': True,
         'quality_state': quality_state,
@@ -254,6 +258,8 @@ def analyze(timestamps, values, config):
         'features': features,
         'feature_metrics': feature_metrics,
         'synchronized_waveform': synchronized_waveform,
+        'indicators': indicators,
+        'dominant_band': dominant_band,
         'preprocessing': prep_record,
         'warnings': [
             'Quality checks cannot verify EEG origin or exclude muscle/eye artifacts.',
