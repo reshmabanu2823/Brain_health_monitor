@@ -136,7 +136,37 @@
 
 <body data-page="ai">
 
-  <div class="neuro-app">
+    <!-- CORTIA Permanent Horizontal Top Navigation Bar -->
+  <header class="cortia-top-navbar" id="cortia-top-navbar">
+    <div class="cortia-nav-left">
+      <a href="/" class="cortia-brand-link">
+        <img src="/static/cortia/cortia-brain-vector.png" alt="CORTIA" class="cortia-brand-brain">
+        <span class="cortia-brand-text">CORTIA</span>
+      </a>
+    </div>
+
+    <nav class="cortia-nav-center" aria-label="Main Navigation">
+      <a href="/" class="cortia-nav-item " data-page="overview">Overview</a>
+      <a href="/" class="cortia-nav-item " data-page="mri">MRI Analysis</a>
+      <a href="/eeg" class="cortia-nav-item " data-page="eeg">EEG Monitoring</a>
+      <a href="/ai" class="cortia-nav-item active" data-page="ai">CORTIA AI</a>
+    </nav>
+
+    <div class="cortia-nav-right">
+      <div class="cortia-status-pill">
+        <span class="status-dot-green"></span>
+        <span class="status-label">Research</span>
+      </div>
+      <div class="cortia-user-profile" id="cortia-user-profile" title="Signed in as Reshma Banu">
+        <div class="cortia-user-avatar">RB</div>
+        <span class="cortia-user-name">Reshma Banu</span>
+        <svg class="cortia-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </div>
+    </div>
+  </header>
+<div class="neuro-app">
 
 
 
@@ -146,53 +176,7 @@
 
         <!-- CORTIA Dark Sidebar (#231A17) -->
 
-    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
-      <div class="sidebar-brand">
-        <a class="brand-logo" href="/cortia">
-          <div class="brand-icon">
-            <img src="/static/cortia/cortia-brain.webp" alt="CORTIA" class="brand-brain-img">
-          </div>
-          <div class="brand-name">CORTIA</div>
-        </a>
-        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Workspaces</div>
-        <a class="nav-item rail-item" data-path="/" href="/" title="MRI Analysis">
-          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
-        </a>
-        <a class="nav-item rail-item" data-path="/eeg" href="/eeg" title="EEG Monitoring">
-          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
-        </a>
-        <a class="nav-item rail-item" data-path="/insights" href="/insights" title="CORTIA Insights">
-          <span class="nav-icon">◈</span> <span class="rail-label">CORTIA Insights</span>
-        </a>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Assistant</div>
-        <a class="nav-item rail-item" data-path="/ai" href="/ai" title="CORTIA AI">
-          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
-        </a>
-        <a class="nav-item rail-item" href="/docs" target="_blank" title="API Reference">
-          <span class="nav-icon">⊞</span> <span class="rail-label">API Reference</span>
-        </a>
-      </div>
-
-      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
-        <a class="nav-item rail-item" data-path="/cortia" href="/cortia" title="Cortia Portal">
-          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
-        </a>
-      </div>
-
-      <div class="sidebar-footer rail-footer">
-        <div class="runtime-badge">
-          <span class="runtime-dot status-indicator"></span>
-          Runtime v2.4 &bull; Active
-        </div>
-      </div>
-    </aside>
+    
 
 
 
@@ -204,38 +188,7 @@
 
       <!-- Header -->
 
-      <header class="neuro-header" id="cortia-topbar">
-        <div class="header-left">
-          <button type="button" class="sidebar-toggle-btn" id="cortia-sidebar-toggle" aria-label="Toggle navigation menu" title="Toggle Navigation Menu">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-          <div class="header-meta">
-            <div class="brand-title">
-              <span class="topbar-title-text" id="topbar-title">CORTIA AI</span>
-              <span class="brand-badge" id="topbar-badge">Grounded Assistant</span>
-            </div>
-            <span class="brand-subtitle" id="topbar-subtitle">Grounded in scientific literature, verified application state, and real telemetry records</span>
-          </div>
-        </div>
-        <div class="header-actions-right">
-          <button type="button" class="btn-top-cloud" id="btn-cloud-config" title="Configure Cloud Medical AI Model (Gemini, Groq, OpenAI)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
-            </svg>
-            <span id="topbar-cloud-label">Cloud Model: Local</span>
-          </button>
-          <a href="/chats" target="_blank" class="btn-top-history btn-top-chat-history" id="btn-top-chats" title="Open Consultation Chat History in a new page">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-            Chat History &rarr;
-          </a>
-        </div>
-      </header>
+      
 
 
 

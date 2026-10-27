@@ -508,7 +508,7 @@
   padding-bottom: 14px;
 }
 .cloud-modal-heading {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 22px;
   font-weight: 600;
   color: var(--ink, #1C1917);

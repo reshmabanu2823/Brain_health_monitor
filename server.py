@@ -17,7 +17,7 @@ import numpy as np
 from PIL import Image, UnidentifiedImageError
 from fastapi import FastAPI, File, HTTPException, Query, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 from app.eeg.api import router as eeg_router
@@ -344,7 +344,7 @@ app.mount('/static', StaticFiles(directory=STATIC_DIR), name='static')
 @app.get('/cortia')
 @app.get('/landing')
 def cortia_landing():
-    return FileResponse(os.path.join(STATIC_DIR, 'cortia', 'index.html'))
+    return RedirectResponse(url='/', status_code=302)
 
 
 @app.get('/insights')

@@ -1,49 +1,69 @@
 /* ==========================================================================
    CORTIA — Unified Design System Stylesheet
-   Color inspiration: CORTIA logo (red/coral watercolor brain mark + warm cream)
+   Design Foundation: MediCluster Aesthetic & CORTIA Brand Identity
+   Palette: Warm Ivory (#F7F6F0), Soft Off-White (#FCFBF8), Muted Sage (#E4E9DB),
+            Dark Charcoal (#252B28), Primary Dark Accent (#192B23),
+            Subtle Border (#E5E4DC), Brand Crimson Accent (#C94040)
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   /* Core Design Tokens */
-  --bg:           #F5F0EB;   /* warm cream — matches intro background */
-  --card:         #FFFFFF;   /* every card */
-  --border:       #DDD4CC;   /* every border */
-  --sidebar:      #231A17;   /* deep wine-brown sidebar */
-  --red:          #C94040;   /* ONE primary accent — pulled from logo brain mark */
-  --red-dark:     #A83232;   /* hover on red */
-  --red-light:    #F0D0D0;   /* badge/tint backgrounds */
-  --ink:          #1C1917;   /* headings, primary text */
-  --mid:          #6B5248;   /* secondary labels */
-  --sub:          #9C8880;   /* captions, metadata */
-  --green:        #5A8A5A;   /* success / normal / connected */
-  --amber:        #C07830;   /* warning / unavailable / caution */
+  --bg:           #F7F6F0;   /* warm ivory application background */
+  --card:         #FCFBF8;   /* main content surfaces */
+  --surface:      #FCFBF8;   /* card surface */
+  --surface-alt:  #F0F1E8;   /* toolbars, filters, grouped controls */
+  --surface-sage: #E4E9DB;   /* selected navigation and subtle sage highlights */
+  --border:       #E5E4DC;   /* subtle dividers and card outlines */
+  --border-subtle:#ECEBE3;   /* hairline dividers */
+  
+  --sidebar:      #FAF7F2;   /* warm ivory sidebar */
+  --sidebar-bg:   #FAF7F2;   /* sidebar background */
+  --sidebar-hover:#EFECE5;   /* sidebar hover */
+  --sidebar-active:#E4E9DB;  /* selected navigation */
+  
+  --ink:          #252B28;   /* headings and primary text */
+  --mid:          #777D75;   /* descriptions and metadata */
+  --sub:          #9BA199;   /* captions and subtle hints */
+  --primary-dark: #192B23;   /* primary buttons and dark accent elements */
+  
+  /* CORTIA Brand Identity: Crimson accent derived from CORTIA brain logo */
+  --red:          #C94040;   /* CORTIA brand accent */
+  --red-dark:     #A83232;   /* hover / active accent */
+  --red-light:    #FAEDED;   /* badge / tint backgrounds */
+  --cortia-red:   #C94040;
+  --cortia-red-dk:#A83232;
+  --cortia-red-lt:#FAEDED;
+  
+  /* Clinical Semantic Indicators */
+  --green:        #3F775B;   /* success / normal / connected */
+  --green-bg:     #EAF2ED;
+  --amber:        #B78036;   /* warning / caution */
+  --amber-bg:     #FAF3E8;
+  --error:        #B94B4B;   /* error / critical */
+  --error-bg:     #FAEDED;
+  --info:         #597B9A;   /* informational states */
+  --info-bg:      #EDF3F7;
 
-  /* Legacy & Semantic Aliases */
+  /* Aliases */
   --cream:        var(--bg);
-  --cream-deep:   #EDE6DD;
-  --blush:        #F0DDD8;
-  --blush-mid:    #DEC5BE;
+  --cream-deep:   var(--surface-alt);
+  --blush:        #F5EBE8;
+  --blush-mid:    #EBD6D1;
   --white:        var(--card);
   --warm-ink:     var(--ink);
   --warm-mid:     var(--mid);
   --warm-sub:     var(--sub);
   --warm-border:  var(--border);
-  --cortia-red:   var(--red);
-  --cortia-red-dk:var(--red-dark);
-  --cortia-red-lt:var(--red-light);
   --status-green: var(--green);
   --status-amber: var(--amber);
-  --sidebar-bg:   var(--sidebar);
-  --sidebar-hover:#2E2220;
-  --sidebar-active:#3A2A26;
+  --primary:      var(--primary-dark);
 
-  /* Zero out any legacy blue variables */
-  --md-blue-primary: var(--red);
-  --cortia-blue:     var(--red);
-  --blue:            var(--red);
-  --primary:         var(--red);
+  /* Fonts */
+  --font-serif:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:    'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 /* ==========================================================================
@@ -68,7 +88,7 @@ html, body {
 
 h1, h2, h3, h4, .brand-name, .page-title, .page-main-heading, .card-title,
 .metric-value, .stat-value, .stat-number, .heading-garamond, .portal-title {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   color: var(--ink);
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -111,8 +131,8 @@ aside.neuro-rail,
   width: 250px !important;
   min-width: 250px !important;
   max-width: 250px !important;
-  background-color: var(--sidebar, #231A17) !important;
-  background: var(--sidebar, #231A17) !important;
+  background-color: var(--sidebar-bg, #FAF7F2) !important;
+  background: var(--sidebar-bg, #FAF7F2) !important;
   height: 100vh !important;
   position: fixed !important;
   top: 0 !important;
@@ -120,7 +140,7 @@ aside.neuro-rail,
   left: 0 !important;
   display: flex !important;
   flex-direction: column !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1px solid var(--border, #E5E4DC) !important;
   padding: 0 !important;
   box-shadow: none !important;
   z-index: 999 !important;
@@ -134,12 +154,16 @@ body.sidebar-open aside.neuro-rail,
 body.sidebar-open .sidebar,
 body.sidebar-open .neuro-rail {
   transform: translateX(0) !important;
-  box-shadow: 6px 0 28px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 4px 0 24px rgba(37, 43, 40, 0.10) !important;
 }
 
 .sidebar-brand {
   padding: 20px 18px 16px 18px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: 1px solid var(--border, #E5E4DC) !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
 }
 
 .sidebar-brand .brand-logo {
@@ -178,18 +202,18 @@ body.sidebar-open .neuro-rail {
 }
 
 .sidebar-brand .brand-name {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  color: #FFFFFF !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: var(--ink, #252B28) !important;
   letter-spacing: 0.5px !important;
   line-height: 1 !important;
 }
 
 .sidebar-brand .brand-tagline {
-  font-size: 10px !important;
-  color: rgba(255, 255, 255, 0.4) !important;
-  margin-top: 6px !important;
+  font-size: 11px !important;
+  color: var(--mid, #777D75) !important;
+  margin-top: 5px !important;
   line-height: 1.3 !important;
   font-weight: 400 !important;
 }
@@ -202,11 +226,11 @@ body.sidebar-open .neuro-rail {
 }
 
 .sidebar-label {
-  font-size: 9px !important;
+  font-size: 10px !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
-  letter-spacing: 1.2px !important;
-  color: rgba(255, 255, 255, 0.3) !important;
+  letter-spacing: 0.08em !important;
+  color: var(--mid, #777D75) !important;
   padding: 0 8px 6px 8px !important;
 }
 
@@ -216,19 +240,19 @@ body.sidebar-open .neuro-rail {
   align-items: center !important;
   gap: 10px !important;
   padding: 8px 12px !important;
-  border-radius: 6px !important;
-  color: rgba(255, 255, 255, 0.5) !important;
+  border-radius: 8px !important;
+  color: var(--mid, #777D75) !important;
   font-size: 13px !important;
   font-weight: 500 !important;
   text-decoration: none !important;
   transition: all 0.15s ease !important;
-  border-left: 2px solid transparent !important;
+  border: 1px solid transparent !important;
 }
 
 .nav-item:hover,
 .rail-item:hover {
-  background-color: #2E2220 !important;
-  color: rgba(255, 255, 255, 0.85) !important;
+  background-color: var(--sidebar-hover, #EFECE5) !important;
+  color: var(--ink, #252B28) !important;
 }
 
 .nav-item.active,
@@ -238,9 +262,10 @@ body[data-page="eeg"] .sidebar a[data-path="/eeg"],
 body[data-page="insights"] .sidebar a[data-path="/insights"],
 body[data-page="ai"] .sidebar a[data-path="/ai"],
 body[data-page="cortia"] .sidebar a[data-path="/cortia"] {
-  background-color: #3A2A26 !important;
-  color: #FFFFFF !important;
-  border-left: 2px solid var(--red) !important;
+  background-color: var(--surface-sage, #E4E9DB) !important;
+  color: var(--ink, #252B28) !important;
+  border: 1px solid #D5DEC9 !important;
+  border-left: 3px solid var(--cortia-red, #C94040) !important;
   font-weight: 600 !important;
 }
 
@@ -255,7 +280,7 @@ body[data-page="cortia"] .sidebar a[data-path="/cortia"] {
 .rail-footer {
   margin-top: auto !important;
   padding: 14px 16px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-top: 1px solid var(--border, #E5E4DC) !important;
 }
 
 .runtime-badge {
@@ -263,7 +288,7 @@ body[data-page="cortia"] .sidebar a[data-path="/cortia"] {
   align-items: center !important;
   gap: 8px !important;
   font-size: 11px !important;
-  color: rgba(255, 255, 255, 0.3) !important;
+  color: var(--mid, #777D75) !important;
 }
 
 .runtime-dot,
@@ -295,9 +320,9 @@ header.neuro-header {
   height: 56px !important;
   min-height: 56px !important;
   max-height: 56px !important;
-  background: #FFFFFF !important;
-  background-color: #FFFFFF !important;
-  border-bottom: 1px solid var(--border) !important;
+  background: var(--card, #FCFBF8) !important;
+  background-color: var(--card, #FCFBF8) !important;
+  border-bottom: 1px solid var(--border, #E5E4DC) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -332,7 +357,7 @@ header.neuro-header {
 }
 
 .topbar-title-text {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-size: 18px !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -413,30 +438,38 @@ header.neuro-header {
 .btn-pacs-primary,
 button.btn-pacs-primary,
 a.btn-pacs-primary,
-.cortia-btn-primary {
-  background: var(--red) !important;
-  background-color: var(--red) !important;
+.cortia-btn-primary,
+.btn-analyze,
+.run-btn,
+.btn-execute {
+  background: var(--primary-dark, #192B23) !important;
+  background-color: var(--primary-dark, #192B23) !important;
   color: #FFFFFF !important;
-  border: none !important;
+  border: 1px solid #192B23 !important;
   border-radius: 8px !important;
-  padding: 7px 14px !important;
+  padding: 8px 16px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
   text-decoration: none !important;
   transition: all 0.15s ease !important;
-  box-shadow: 0 1px 2px rgba(201, 64, 64, 0.2) !important;
+  box-shadow: 0 1px 2px rgba(25, 43, 35, 0.08) !important;
 }
 
 .btn-primary:hover,
 .btn-pacs-primary:hover,
-.cortia-btn-primary:hover {
-  background: var(--red-dark) !important;
-  background-color: var(--red-dark) !important;
+.cortia-btn-primary:hover,
+.btn-analyze:hover,
+.run-btn:hover,
+.btn-execute:hover {
+  background: #253C32 !important;
+  background-color: #253C32 !important;
+  border-color: #253C32 !important;
+  color: #FFFFFF !important;
   transform: translateY(-1px) !important;
 }
 
@@ -446,14 +479,18 @@ a.btn-pacs-primary,
 .btn-pacs-secondary,
 button.btn-pacs-secondary,
 a.btn-pacs-secondary,
-.cortia-btn-secondary {
-  background: transparent !important;
-  color: var(--mid) !important;
-  border: 1px solid var(--border) !important;
+.cortia-btn-secondary,
+.btn-action-back,
+.btn-top-history,
+.btn-outline {
+  background: var(--card, #FCFBF8) !important;
+  background-color: var(--card, #FCFBF8) !important;
+  color: var(--ink, #252B28) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
   border-radius: 8px !important;
-  padding: 6px 12px !important;
+  padding: 7px 14px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 12px !important;
+  font-size: 12.5px !important;
   font-weight: 500 !important;
   cursor: pointer !important;
   display: inline-flex !important;
@@ -461,15 +498,21 @@ a.btn-pacs-secondary,
   gap: 6px !important;
   text-decoration: none !important;
   transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(37, 43, 40, 0.04) !important;
 }
 
 .btn-ghost:hover,
 .btn-secondary:hover,
 .btn-pacs-secondary:hover,
-.cortia-btn-secondary:hover {
-  background: var(--bg) !important;
-  color: var(--ink) !important;
-  border-color: #C5BCB3 !important;
+.cortia-btn-secondary:hover,
+.btn-action-back:hover,
+.btn-top-history:hover,
+.btn-outline:hover {
+  background: var(--surface-alt, #F0F1E8) !important;
+  background-color: var(--surface-alt, #F0F1E8) !important;
+  color: var(--ink, #252B28) !important;
+  border-color: #D3D2C8 !important;
+  transform: translateY(-1px) !important;
 }
 
 /* ==========================================================================
@@ -483,7 +526,7 @@ a.btn-pacs-secondary,
 
 .page-title,
 .page-main-heading {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-size: 28px !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -522,20 +565,25 @@ a.btn-pacs-secondary,
 .ai-sidebar-card,
 .ai-chat-card,
 .portal-card,
-.workspace-card {
-  background: var(--card) !important;
-  background-color: #FFFFFF !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 10px !important;
+.workspace-card,
+.section-card,
+.upload-card,
+.viewports-card,
+.crosshair-wide-card,
+.steps-card {
+  background: var(--card, #FCFBF8) !important;
+  background-color: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 12px !important;
   padding: 18px 20px !important;
-  box-shadow: 0 1px 3px rgba(28, 25, 23, 0.08) !important;
+  box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
   transition: all 0.2s ease !important;
 }
 
 .card-title,
 .card-header h2,
 .card-header h3 {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-size: 18px !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -562,7 +610,7 @@ a.btn-pacs-secondary,
 .metric-card .metric-value,
 .stat-card .stat-value,
 .stat-number {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-size: 26px !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -734,10 +782,10 @@ input[type="range"] {
 .eeg-canvas-panel,
 .oscilloscope-panel,
 .dark-viewport {
-  background-color: #1A1412 !important;
-  background: #1A1412 !important;
+  background-color: #141716 !important;
+  background: #141716 !important;
   border-radius: 10px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid #2A332E !important;
   position: relative !important;
 }
 
@@ -849,7 +897,7 @@ input[type="range"] {
 .sidebar-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(18, 12, 10, 0.48);
+  background: rgba(37, 43, 40, 0.22);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   opacity: 0;
@@ -863,7 +911,7 @@ body.sidebar-open .sidebar-backdrop {
   pointer-events: auto;
 }
 
-/* 2. Dark Sidebar Rail Drawer */
+/* 2. Warm Ivory Sidebar Rail Drawer */
 .neuro-rail,
 .sidebar {
   position: fixed !important;
@@ -874,8 +922,8 @@ body.sidebar-open .sidebar-backdrop {
   min-width: 250px !important;
   max-width: 250px !important;
   height: 100vh !important;
-  background: var(--sidebar, #231A17) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: var(--sidebar-bg, #FAF7F2) !important;
+  border-right: 1px solid var(--border, #E5E4DC) !important;
   z-index: 999 !important;
   transform: translateX(-100%) !important;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease !important;
@@ -886,7 +934,7 @@ body.sidebar-open .sidebar-backdrop {
 body.sidebar-open .neuro-rail,
 body.sidebar-open .sidebar {
   transform: translateX(0) !important;
-  box-shadow: 6px 0 28px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 4px 0 24px rgba(37, 43, 40, 0.10) !important;
 }
 
 /* 3. Main Content Area takes full width */
@@ -916,14 +964,14 @@ body.sidebar-open .sidebar {
   height: 36px !important;
   min-width: 36px !important;
   border-radius: 8px !important;
-  background: var(--card, #FFFFFF) !important;
-  border: 1px solid var(--border, #DDD4CC) !important;
-  color: var(--ink, #1C1917) !important;
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  color: var(--ink, #252B28) !important;
   cursor: pointer !important;
   margin: 0 !important;
   padding: 0 !important;
   transition: all 0.18s ease !important;
-  box-shadow: 0 1px 3px rgba(35, 26, 23, 0.06) !important;
+  box-shadow: 0 1px 2px rgba(37, 43, 40, 0.04) !important;
   flex-shrink: 0 !important;
 }
 .sidebar-toggle-btn:hover {
@@ -948,8 +996,8 @@ body.sidebar-open .sidebar {
 .sidebar-close-btn {
   background: transparent !important;
   border: none !important;
-  color: rgba(255, 255, 255, 0.6) !important;
-  font-size: 26px !important;
+  color: var(--mid, #777D75) !important;
+  font-size: 24px !important;
   line-height: 1 !important;
   width: 32px !important;
   height: 32px !important;
@@ -959,9 +1007,9 @@ body.sidebar-open .sidebar {
   cursor: pointer !important;
   border-radius: 6px !important;
   transition: all 0.15s ease !important;
-  position: absolute;
-  top: 14px;
-  right: 12px;
+  position: absolute !important;
+  top: 14px !important;
+  right: 12px !important;
 }
 .sidebar-close-btn:hover {
   color: #FFFFFF !important;
@@ -992,4 +1040,1162 @@ body.sidebar-open .sidebar {
   color: var(--cortia-red, #C94040);
   border-color: var(--cortia-red, #C94040);
   transform: scale(1.05);
+}
+
+/* ==========================================================================
+   CORTIA PERMANENT HORIZONTAL TOP NAVIGATION & REFERENCE DESIGN STYLES
+   Direct reproduction of the MediCluster reference design
+   ========================================================================== */
+
+/* Completely remove legacy hamburger button and sidebar drawer */
+#cortia-sidebar-toggle,
+.sidebar-toggle-btn,
+.sidebar-edge-fallback-btn,
+.sidebar,
+.neuro-rail,
+.sidebar-backdrop {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Base application wrapper: Full width, no left margin */
+.neuro-app, .app {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: var(--bg, #F7F6F0) !important;
+  overflow-x: hidden !important;
+}
+
+main.neuro-content, .main {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: var(--bg, #F7F6F0) !important;
+}
+
+/* ── Top Navigation Bar ── */
+.cortia-top-navbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 62px !important;
+  min-height: 62px !important;
+  background: var(--card, #FCFBF8) !important;
+  border-bottom: 1px solid var(--border, #E5E4DC) !important;
+  padding: 0 40px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+.cortia-nav-left {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+}
+
+.cortia-brand-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+}
+
+.cortia-brand-brain {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.cortia-brand-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  color: var(--ink, #252B28) !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+}
+
+.cortia-nav-center {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 auto !important;
+}
+
+.cortia-nav-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 7px 18px !important;
+  border-radius: 20px !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: var(--mid, #777D75) !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.cortia-nav-item:hover {
+  color: var(--ink, #252B28) !important;
+  background: rgba(228, 233, 219, 0.45) !important;
+}
+
+.cortia-nav-item.active,
+body[data-page="mri"] .cortia-nav-item[data-page="mri"],
+body[data-page="eeg"] .cortia-nav-item[data-page="eeg"],
+body[data-page="ai"] .cortia-nav-item[data-page="ai"],
+body[data-page="overview"] .cortia-nav-item[data-page="overview"] {
+  background: var(--surface-sage, #E4E9DB) !important;
+  color: var(--ink, #252B28) !important;
+  font-weight: 600 !important;
+}
+
+.cortia-nav-right {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  gap: 20px !important;
+}
+
+.cortia-status-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--ink, #252B28) !important;
+  padding-right: 20px !important;
+  border-right: 1px solid var(--border, #E5E4DC) !important;
+}
+
+.status-dot-green {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #3F775B !important;
+  display: inline-block !important;
+}
+
+.cortia-user-profile {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+.cortia-user-avatar {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  background: #D8DFD4 !important;
+  color: var(--ink, #252B28) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  letter-spacing: 0.04em !important;
+}
+
+.cortia-user-name {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--ink, #252B28) !important;
+}
+
+.cortia-chevron {
+  color: var(--mid, #777D75) !important;
+}
+
+/* ── Content Wrapper ── */
+.cortia-workspace-container {
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 32px 40px 48px 40px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+}
+
+/* ── Page Header Section ── */
+.mri-page-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  width: 100% !important;
+}
+
+.mri-header-text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.mri-eyebrow {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: var(--mid, #777D75) !important;
+}
+
+.mri-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 34px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.15 !important;
+  color: var(--ink, #252B28) !important;
+  margin: 0 !important;
+}
+
+.mri-subtitle {
+  font-size: 13.5px !important;
+  color: var(--mid, #777D75) !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.mri-header-actions {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.btn-upload-images {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 16px !important;
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 8px !important;
+  color: var(--ink, #252B28) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px rgba(37, 43, 40, 0.04) !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-upload-images:hover {
+  background: var(--surface-alt, #F0F1E8) !important;
+  border-color: #D3D2C8 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Steps Progress Bar Card ── */
+.mri-steps-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 12px !important;
+  padding: 16px 28px !important;
+  box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
+  box-sizing: border-box !important;
+}
+
+.mri-step {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  flex: 1 !important;
+}
+
+.step-badge {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  background: var(--surface-alt, #F0F1E8) !important;
+  color: var(--mid, #777D75) !important;
+}
+
+.step-badge.step-1,
+.mri-step.active .step-badge {
+  background: #FAEDED !important;
+  color: var(--cortia-red, #C94040) !important;
+}
+
+.step-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.step-heading {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--ink, #252B28) !important;
+  line-height: 1.2 !important;
+}
+
+.step-sub {
+  font-size: 11.5px !important;
+  color: var(--mid, #777D75) !important;
+  line-height: 1.2 !important;
+}
+
+.step-arrow {
+  margin-left: auto !important;
+  padding-right: 24px !important;
+  color: #C8CCC2 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+/* ── 2-Column Main Workspace Grid ── */
+.mri-workspace-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 24px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+@media (max-width: 1024px) {
+  .mri-workspace-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Left Column: Viewer Card ── */
+.mri-viewer-card {
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 16px !important;
+  gap: 16px !important;
+}
+
+.mri-viewer-container {
+  background: #141716 !important;
+  border-radius: 10px !important;
+  border: 1px solid #2A332E !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 420px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.viewer-top-meta {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 14px !important;
+  font-size: 11.5px !important;
+  color: #7A8580 !important;
+  font-family: 'Inter', monospace !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.viewer-canvas-area {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  min-height: 380px !important;
+  padding: 12px !important;
+}
+
+.viewer-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.scan-image, .heatmap-image {
+  max-width: 90% !important;
+  max-height: 360px !important;
+  object-fit: contain !important;
+  border-radius: 4px !important;
+  transition: transform 0.15s ease !important;
+}
+
+.viewer-placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+  font-size: 13px !important;
+}
+
+.viewer-controls-overlay {
+  position: absolute !important;
+  bottom: 12px !important;
+  right: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(20, 23, 22, 0.75) !important;
+  backdrop-filter: blur(4px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 3px 6px !important;
+  z-index: 10 !important;
+}
+
+.v-control-btn {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  width: 26px !important;
+  height: 26px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  transition: all 0.15s ease !important;
+}
+
+.v-control-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+}
+
+/* Filmstrip Below Viewer */
+.mri-filmstrip-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  overflow-x: auto !important;
+  padding-top: 4px !important;
+}
+
+.filmstrip-thumbnails {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.thumb-slice {
+  width: 58px !important;
+  height: 58px !important;
+  min-width: 58px !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  border: 1.5px solid var(--border, #E5E4DC) !important;
+  background: #141716 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.thumb-slice img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.thumb-slice:hover {
+  border-color: #777D75 !important;
+  transform: translateY(-1px) !important;
+}
+
+.thumb-slice.active {
+  border-color: var(--primary-dark, #192B23) !important;
+  box-shadow: 0 0 0 2px rgba(25, 43, 35, 0.2) !important;
+}
+
+.btn-add-more-images {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 58px !important;
+  padding: 0 14px !important;
+  border-radius: 8px !important;
+  border: 1px dashed #D3D2C8 !important;
+  background: var(--surface-alt, #F0F1E8) !important;
+  color: var(--ink, #252B28) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.btn-add-more-images:hover {
+  border-color: var(--cortia-red, #C94040) !important;
+  background: #EFEFE9 !important;
+}
+
+.plus-icon-circle {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  border: 1px solid #777D75 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  color: var(--ink, #252B28) !important;
+}
+
+.add-text {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+  line-height: 1.15 !important;
+}
+
+.add-main {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+}
+
+.add-sub {
+  font-size: 10px !important;
+  color: var(--mid, #777D75) !important;
+}
+
+/* ── Right Column: Analysis & Findings Card ── */
+.mri-analysis-card {
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 20px 24px !important;
+  gap: 20px !important;
+}
+
+.analysis-tabs-nav {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-bottom: 1px solid var(--border-subtle, #ECEBE3) !important;
+  padding-bottom: 14px !important;
+}
+
+.tab-pill {
+  background: transparent !important;
+  border: none !important;
+  padding: 6px 18px !important;
+  border-radius: 16px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--mid, #777D75) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.tab-pill:hover {
+  color: var(--ink, #252B28) !important;
+}
+
+.tab-pill.active {
+  background: var(--primary-dark, #192B23) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+.analysis-card-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Awaiting Scan Empty State (Matches Reference) */
+.awaiting-scan-view {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 40px 20px !important;
+  margin: auto !important;
+  max-width: 360px !important;
+}
+
+.awaiting-graphic {
+  margin-bottom: 20px !important;
+}
+
+.awaiting-title {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--ink, #252B28) !important;
+  margin: 0 0 8px 0 !important;
+}
+
+.awaiting-subtitle {
+  font-size: 13px !important;
+  color: var(--mid, #777D75) !important;
+  line-height: 1.5 !important;
+  margin: 0 0 24px 0 !important;
+}
+
+.btn-primary-dark {
+  background: var(--primary-dark, #192B23) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #192B23 !important;
+  border-radius: 8px !important;
+  padding: 10px 24px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(25, 43, 35, 0.08) !important;
+}
+
+.btn-primary-dark:hover {
+  background: #253C32 !important;
+  border-color: #253C32 !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-primary-dark.w-100 {
+  width: 100% !important;
+}
+
+/* Active Analysis View */
+.active-analysis-view {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
+
+.analysis-outcome-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  border-bottom: 1px solid var(--border-subtle, #ECEBE3) !important;
+  padding-bottom: 14px !important;
+}
+
+.outcome-title-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+.outcome-eyebrow {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--mid, #777D75) !important;
+}
+
+.outcome-label {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--ink, #252B28) !important;
+  margin: 0 !important;
+}
+
+.outcome-status-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 3px 10px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.outcome-status-badge.flag-positive {
+  background: #FAEDED !important;
+  color: var(--cortia-red, #C94040) !important;
+}
+
+.outcome-status-badge.flag-negative {
+  background: #EAF2ED !important;
+  color: #3F775B !important;
+}
+
+/* Probability Distribution */
+.probability-distribution {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.dist-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: var(--mid, #777D75) !important;
+  margin-bottom: 2px !important;
+}
+
+.dist-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.dist-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  font-size: 12.5px !important;
+  color: var(--ink, #252B28) !important;
+  font-weight: 500 !important;
+}
+
+.dist-track {
+  width: 100% !important;
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--surface-alt, #F0F1E8) !important;
+  overflow: hidden !important;
+}
+
+.dist-fill {
+  height: 100% !important;
+  border-radius: 3px !important;
+  background: var(--cortia-red, #C94040) !important;
+  width: 0%;
+  transition: width 0.4s ease !important;
+}
+
+.file-action-row {
+  margin-top: 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.file-badge {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  background: var(--surface-alt, #F0F1E8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  font-size: 11.5px !important;
+  color: var(--ink, #252B28) !important;
+}
+
+.btn-clear-scan {
+  background: transparent !important;
+  border: none !important;
+  font-size: 16px !important;
+  color: var(--mid, #777D75) !important;
+  cursor: pointer !important;
+}
+
+/* Findings tab grid */
+.findings-metric-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin-top: 8px !important;
+}
+
+.metric-box {
+  background: var(--surface-alt, #F0F1E8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.m-box-label {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  color: var(--mid, #777D75) !important;
+}
+
+.m-box-val {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: var(--ink, #252B28) !important;
+}
+
+/* Record tab list */
+.record-meta-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-top: 8px !important;
+}
+
+.meta-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid var(--border-subtle, #ECEBE3) !important;
+  font-size: 12px !important;
+}
+
+.meta-row .m-k {
+  color: var(--mid, #777D75) !important;
+}
+
+.meta-row .m-v {
+  font-weight: 600 !important;
+  color: var(--ink, #252B28) !important;
+}
+
+.explanation-note {
+  font-size: 13px !important;
+  color: var(--mid, #777D75) !important;
+  line-height: 1.5 !important;
+  margin-top: 8px !important;
+}
+
+/* ── App Footer ── */
+.cortia-app-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 24px 40px !important;
+  border-top: 1px solid var(--border, #E5E4DC) !important;
+  font-size: 11.5px !important;
+  color: var(--mid, #777D75) !important;
+  background: var(--bg, #F7F6F0) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.footer-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.footer-sep {
+  color: #C8CCC2 !important;
+}
+
+.footer-right {
+  color: var(--mid, #777D75) !important;
+}
+
+
+/* --- REFERENCE DESIGN PIXEL REFINEMENTS --- */
+
+/* Brand & Navbar */
+.cortia-brand-brain {
+  width: 26px !important;
+  height: 26px !important;
+  object-fit: contain !important;
+}
+.cortia-brand-text {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+  color: #252B28 !important;
+}
+
+/* Hide all floating assistant launcher and bubbles */
+#cortia-assistant-launcher, .cortia-assistant-launcher, .assistant-bubble, 
+.companion-fab, .cortia-assistant-modal, #cortia-ai-fab {
+  display: none !important;
+}
+
+/* Analysis Card Tabs Pill Container */
+.analysis-tabs-nav {
+  display: flex !important;
+  background: #F0F1E8 !important;
+  border-radius: 999px !important;
+  padding: 4px !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+  border: none !important;
+  margin-bottom: 24px !important;
+}
+
+.analysis-tabs-nav .tab-pill {
+  background: transparent !important;
+  border: none !important;
+  color: #777D75 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 6px 20px !important;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex: 1 !important;
+  text-align: center !important;
+}
+
+.analysis-tabs-nav .tab-pill.active {
+  background: #192B23 !important;
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+}
+
+/* Analysis Card State Management */
+.analysis-card-body {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.awaiting-scan-view {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 50px 24px 30px !important;
+  min-height: 440px !important;
+}
+
+.active-analysis-view {
+  display: none !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  padding: 4px 0 !important;
+}
+
+/* Mutual exclusivity via .is-active on parent */
+.mri-analysis-card.is-active .awaiting-scan-view {
+  display: none !important;
+}
+
+.mri-analysis-card.is-active .active-analysis-view {
+  display: flex !important;
+}
+
+/* Viewer Controls Overlay */
+.viewer-controls-overlay {
+  position: absolute !important;
+  bottom: 16px !important;
+  right: 16px !important;
+  background: rgba(30, 35, 32, 0.75) !important;
+  backdrop-filter: blur(4px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  z-index: 10 !important;
+}
+
+.ctrl-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #A0A69D !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.15s ease !important;
+}
+
+.ctrl-btn:hover {
+  color: #FFFFFF !important;
+}
+
+
+/* --- VIEWER & FILMSTRIP EXACT PROPORTIONS --- */
+.mri-viewer-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 560px !important;
+}
+
+.viewer-meta-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+}
+
+.viewer-filename, .viewer-filesize {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #777D75 !important;
+}
+
+.medical-viewport-window {
+  position: relative !important;
+  width: 100% !important;
+  height: 440px !important;
+  background: #141716 !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.scan-image-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.scan-img-layer {
+  max-width: 90% !important;
+  max-height: 90% !important;
+  object-fit: contain !important;
+  border-radius: 4px !important;
+  display: block !important;
+}
+
+.viewer-controls-overlay {
+  position: absolute !important;
+  bottom: 14px !important;
+  right: 14px !important;
+  background: rgba(30, 35, 32, 0.75) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 6px !important;
+  padding: 5px 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  z-index: 10 !important;
+}
+
+.mri-filmstrip-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-top: 16px !important;
+  width: 100% !important;
+}
+
+.filmstrip-thumbnails {
+  display: flex !important;
+  gap: 10px !important;
+  flex-shrink: 0 !important;
+}
+
+.thumb-slice {
+  width: 74px !important;
+  height: 74px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  border: 2px solid transparent !important;
+  background: #000000 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.thumb-slice.active {
+  border-color: #252B28 !important;
+  box-shadow: 0 0 0 1px #E5E4DC !important;
+}
+
+.thumb-slice img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.add-images-card {
+  height: 74px !important;
+  padding: 0 16px !important;
+  background: #F0F1E8 !important;
+  border: 1px dashed #D3D8CB !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.add-images-card:hover {
+  background: #E4E9DB !important;
+}
+
+.add-icon-circle {
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.add-text-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  line-height: 1.2 !important;
+}
+
+.add-title {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #252B28 !important;
+}
+
+.add-sub {
+  font-size: 11px !important;
+  color: #777D75 !important;
+}
+
+.btn-top-upload {
+  background: transparent !important;
+  border: 1px solid #D0D4CB !important;
+  border-radius: 8px !important;
+  padding: 8px 18px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #252B28 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+.btn-top-upload:hover {
+  background: #EAECE2 !important;
+  border-color: #B5BDB0 !important;
 }
