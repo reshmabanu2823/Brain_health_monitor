@@ -103,6 +103,16 @@ class ConversationStore:
             )
         return msg_id
 
+    def get_messages(self, conversation_id: str, limit: int = 30) -> List[Dict[str, Any]]:
+        conv = self.get_conversation(conversation_id)
+        if not conv:
+            return []
+        msgs = conv.get("messages", [])
+        return [
+            m.model_dump() if hasattr(m, "model_dump") else (m if isinstance(m, dict) else dict(m))
+            for m in msgs[-limit:]
+        ]
+
     def get_conversation(self, conversation_id: str) -> Optional[Dict[str, Any]]:
         with self.connection() as conn:
             conv = conn.execute("SELECT * FROM cortia_conversations WHERE id = ?", (conversation_id,)).fetchone()

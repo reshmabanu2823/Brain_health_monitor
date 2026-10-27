@@ -1,3 +1,8 @@
+
+let currentAttachedBase64 = null;
+let currentAttachedType = 'image/jpeg';
+let currentAttachedName = '';
+
 /**
  * CORTIA AI Assistant Client Controller
  */
@@ -22,6 +27,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const clearAllBtn = document.getElementById('clear-all-convs-btn');
 
   sendBtn?.addEventListener('click', handleSendMessage);
+
+  // Attachment controls
+  const attachBtn = document.getElementById('btn-attach-image');
+  const fileInput = document.getElementById('chat-file-input');
+  const previewBar = document.getElementById('attachment-preview-bar');
+  const previewImg = document.getElementById('attachment-thumb');
+  const previewName = document.getElementById('attachment-filename');
+  const removeAttachBtn = document.getElementById('btn-remove-attachment');
+
+  attachBtn?.addEventListener('click', () => fileInput?.click());
+  fileInput?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    currentAttachedName = file.name;
+    currentAttachedType = file.type || 'image/jpeg';
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      currentAttachedBase64 = evt.target.result;
+      if (previewImg) previewImg.src = currentAttachedBase64;
+      if (previewName) previewName.textContent = currentAttachedName;
+      if (previewBar) previewBar.style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  removeAttachBtn?.addEventListener('click', () => {
+    currentAttachedBase64 = null;
+    currentAttachedName = '';
+    if (fileInput) fileInput.value = '';
+    if (previewBar) previewBar.style.display = 'none';
+  });
   textarea?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -218,12 +254,25 @@ async function handleSendMessage() {
   // Render typing indicator
   const typingEl = showTypingIndicator();
 
+  const langSelect = document.getElementById('chat-lang-select');
+  const selectedLang = langSelect ? langSelect.value : 'en';
+
   const payload = {
     message: message,
     conversation_id: activeConversationId,
     analysis_type: currentAnalysisContext.type,
-    analysis_id: currentAnalysisContext.id
+    analysis_id: currentAnalysisContext.id,
+    language: selectedLang,
+    image_base64: currentAttachedBase64,
+    media_type: currentAttachedType
   };
+
+  // Reset attachment bar
+  const prevBase64 = currentAttachedBase64;
+  currentAttachedBase64 = null;
+  currentAttachedName = '';
+  const previewBar = document.getElementById('attachment-preview-bar');
+  if (previewBar) previewBar.style.display = 'none';
 
   try {
     const res = await fetch('/api/ai/chat', {
@@ -394,6 +443,29 @@ function appendAssistantWelcome() {
 }
 
 function formatMarkdown(text) {
+  if (!text) return '';
+  
+  // CliniQ section wrappers
+  let formatted = text
+    .replace(/### Clinical Drug Interaction Alert([\s\S]*?)(?=###|$)/gi, (m, p1) => {
+      return `<div style="background:#FDF4F2;border:1px solid rgba(217,107,79,0.3);border-left:4px solid #D96B4F;border-radius:8px;padding:12px 16px;margin:12px 0;">
+        <div style="font-size:12px;font-weight:700;color:#D96B4F;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Clinical Drug Interaction Alert</div>
+        <div style="font-size:13.5px;color:#252B28;line-height:1.5;">${p1.trim()}</div>
+      </div>`;
+    })
+    .replace(/### Clinical Impression([\s\S]*?)(?=###|$)/gi, (m, p1) => {
+      return `<div style="background:#F0F1E8;border-left:4px solid #192B23;border-radius:8px;padding:12px 16px;margin:12px 0;">
+        <div style="font-size:12px;font-weight:700;color:#192B23;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Clinical Impression</div>
+        <div style="font-size:13.5px;color:#252B28;line-height:1.5;">${p1.trim()}</div>
+      </div>`;
+    })
+    .replace(/### Recommended Specialist & Action Plan([\s\S]*?)(?=###|$)/gi, (m, p1) => {
+      return `<div style="background:#FCFBF8;border:1px solid #E5E4DC;border-radius:8px;padding:12px 16px;margin:12px 0;">
+        <div style="font-size:12px;font-weight:700;color:#3F775B;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Recommended Specialist & Next Steps</div>
+        <div style="font-size:13.5px;color:#252B28;line-height:1.5;">${p1.trim()}</div>
+      </div>`;
+    });
+  text = formatted;
   if (!text) return '';
   return text
     .replace(/^### (.*$)/gim, '<h3 style="font-size:1rem;margin:8px 0 4px 0;font-weight:600;">$1</h3>')

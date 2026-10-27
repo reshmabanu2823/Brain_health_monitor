@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CORTIA — 3D Brain Imaging</title>
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/static/css/cortia-theme.css" />
+  <link rel="stylesheet" href="/static/css/common.css" />
+
+  <!-- Local Three.js & OrbitControls for 100% offline capability -->
+  <script src="/static/js/vendor/three.min.js"></script>
+  <script src="/static/js/vendor/OrbitControls.js"></script>
+
+  <style>
+    .workspace-3d-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 1080px) {
+      .workspace-3d-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 3D Viewport Card */
+    .viewport-3d-card {
+      background: #FCFBF8;
+      border: 1px solid #E5E4DC;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .viewport-3d-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .viewport-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #252B28;
+    }
+
+    .viewport-controls-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #F0F1E8;
+      padding: 6px 14px;
+      border-radius: 8px;
+    }
+
+    .slider-control-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #777D75;
+    }
+
+    .slider-control-wrap input[type="range"] {
+      width: 90px;
+      accent-color: #192B23;
+      cursor: pointer;
+    }
+
+    .checkbox-control-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #252B28;
+      cursor: pointer;
+    }
+
+    .checkbox-control-wrap input {
+      accent-color: #D96B4F;
+      cursor: pointer;
+    }
+
+    .webgl-canvas-container {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      background: #141716;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    .webgl-canvas-container:active {
+      cursor: grabbing;
+    }
+
+    .webgl-loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 23, 22, 0.85);
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #E4E9DB;
+      font-size: 13.5px;
+      gap: 10px;
+      z-index: 20;
+      transition: opacity 0.2s ease;
+    }
+
+    .webgl-loading-overlay.hidden {
+      display: none;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: #D96B4F;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .viewport-corner-badge {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      background: rgba(30, 35, 32, 0.75);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      padding: 5px 10px;
+      color: #A0A69D;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .camera-presets-bar {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(30, 35, 32, 0.75);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      padding: 4px;
+      z-index: 10;
+    }
+
+    .camera-btn {
+      background: transparent;
+      border: none;
+      color: #C0C5BD;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .camera-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+    }
+
+    /* Right Panel Details & Slices */
+    .details-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .study-select-box {
+      background: #FCFBF8;
+      border: 1px solid #E5E4DC;
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .study-dropdown {
+      width: 100%;
+      background: #F0F1E8;
+      border: 1px solid #D3D8CB;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #252B28;
+      margin-top: 8px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .analytics-metrics-card {
+      background: #FCFBF8;
+      border: 1px solid #E5E4DC;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .analytics-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #ECEBE3;
+      padding-bottom: 12px;
+    }
+
+    .analytics-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #252B28;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .diagnosis-tag {
+      background: #FDF4F2;
+      color: #D96B4F;
+      border: 1px solid rgba(217, 107, 79, 0.25);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .metrics-2x2-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metric-item {
+      background: #F0F1E8;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-item-label {
+      font-size: 11px;
+      color: #777D75;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .metric-item-value {
+      font-size: 17px;
+      font-weight: 600;
+      color: #252B28;
+    }
+
+    /* Slice Navigator Card */
+    .slice-navigator-card {
+      background: #FCFBF8;
+      border: 1px solid #E5E4DC;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .slice-axis-tabs {
+      display: inline-flex;
+      background: #F0F1E8;
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .slice-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #777D75;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .slice-tab-btn.active {
+      background: #192B23;
+      color: #FFFFFF;
+    }
+
+    .slice-preview-window {
+      width: 100%;
+      height: 200px;
+      background: #000000;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .slice-preview-window img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .slice-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slice-slider-row input[type="range"] {
+      flex: 1;
+      accent-color: #192B23;
+      cursor: pointer;
+    }
+
+    .slice-index-readout {
+      font-size: 12px;
+      font-weight: 600;
+      color: #252B28;
+      min-width: 65px;
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body data-page="brain-3d">
+  <div class="neuro-app">
+    
+    <!-- ========================================== -->
+    <!-- 1. PERMANENT HORIZONTAL TOP NAVIGATION BAR -->
+    <!-- ========================================== -->
+    <header class="cortia-top-navbar" id="cortia-top-navbar">
+      <div class="cortia-nav-left">
+        <a href="/" class="cortia-brand-link">
+          <img src="/static/cortia/cortia-brain-vector.png" alt="CORTIA" class="cortia-brand-brain">
+          <span class="cortia-brand-text">CORTIA</span>
+        </a>
+      </div>
+
+      <nav class="cortia-nav-center" aria-label="Main Navigation">
+        <a href="/" class="cortia-nav-item">Overview</a>
+        <a href="/" class="cortia-nav-item">MRI Analysis</a>
+        <a href="/brain-3d" class="cortia-nav-item active">3D Brain Imaging</a>
+        <a href="/eeg" class="cortia-nav-item">EEG Monitoring</a>
+        <a href="/ai" class="cortia-nav-item">CORTIA AI</a>
+      </nav>
+
+      <div class="cortia-nav-right">
+        <div class="cortia-status-badge">
+          <span class="status-dot"></span>
+          <span class="status-label">Research</span>
+        </div>
+        <div class="cortia-user-profile">
+          <div class="cortia-avatar-circle">RB</div>
+          <span class="cortia-user-name">Reshma Banu</span>
+          <svg class="cortia-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- 2. MAIN RESEARCH WORKSPACE CONTAINER      -->
+    <!-- ========================================== -->
+    <main class="cortia-workspace-container" id="main-content">
+      
+      <!-- PAGE HEADER -->
+      <section class="mri-page-header">
+        <div class="mri-header-text">
+          <div class="mri-header-badge">3D INTELLIGENCE WORKSPACE</div>
+          <h1 class="mri-page-title">3D Brain Imaging &amp; Reconstruction</h1>
+          <p class="mri-page-subtitle">Interactive physical 3D cortical surface mapping and candidate lesion volumetric segmentation in canonical RAS coordinates.</p>
+        </div>
+        <div class="mri-header-actions">
+          <a href="/" class="btn-top-upload" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>Back to MRI Analysis</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- TWO-COLUMN 3D WORKSPACE GRID -->
+      <div class="workspace-3d-grid">
+        
+        <!-- LEFT COLUMN: 3D WEBGL VIEWER -->
+        <div class="viewport-3d-card">
+          <div class="viewport-3d-header">
+            <span class="viewport-title" id="display-study-title">3D Surface Geometry</span>
+            
+            <div class="viewport-controls-top">
+              <div class="slider-control-wrap">
+                <span>Envelope Opacity</span>
+                <input type="range" id="slider-opacity" min="0" max="1" step="0.02" value="0.22" title="Adjust cortical envelope transparency">
+              </div>
+              <label class="checkbox-control-wrap">
+                <input type="checkbox" id="check-lesion" checked>
+                <span>Candidate Lesion</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- WebGL Three.js Container -->
+          <div class="webgl-canvas-container" id="webgl-container">
+            <div class="webgl-loading-overlay" id="loading-overlay">
+              <div class="spinner"></div>
+              <span>Reconstructing physical 3D mesh...</span>
+            </div>
+
+            <!-- Coordinate Space Badge -->
+            <div class="viewport-corner-badge">
+              RAS &bull; WORLD mm | OrbitControls (Drag to rotate, Scroll to zoom)
+            </div>
+
+            <!-- Camera Toolbar -->
+            <div class="camera-presets-bar">
+              <button type="button" class="camera-btn" id="cam-iso">Isometric</button>
+              <button type="button" class="camera-btn" id="cam-axial">Axial</button>
+              <button type="button" class="camera-btn" id="cam-coronal">Coronal</button>
+              <button type="button" class="camera-btn" id="cam-sagittal">Sagittal</button>
+              <button type="button" class="camera-btn" id="btn-wireframe">Wireframe</button>
+              <button type="button" class="camera-btn" id="cam-reset">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: STUDY DETAILS, METRICS & SLICE NAVIGATOR -->
+        <div class="details-panel">
+          
+          <!-- Study Selector -->
+          <div class="study-select-box">
+            <div style="font-size: 12px; font-weight: 600; color: #777D75; text-transform: uppercase; letter-spacing: 0.5px;">Active Research Study</div>
+            <select class="study-dropdown" id="study-select">
+              <option value="STUDY-GBM-01">STUDY-GBM-01: Left Temporo-Parietal Glioblastoma</option>
+              <option value="STUDY-MEN-02">STUDY-MEN-02: Right Frontal Parasagittal Meningioma</option>
+              <option value="STUDY-PIT-03">STUDY-PIT-03: Sellar / Suprasellar Pituitary Macroadenoma</option>
+              <option value="STUDY-NORM-04">STUDY-NORM-04: Healthy Control Baseline Scan</option>
+            </select>
+          </div>
+
+          <!-- Volumetric Lesion Analytics -->
+          <div class="analytics-metrics-card">
+            <div class="analytics-header-row">
+              <div>
+                <div class="analytics-title">Volumetric Morphology</div>
+                <div style="font-size: 12px; color: #777D75; margin-top: 3px;" id="display-modality">MRI T1-weighted Contrast Enhanced</div>
+              </div>
+              <span class="diagnosis-tag" id="display-diagnosis">Glioma Tumor (GBM)</span>
+            </div>
+
+            <div class="metrics-2x2-grid">
+              <div class="metric-item">
+                <span class="metric-item-label">Estimated Volume</span>
+                <span class="metric-item-value" id="val-volume">58,175 mm&sup3;</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-item-label">Max Cross-Diameter</span>
+                <span class="metric-item-value" id="val-diameter">58.6 mm</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-item-label">Centroid (RAS mm)</span>
+                <span class="metric-item-value" id="val-centroid" style="font-size: 14px;">[54, 76, 46]</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-item-label">Voxel Resolution</span>
+                <span class="metric-item-value" style="font-size: 14px;">1.5 &times; 1.5 &times; 1.5 mm</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 14px; font-size: 12.5px; color: #777D75; line-height: 1.45; background: #F0F1E8; padding: 10px 12px; border-radius: 6px;" id="display-notes">
+              Large heterogeneously enhancing mass in left temporo-parietal region with marked surrounding vasogenic edema.
+            </div>
+          </div>
+
+          <!-- Orthogonal Multi-Planar Slice Navigator -->
+          <div class="slice-navigator-card">
+            <div class="slice-header">
+              <span style="font-size: 13.5px; font-weight: 600; color: #252B28;">Multi-Planar Slice Cross-Section</span>
+              <div class="slice-axis-tabs">
+                <button type="button" class="slice-tab-btn active" data-axis="axial">Axial</button>
+                <button type="button" class="slice-tab-btn" data-axis="coronal">Coronal</button>
+                <button type="button" class="slice-tab-btn" data-axis="sagittal">Sagittal</button>
+              </div>
+            </div>
+
+            <div class="slice-preview-window">
+              <img id="slice-image" src="" alt="MRI Slice" />
+            </div>
+
+            <div class="slice-slider-row">
+              <input type="range" id="slice-slider" min="0" max="127" value="64">
+              <span class="slice-index-readout" id="slice-readout">Slice 64/128</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="cortia-page-footer">
+        <div class="footer-left">
+          <span>CORTIA | Brain Health Monitor System &bull; Research Use Only &bull; Not for clinical diagnosis</span>
+        </div>
+        <div class="footer-right">
+          <span>&copy; 2026 CORTIA. All rights reserved.</span>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- 3D WebGL Viewer Logic -->
+  <script>
+    (function() {
+      'use strict';
+
+      let scene, camera, renderer, controls;
+      let brainMesh = null, lesionMesh = null;
+      let isWireframe = false;
+      let activeStudyId = "STUDY-GBM-01";
+      let activeAxis = "axial";
+      let activeSliceIndex = 64;
+
+      const container = document.getElementById('webgl-container');
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const opacitySlider = document.getElementById('slider-opacity');
+      const lesionCheck = document.getElementById('check-lesion');
+      const studySelect = document.getElementById('study-select');
+      const sliceSlider = document.getElementById('slice-slider');
+      const sliceImage = document.getElementById('slice-image');
+      const sliceReadout = document.getElementById('slice-readout');
+
+      function initThree() {
+        if (!window.THREE) {
+          console.error("Three.js not loaded");
+          return;
+        }
+
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color('#141716');
+
+        camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 2000);
+        camera.up.set(0, 0, 1); // Z is superior in RAS
+
+        // Lighting
+        const hemiLight = new THREE.HemisphereLight(0xDDEBF0, 0x344047, 1.8);
+        scene.add(hemiLight);
+
+        const dirLight1 = new THREE.DirectionalLight(0xFFFFFF, 2.2);
+        dirLight1.position.set(200, 300, 400);
+        scene.add(dirLight1);
+
+        const dirLight2 = new THREE.DirectionalLight(0xE4E9DB, 1.2);
+        dirLight2.position.set(-200, -200, -300);
+        scene.add(dirLight2);
+
+        // WebGL Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(width, height);
+        container.appendChild(renderer.domElement);
+
+        // OrbitControls
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        window.addEventListener('resize', onWindowResize);
+        animate();
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (controls) controls.update();
+        if (renderer && scene && camera) renderer.render(scene, camera);
+      }
+
+      function onWindowResize() {
+        if (!container || !renderer || !camera) return;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+      }
+
+      async function loadStudy(studyId) {
+        activeStudyId = studyId;
+        if (loadingOverlay) loadingOverlay.classList.remove('hidden');
+
+        try {
+          // 1. Fetch study metadata
+          const metaRes = await fetch(`/api/brain/studies/${studyId}`);
+          const meta = await metaRes.json();
+          updateMetadataUI(meta);
+
+          // 2. Fetch brain envelope mesh
+          const brainRes = await fetch(`/api/brain/studies/${studyId}/mesh?layer=brain`);
+          const brainData = await brainRes.json();
+
+          // 3. Fetch lesion mesh if study has lesion
+          let lesionData = null;
+          if (meta.hasLesion) {
+            const lesionRes = await fetch(`/api/brain/studies/${studyId}/mesh?layer=lesion`);
+            lesionData = await lesionRes.json();
+          }
+
+          // Clear previous meshes
+          if (brainMesh) { scene.remove(brainMesh); brainMesh.geometry.dispose(); brainMesh.material.dispose(); brainMesh = null; }
+          if (lesionMesh) { scene.remove(lesionMesh); lesionMesh.geometry.dispose(); lesionMesh.material.dispose(); lesionMesh = null; }
+
+          // Build Three.js brain mesh
+          if (brainData.positions && brainData.positions.length > 0) {
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(brainData.positions, 3));
+            geo.setIndex(brainData.indices);
+            geo.computeVertexNormals();
+
+            const mat = new THREE.MeshStandardMaterial({
+              color: 0xA0B6BD,
+              transparent: true,
+              opacity: parseFloat(opacitySlider.value),
+              side: THREE.DoubleSide,
+              roughness: 0.45,
+              metalness: 0.1,
+              wireframe: isWireframe
+            });
+
+            brainMesh = new THREE.Mesh(geo, mat);
+            scene.add(brainMesh);
+
+            // Frame camera around brain bounding box
+            const box = new THREE.Box3().setFromObject(brainMesh);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3()).length();
+
+            controls.target.copy(center);
+            camera.position.copy(center).add(new THREE.Vector3(size * 0.75, -size * 1.25, size * 0.7));
+            camera.lookAt(center);
+            controls.update();
+          }
+
+          // Build Three.js lesion mesh
+          if (lesionData && lesionData.positions && lesionData.positions.length > 0) {
+            const lgeo = new THREE.BufferGeometry();
+            lgeo.setAttribute('position', new THREE.Float32BufferAttribute(lesionData.positions, 3));
+            lgeo.setIndex(lesionData.indices);
+            lgeo.computeVertexNormals();
+
+            const lmat = new THREE.MeshStandardMaterial({
+              color: 0xD96B4F, // Coral
+              transparent: true,
+              opacity: 0.95,
+              side: THREE.DoubleSide,
+              roughness: 0.3,
+              metalness: 0.15,
+              wireframe: isWireframe
+            });
+
+            lesionMesh = new THREE.Mesh(lgeo, lmat);
+            lesionMesh.visible = lesionCheck.checked;
+            scene.add(lesionMesh);
+          }
+
+          // Update slice view
+          updateSliceView();
+
+        } catch (err) {
+          console.error("Failed loading 3D study:", err);
+        } finally {
+          if (loadingOverlay) loadingOverlay.classList.add('hidden');
+        }
+      }
+
+      function updateMetadataUI(meta) {
+        document.getElementById('display-study-title').textContent = meta.name;
+        document.getElementById('display-diagnosis').textContent = meta.diagnosis;
+        document.getElementById('display-modality').textContent = meta.modality;
+        document.getElementById('display-notes').textContent = meta.notes || '';
+
+        const m = meta.metrics || {};
+        document.getElementById('val-volume').innerHTML = m.volumeMm3 ? `${m.volumeMm3.toLocaleString()} mm&sup3;` : '0 mm&sup3;';
+        document.getElementById('val-diameter').textContent = m.maxDiameterMm ? `${m.maxDiameterMm} mm` : '0 mm';
+        document.getElementById('val-centroid').textContent = m.centroid ? `[${m.centroid.join(', ')}]` : '[0, 0, 0]';
+      }
+
+      function updateSliceView() {
+        const url = `/api/brain/studies/${activeStudyId}/slice?axis=${activeAxis}&index=${activeSliceIndex}&mask=1`;
+        sliceImage.src = url;
+        sliceReadout.textContent = `Slice ${activeSliceIndex}/128`;
+      }
+
+      // Event Listeners
+      studySelect.addEventListener('change', () => loadStudy(studySelect.value));
+
+      opacitySlider.addEventListener('input', () => {
+        if (brainMesh && brainMesh.material) {
+          brainMesh.material.opacity = parseFloat(opacitySlider.value);
+        }
+      });
+
+      lesionCheck.addEventListener('change', () => {
+        if (lesionMesh) {
+          lesionMesh.visible = lesionCheck.checked;
+        }
+      });
+
+      // Camera preset angles
+      document.getElementById('cam-axial').addEventListener('click', () => {
+        if (!controls || !brainMesh) return;
+        const box = new THREE.Box3().setFromObject(brainMesh);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3()).length();
+        controls.target.copy(center);
+        camera.position.set(center.x, center.y, center.z + size * 1.5);
+        camera.up.set(0, 1, 0); // Anterior is up in axial
+        controls.update();
+      });
+
+      document.getElementById('cam-sagittal').addEventListener('click', () => {
+        if (!controls || !brainMesh) return;
+        const box = new THREE.Box3().setFromObject(brainMesh);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3()).length();
+        controls.target.copy(center);
+        camera.position.set(center.x + size * 1.5, center.y, center.z);
+        camera.up.set(0, 0, 1);
+        controls.update();
+      });
+
+      document.getElementById('cam-coronal').addEventListener('click', () => {
+        if (!controls || !brainMesh) return;
+        const box = new THREE.Box3().setFromObject(brainMesh);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3()).length();
+        controls.target.copy(center);
+        camera.position.set(center.x, center.y - size * 1.5, center.z);
+        camera.up.set(0, 0, 1);
+        controls.update();
+      });
+
+      document.getElementById('cam-iso').addEventListener('click', () => {
+        if (!controls || !brainMesh) return;
+        const box = new THREE.Box3().setFromObject(brainMesh);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3()).length();
+        controls.target.copy(center);
+        camera.position.copy(center).add(new THREE.Vector3(size * 0.75, -size * 1.25, size * 0.7));
+        camera.up.set(0, 0, 1);
+        controls.update();
+      });
+
+      document.getElementById('cam-reset').addEventListener('click', () => {
+        document.getElementById('cam-iso').click();
+      });
+
+      document.getElementById('btn-wireframe').addEventListener('click', () => {
+        isWireframe = !isWireframe;
+        if (brainMesh && brainMesh.material) brainMesh.material.wireframe = isWireframe;
+        if (lesionMesh && lesionMesh.material) lesionMesh.material.wireframe = isWireframe;
+        document.getElementById('btn-wireframe').style.color = isWireframe ? '#D96B4F' : '#C0C5BD';
+      });
+
+      // Slice Tabs & Slider
+      document.querySelectorAll('.slice-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.slice-tab-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeAxis = btn.dataset.axis;
+          updateSliceView();
+        });
+      });
+
+      sliceSlider.addEventListener('input', () => {
+        activeSliceIndex = parseInt(sliceSlider.value, 10);
+        updateSliceView();
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        initThree();
+        loadStudy(activeStudyId);
+      });
+    })();
+  </script>
+</body>
+</html>

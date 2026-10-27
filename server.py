@@ -23,6 +23,7 @@ from pydantic import BaseModel, Field, field_validator
 from app.eeg.api import router as eeg_router
 from app.insights.api import router as insights_router
 from app.ai.api import router as ai_router
+from app.brain_3d import brain_3d_router
 from app.eeg.model import EEGModel
 from app.eeg.service import EEGService
 from app.eeg.signal import SignalConfig
@@ -99,6 +100,7 @@ app = FastAPI(title='Brain Health Monitor API', description='Single-channel EEG 
 app.include_router(eeg_router)
 app.include_router(insights_router)
 app.include_router(ai_router)
+app.include_router(brain_3d_router)
 origins = [value.strip() for value in os.getenv('BHM_CORS_ORIGINS', '').split(',') if value.strip()]
 if origins:
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=False, allow_methods=['GET', 'POST'], allow_headers=['Content-Type'])
@@ -355,6 +357,12 @@ def insights_workspace():
 @app.get('/ai')
 def ai_workspace():
     return FileResponse(os.path.join(STATIC_DIR, 'ai.html'))
+
+
+@app.get('/brain-3d')
+@app.get('/3d')
+def brain_3d_workspace():
+    return FileResponse(os.path.join(STATIC_DIR, 'brain-3d.html'))
 
 
 @app.get('/eeg')
