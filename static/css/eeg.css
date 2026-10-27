@@ -767,6 +767,7 @@
   justify-content: center;
   padding: 24px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 .session-modal-backdrop[hidden] {
   display: none !important;
@@ -776,13 +777,14 @@
   background: #FFFFFF;
   border: 1px solid #DDD4CC;
   border-radius: 16px;
-  width: 100%;
-  max-width: 920px;
-  max-height: 90vh;
+  width: min(1260px, 95vw);
+  max-width: 1260px;
+  max-height: 92vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 48px rgba(35, 26, 23, 0.25);
   overflow: hidden;
+  overflow-x: hidden !important;
   animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -880,6 +882,7 @@
 .session-modal-body {
   padding: 24px;
   overflow-y: auto;
+  overflow-x: hidden !important;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -1152,13 +1155,14 @@
 .eeg-gauges-grid,
 .session-gauges-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px;
+  width: 100%;
 }
-@media (max-width: 1200px) {
+@media (max-width: 1100px) {
   .eeg-gauges-grid,
   .session-gauges-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 @media (max-width: 768px) {
@@ -1178,6 +1182,8 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  min-width: 0;
+  overflow: hidden;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 .eeg-gauge-card:hover,
@@ -1190,19 +1196,29 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 8px;
+  gap: 6px;
+  min-width: 0;
+}
+.gauge-card-header > div {
+  min-width: 0;
+  flex: 1;
 }
 .gauge-title {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: #1C1917;
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: break-word;
 }
 .gauge-subtag {
   font-size: 11px;
   color: #7D736A;
   display: block;
   margin-top: 2px;
+  white-space: normal;
+  word-break: break-word;
 }
 .btn-gauge-info {
   background: #F4EFEB;

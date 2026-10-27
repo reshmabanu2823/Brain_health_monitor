@@ -248,6 +248,7 @@
       fillEl.style.strokeDashoffset = arcLength;
       fillEl.style.stroke = '#DDD4CC';
       valEl.textContent = '—';
+      valEl.style.fontSize = '';
       if (qualEl) {
         qualEl.textContent = qualState || 'Awaiting';
         qualEl.className = 'gauge-quality-pill';
@@ -258,7 +259,20 @@
     const frac = (clamped - minVal) / Math.max(1e-9, maxVal - minVal);
     fillEl.style.strokeDashoffset = (arcLength * (1 - frac)).toFixed(2);
     fillEl.style.stroke = isReliable === false ? '#C94040' : '#192B23';
-    valEl.textContent = unit === '%' ? val.toFixed(1) : val.toFixed(2);
+
+    let formatted = '';
+    if (unit === '%') {
+      formatted = val.toFixed(1);
+    } else if (Math.abs(val) >= 10000) {
+      formatted = val.toExponential(1);
+    } else if (Math.abs(val) >= 100) {
+      formatted = val.toFixed(1);
+    } else {
+      formatted = val.toFixed(2);
+    }
+    valEl.textContent = formatted;
+    valEl.style.fontSize = formatted.length > 5 ? '16px' : '20px';
+
     if (qualEl) {
       qualEl.textContent = qualState || (isReliable === false ? 'Needs Review' : 'Reliable');
       qualEl.className = `gauge-quality-pill ${isReliable === false ? 'insufficient' : ''}`;
