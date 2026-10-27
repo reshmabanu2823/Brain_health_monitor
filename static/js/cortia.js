@@ -40,8 +40,8 @@
   function byName(n) { return pieces.filter(p => p.getAttribute('data-l') === n)[0]; }
 
   function revealActions() {
-    if (cta) cta.classList.add('visible');
-    if (skipBtn) skipBtn.style.opacity = '0';
+    // Immediately dismiss splash and show the main dashboard
+    dismissSplash();
   }
 
   function minimise(mode) {
@@ -95,7 +95,7 @@
       ], { duration: 1600, delay: D + T * 0.45 + b[1], easing: EASE_BLOOM, fill: 'both' });
     });
 
-    timers.push(setTimeout(revealActions, D + T * 0.45 + 310 + 1500));
+    timers.push(setTimeout(revealActions, D + T * 0.45 + 310 + 300));
   }
 
   function finish() {

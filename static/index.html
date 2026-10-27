@@ -32,43 +32,20 @@
 
 <body data-page="mri">
 
-  <!-- Cortia Cinematic Loading / Landing Screen Overlay -->
-  <div id="cortia-splash" class="cortia-splash-overlay">
-    <button id="cortia-skip" class="cortia-skip-btn" type="button" aria-label="Skip intro">Skip Intro &rarr;</button>
-    <main class="cortia-stage" aria-busy="true">
-      <div id="cortia-lockup" class="cortia-lockup" role="img" aria-label="Cortia is loading">
-        <div class="cortia-film">
-          <img src="/static/cortia/cortia-poster.jpg" alt="" decoding="async">
-          <video id="cortia-v" muted playsinline preload="auto" poster="/static/cortia/cortia-poster.jpg">
-            <source src="/static/cortia/cortia-intro.mp4" type="video/mp4" />
-          </video>
-        </div>
-        <div class="cortia-caption">
-          <div class="cortia-title">CORTIA</div>
-          <div class="cortia-rule" aria-hidden="true"></div>
-          <div class="cortia-tag">BRAIN HEALTH MONITOR</div>
-        </div>
-      </div>
-      <div id="cortia-progress" class="cortia-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div class="cortia-bar"></div>
-      </div>
-    </main>
-  </div>
-
   <div class="neuro-app">
     <!-- ========================================== -->
     <!-- 1. PERMANENT HORIZONTAL TOP NAVIGATION BAR -->
     <!-- ========================================== -->
     <header class="cortia-top-navbar" id="cortia-top-navbar">
       <div class="cortia-nav-left">
-        <a href="/cortia" class="cortia-brand-link">
+        <a href="/" class="cortia-brand-link">
           <img src="/static/cortia/cortia-brain-vector.png" alt="CORTIA" class="cortia-brand-brain">
           <span class="cortia-brand-text">CORTIA</span>
         </a>
       </div>
 
       <nav class="cortia-nav-center" aria-label="Main Navigation">
-        <a href="/cortia" class="cortia-nav-item">Overview</a>
+        <a href="/" class="cortia-nav-item">Overview</a>
         <a href="/" class="cortia-nav-item active">MRI Analysis</a>
         <a href="/eeg" class="cortia-nav-item">EEG Monitoring</a>
         <a href="/ai" class="cortia-nav-item">CORTIA AI</a>
