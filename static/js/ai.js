@@ -65,6 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  textarea?.addEventListener('input', () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+  });
+
   newConvBtn?.addEventListener('click', () => {
     activeConversationId = null;
     document.getElementById('messages-container').innerHTML = '';
@@ -241,6 +246,7 @@ async function handleSendMessage() {
   if (!message) return;
 
   textarea.value = '';
+  textarea.style.height = 'auto';
   textarea.disabled = true;
   sendBtn.disabled = true;
 
@@ -402,6 +408,7 @@ function renderMessage(msg) {
 
   container.appendChild(msgEl);
   container.scrollTop = container.scrollHeight;
+  setTimeout(() => { container.scrollTop = container.scrollHeight; }, 60);
 }
 
 function showTypingIndicator() {
@@ -518,10 +525,7 @@ function initCloudModelModal() {
     openModal();
   });
 
-  openBadgeBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal();
-  });
+  // Status badge is informative only
 
   closeBtn?.addEventListener('click', closeModal);
   cancelBtn?.addEventListener('click', closeModal);

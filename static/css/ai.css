@@ -151,8 +151,10 @@
 }
 
 .msg-avatar.user-av {
-  background: var(--cream-deep);
-  color: var(--warm-ink);
+  background: #E8ECE2;
+  color: #192B23;
+  font-weight: 700;
+  border: 1px solid #D3D8CB;
 }
 
 .msg-avatar.ai-av {
@@ -169,22 +171,23 @@
 
 .msg-bubble {
   padding: 14px 18px;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 13px;
   line-height: 1.6;
 }
 
 .chat-msg.user .msg-bubble {
-  background: var(--cortia-red);
+  background: #192B23;
   color: #FFFFFF;
-  border-top-right-radius: 2px;
+  border-top-right-radius: 3px;
+  box-shadow: 0 1px 4px rgba(25, 43, 35, 0.12);
 }
 
 .chat-msg.assistant .msg-bubble {
   background: var(--white);
   color: var(--warm-ink);
   border: 1px solid var(--warm-border);
-  border-top-left-radius: 2px;
+  border-top-left-radius: 3px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -278,90 +281,137 @@
 
 /* Suggested Follow-up Chips */
 .suggested-prompts-bar {
-  padding: 10px 20px;
+  padding: 8px 20px 6px 20px;
   background: var(--white);
   border-top: 1px solid var(--warm-border);
   display: flex;
   gap: 8px;
   overflow-x: auto;
   white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.suggested-prompts-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .prompt-pill {
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
-  background: var(--cream);
+  padding: 6px 14px;
+  background: #F4F3ED;
   border: 1px solid var(--warm-border);
   border-radius: 16px;
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
-  color: var(--warm-ink);
+  color: #252B28;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
+  user-select: none;
 }
 
 .prompt-pill:hover {
-  background: var(--blush);
-  border-color: var(--cortia-red);
-  color: var(--cortia-red);
+  background: #E4E9DB;
+  border-color: #8C9985;
+  color: #192B23;
+  transform: translateY(-1px);
 }
 
 /* Input Area */
 .ai-input-bar {
-  padding: 16px 20px;
+  padding: 12px 20px 16px 20px;
   background: var(--white);
   border-top: 1px solid var(--warm-border);
+}
+
+.ai-input-pill-box {
   display: flex;
-  gap: 12px;
-  align-items: flex-end;
+  align-items: center;
+  gap: 8px;
+  background: #FAFAF8;
+  border: 1px solid #E5E4DC;
+  border-radius: 26px;
+  padding: 6px 8px 6px 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(25, 43, 35, 0.03);
+}
+
+.ai-input-pill-box:focus-within {
+  border-color: #192B23;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(25, 43, 35, 0.08);
+}
+
+.ai-attach-btn {
+  background: transparent;
+  border: none;
+  color: #777D75;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.ai-attach-btn:hover {
+  background: #E8ECE2;
+  color: #192B23;
 }
 
 .ai-input-field {
   flex: 1;
-  border: 1px solid var(--warm-border);
-  border-radius: 8px;
-  padding: 12px 14px;
-  font-size: 13px;
+  border: none !important;
+  background: transparent !important;
+  padding: 8px 6px;
+  font-size: 13.5px;
   font-family: inherit;
   resize: none;
-  outline: none;
-  min-height: 48px;
+  outline: none !important;
+  box-shadow: none !important;
+  min-height: 24px;
   max-height: 120px;
-  line-height: 1.4;
-  background: var(--cream);
-  color: var(--warm-ink);
-  transition: border-color 0.15s ease;
+  line-height: 1.45;
+  color: #192B23;
 }
 
-.ai-input-field:focus {
-  border-color: var(--cortia-red);
-  background: var(--white);
+.ai-input-field::placeholder {
+  color: #8C9985;
 }
 
 .ai-send-btn {
-  background: var(--cortia-red) !important;
+  background: #192B23 !important;
   color: #FFFFFF !important;
   border: none;
-  border-radius: 8px;
-  width: 48px;
-  height: 48px;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.18s ease;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(25, 43, 35, 0.18);
 }
 
 .ai-send-btn:hover {
-  background: var(--cortia-red-dk) !important;
+  background: #2E4A3D !important;
+  transform: scale(1.04);
 }
 
 .ai-send-btn:disabled {
-  background: var(--cream-deep) !important;
-  color: var(--warm-sub) !important;
+  background: #E0E4D9 !important;
+  color: #9BA495 !important;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Typing Dots Animation */

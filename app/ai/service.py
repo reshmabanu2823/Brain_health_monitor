@@ -215,12 +215,16 @@ class CortiaAIService:
         )
 
         # 4. Build message history
-        prev_messages = self.store.get_messages(conv_id, limit=6)
+        prev_messages = self.store.get_messages(conv_id, limit=8)
         msg_history = []
         if prev_messages:
-            for m in prev_messages[:-1]:
+            for m in prev_messages:
                 msg_history.append({"role": m["role"], "content": m["content"]})
         else:
+            msg_history.append({"role": "user", "content": req.message})
+
+        # Ensure the last message in msg_history is always the current user message
+        if not msg_history or msg_history[-1].get("role") != "user" or msg_history[-1].get("content") != req.message:
             msg_history.append({"role": "user", "content": req.message})
 
         # 5. Generate response

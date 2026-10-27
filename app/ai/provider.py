@@ -134,6 +134,37 @@ class OpenRouterProvider(OpenAIProvider):
         )
 
 
+import re
+
+def _extract_telemetry_facts(context: str) -> Dict[str, str]:
+    """Parse real clinical telemetry values from context string without exposing raw debug formatting."""
+    facts: Dict[str, str] = {}
+    if not context:
+        return facts
+    mri_match = re.search(
+        r"\[ACTIVE MRI SCAN RECORD #(\d+)\]:\s*\n-\s*Scan Image:\s*([^\n]+)\s*\n-\s*Primary Classification:\s*([^\n]+)\s*\n-\s*Probability Breakdown:\s*([^\n]+)\s*\n-\s*Focal Tumor Saliency Area:\s*([^\n]+)\s*\n-\s*Peak Attention Score:\s*([^\n]+)",
+        context
+    )
+    if mri_match:
+        facts["mri_id"] = mri_match.group(1).strip()
+        facts["mri_image"] = mri_match.group(2).strip()
+        facts["mri_class"] = mri_match.group(3).strip()
+        facts["mri_probs"] = mri_match.group(4).strip()
+        facts["mri_area"] = mri_match.group(5).strip()
+        facts["mri_peak"] = mri_match.group(6).strip()
+
+    eeg_match = re.search(
+        r"\[ACTIVE EEG BIOPOTENTIAL SESSION #([a-zA-Z0-9]+)\]:\s*\n-\s*Telemetry Source:\s*([^\n]+)\s*\n-\s*Duration:\s*([^\n]+)\s*\n-\s*Quality Assessment:\s*([^\n]+)",
+        context
+    )
+    if eeg_match:
+        facts["eeg_id"] = eeg_match.group(1).strip()
+        facts["eeg_source"] = eeg_match.group(2).strip()
+        facts["eeg_duration"] = eeg_match.group(3).strip()
+        facts["eeg_quality"] = eeg_match.group(4).strip()
+    return facts
+
+
 class GroundedSynthesisEngine(BaseLLMProvider):
     """Deterministic, local knowledge synthesis engine that runs without requiring external cloud API keys.
        Grounded strictly in verified scientific citations and real application state.
@@ -142,16 +173,30 @@ class GroundedSynthesisEngine(BaseLLMProvider):
     def generate(self, system_instruction: str, messages: List[Dict[str, str]], context: str) -> Dict[str, Any]:
         last_user_msg = ""
         for m in reversed(messages):
-            if m["role"] == "user":
-                last_user_msg = m["content"]
+            if m.get("role") == "user":
+                last_user_msg = m.get("content", "")
                 break
 
         query = last_user_msg.lower().strip()
-
-        # Synthesis based on grounded query analysis
+        facts = _extract_telemetry_facts(context)
         lines = []
 
-        if any(w in query for w in ["raw and filtered", "raw vs filtered", "difference between raw", "filter"]):
+        greetings = {"hey", "hello", "hi", "greetings", "good morning", "good afternoon", "good evening", "howdy", "hola", "sup"}
+        is_greeting = query in greetings or any(query.startswith(g + " ") for g in greetings)
+
+        if is_greeting:
+            lines.append("### Clinical Consultation\n")
+            lines.append(
+                "Hello! I am **CliniQ**, your CORTIA clinical consultation and neuroscience research assistant.\n\n"
+                "I am grounded in your application's verified patient telemetry and peer-reviewed scientific literature. Here is how I can assist you:\n\n"
+                "- **MRI Diagnostic Audit**: Review automated tumor classification (Glioma, Meningioma, Pituitary, Normal) and Grad-CAM focal visual attention maps.\n"
+                "- **3D Brain Imaging**: Explore reconstructed volumetric structures, slice coordinates, and spatial tumor localization.\n"
+                "- **EEG Biopotential Intelligence**: Inspect 250 Hz spectral band powers (Alpha, Beta, Theta, Delta) and 3-state signal quality criteria.\n"
+                "- **Medication & Interaction Screening**: Evaluate clinical contraindications between neuro-oncology and general medications.\n\n"
+                "*How can I assist with your clinical review or research analysis today?*"
+            )
+
+        elif any(w in query for w in ["raw and filtered", "raw vs filtered", "difference between raw", "filter"]):
             lines.append("### Physiological Rhythms & Digital Filtering\n")
             lines.append(
                 "In electroencephalography, **raw signals** represent the unconditioned biopotential difference recorded at the electrodes. "
@@ -166,10 +211,13 @@ class GroundedSynthesisEngine(BaseLLMProvider):
 
         elif any(w in query for w in ["summarize my latest eeg", "latest eeg recording", "my eeg", "latest eeg"]):
             lines.append("### Latest EEG Session Summary\n")
-            if "EEG RECORDING" in context or "eeg_summary" in context.lower():
+            if facts.get("eeg_id"):
                 lines.append(
-                    f"Here is the verified data retrieved from your latest authorized EEG session:\n\n{context}\n\n"
-                    "All metrics above are calculated directly from recorded biopotential windows."
+                    f"**Session ID**: #{facts['eeg_id']}\n"
+                    f"- **Telemetry Source**: {facts.get('eeg_source', 'Hardware Serial').upper()}\n"
+                    f"- **Duration**: {facts.get('eeg_duration', 'N/A')}\n"
+                    f"- **Automated Quality Assessment**: **{facts.get('eeg_quality', 'Acceptable')}**\n\n"
+                    "All computed spectral band metrics (Welch PSD over 4.0-second epochs) are derived directly from contiguous, unclipped biopotential buffers."
                 )
             else:
                 lines.append(
@@ -245,27 +293,43 @@ class GroundedSynthesisEngine(BaseLLMProvider):
                 "4. Watch your Calmness Index climb into the green zone (70%+)."
             )
 
-        elif any(w in query for w in ["grad-cam", "gradcam", "how grad-cam works"]):
-            lines.append("### Gradient-Weighted Class Activation Mapping (Grad-CAM)\n")
+        elif any(w in query for w in ["grad-cam", "gradcam", "how grad-cam works", "visual attribution", "explain grad-cam"]):
+            lines.append("### Clinical Impression: Grad-CAM Visual Attribution\n")
             lines.append(
-                "**Grad-CAM** calculates the gradients of the target categorical score with respect to feature maps in the final convolutional layer of the neural network (e.g., MobileNetV2).\n\n"
-                "1. **Global Average Pooling of Gradients**: Computes the importance weight \\(\\alpha_k^c\\) of each feature activation map \\(k\\) for target class \\(c\\).\n"
-                "2. **Rectified Linear Unit (ReLU) Combination**: Only features with positive influence are aggregated, filtering out negative or uninformative patterns.\n"
-                "3. **Upsampling & Colormap**: The coarse 7x7 heatmap is bilinearly upsampled to 224x224 and rendered using the Inferno colormap overlay.\n\n"
-                "> **Critical Diagnostic Distinction**: Grad-CAM visualizes **saliency attention density** (where the model focused). "
-                "It is **NOT an automated tumor segmentation or histological boundary measurement**, and must not be used as clinical margin delineation."
+                "Gradient-Weighted Class Activation Mapping (**Grad-CAM**) provides visual explainability for deep convolutional neural networks (such as MobileNetV2) by generating a coarse 2D saliency heatmap highlighting the discriminative regions of the brain scan responsible for the predicted category.\n\n"
+                "### Key Findings & Mathematical Mechanism\n"
+                "1. **Gradient Computation**: Calculates the gradients of the target categorical score \\(y^c\\) with respect to feature activation maps \\(A^k\\) in the final convolutional layer.\n"
+                "2. **Global Average Pooling**: Pools gradients spatially to compute neuron importance weights \\(\\alpha_k^c\\):\n"
+                "   \\[ \\alpha_k^c = \\frac{1}{Z} \\sum_i \\sum_j \\frac{\\partial y^c}{\\partial A_{i,j}^k} \\]\n"
+                "3. **Rectified Linear Unit (ReLU)**: Aggregates weighted feature maps through a ReLU gate to retain only features that exert a positive influence on the target diagnosis.\n"
+                "4. **Focal Attribution & Bilinear Upsampling**: The low-resolution activation map is interpolated to 224x224 and rendered with the Inferno colormap.\n\n"
+                "### Recommended Specialist & Action Plan\n"
+                "- **Radiological Corroboration**: Grad-CAM highlights *where the neural network focused*; it is **not an anatomical tumor contour or biopsy margin**. A board-certified Neuroradiologist must verify anatomical boundaries.\n"
+                "- **3D Volumetric Inspection**: Examine the corresponding spatial coordinates in the **3D Brain Imaging** workspace to correlate the focal hotspot across coronal, sagittal, and axial projections.\n\n"
+                "### Red-Flag Signs & Quality Safeguards\n"
+                "Disregard saliency maps that localize diffusely to skull bone, air cavities, or scan margins, as these indicate out-of-distribution imaging artifacts rather than pathological intracranial tissue."
             )
 
-        elif any(w in query for w in ["summarize the results of my latest mri", "latest mri analysis", "mri result", "latest mri"]):
-            lines.append("### Latest MRI Analysis Audit\n")
-            if "MRI SCAN RECORD" in context or "scan_id" in context.lower():
+        elif any(w in query for w in ["summarize the results of my latest mri", "latest mri analysis", "mri result", "latest mri", "my mri"]):
+            lines.append("### Clinical Impression\n")
+            if facts.get("mri_class"):
                 lines.append(
-                    f"Retrieved real analysis record from PACS audit storage:\n\n{context}\n\n"
-                    "Classification outputs reflect the MobileNetV2 quantized candidate model evaluated on four classes (Glioma, Meningioma, Pituitary, No Tumor)."
+                    f"Review of active MRI scan **{facts.get('mri_image', 'scan')}** demonstrates features characteristic of **{facts['mri_class']}**.\n\n"
+                    "### Key Findings & Differential\n"
+                    f"- **Automated Diagnosis**: {facts['mri_class']}\n"
+                    f"- **Focal Tumor Saliency Area**: Approximately **{facts.get('mri_area', 'N/A')}** of intracranial volume (peak attention score: {facts.get('mri_peak', 'N/A')}).\n"
+                    f"- **Diagnostic Distribution**: {facts.get('mri_probs', 'N/A')}.\n\n"
+                    "### Recommended Specialist & Action Plan\n"
+                    "- **Referral**: Board-certified **Neuro-Oncology** and **Neurosurgery** evaluation.\n"
+                    "- **Recommended Next Step**: Contrast-enhanced multi-sequence MRI with thin-slice T1-weighted post-gadolinium views and MR spectroscopy (1H-MRS).\n"
+                    "- **3D Reconstructed Analysis**: Correlate spatial depth and tissue boundary in the **3D Brain Imaging** workspace.\n\n"
+                    "### Red-Flag Signs & Follow-Up\n"
+                    "Seek immediate emergency medical attention for sudden severe thunderclap headaches, projectile vomiting, new-onset seizures, or acute focal neurological deficits.\n\n"
+                    "*Would you like to examine the 3D reconstructed lesion volume or check potential medication interactions?*"
                 )
             else:
                 lines.append(
-                    "No MRI analysis records were found in the audit database. Please upload a brain MRI scan (.jpg, .png, or .dcm) in the **MRI Workspace** to generate an analysis."
+                    "No MRI analysis records were found in the PACS audit database. Please upload a brain MRI scan (.jpg, .png, or .dcm) in the **MRI Workspace** to generate an automated classification and Grad-CAM saliency map."
                 )
 
         elif any(w in query for w in ["models are currently available", "available models", "model registry"]):
@@ -300,17 +364,19 @@ class GroundedSynthesisEngine(BaseLLMProvider):
             )
 
         else:
-            # Fallback general scientific synthesis using context
-            lines.append("### Scientific Research Overview\n")
+            # Fallback general clinical consultation synthesis
+            lines.append("### Clinical Consultation Assessment\n")
             lines.append(
-                f"Regarding your query on *\"{last_user_msg}\"*:\n\n"
-                "CORTIA is a neuroscience research and explainable AI platform uniting:\n"
-                "1. **Single-channel EEG Signal Intelligence**: Real-time 250 Hz telemetry, Welch PSD, relative band powers, time-domain Hjorth parameters, and automated 3-state quality rejection.\n"
-                "2. **Brain Tumor MRI Classification**: MobileNetV2 deep learning classifier with Grad-CAM gradient saliency maps for Glioma, Meningioma, Pituitary, and No Tumor scans.\n\n"
+                f"Thank you for your clinical inquiry regarding: *\"{last_user_msg}\"*.\n\n"
+                "CORTIA is an explainable neuroscience platform integrating single-channel EEG biopotential intelligence with deep learning brain tumor MRI classification.\n\n"
+                "### Clinical Guidance & Available Workspaces\n"
+                "- **MRI Analysis**: Review automated tumor classification (Glioma, Meningioma, Pituitary, Normal) with Grad-CAM visual attention mapping.\n"
+                "- **3D Brain Imaging**: Render 3D brain surfaces with focal lesion localization and multi-planar controls.\n"
+                "- **EEG Monitoring**: View real-time 250 Hz biopotential waveforms, Welch power spectral density, and 3-state signal quality criteria.\n"
+                "- **Drug Interactions**: Cross-reference medications (e.g. Dexamethasone, Levetiracetam, Warfarin, Metformin) for contraindications.\n\n"
+                "### Recommended Action Plan\n"
+                "Please select a specific scan or EEG session to audit, or ask a question regarding neuro-oncology, electrophysiology, or explainable AI attribution."
             )
-            if context:
-                lines.append(f"**Application Context**:\n{context}\n\n")
-            lines.append("Feel free to ask about specific EEG recordings, MRI explainability metrics, digital filtering mechanics, or hardware feasibility constraints.")
 
         return {
             "success": True,
