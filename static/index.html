@@ -79,18 +79,24 @@
     }
     .workspace-grid:not(.has-scan) .upload-card {
       width: 100% !important;
-      max-width: 380px !important;
+      max-width: 400px !important;
       margin: 0 auto !important;
       padding: 28px !important;
-      border-radius: 16px !important;
-      box-shadow: 0 4px 24px rgba(35, 26, 23, 0.06) !important;
-      background: var(--card, #FFFFFF) !important;
-      border: 1px solid var(--border, #DDD4CC) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
+      background: var(--card, #FCFBF8) !important;
+      border: 1px solid var(--border, #E5E4DC) !important;
     }
     .workspace-grid:not(.has-scan) .upload-card .drop-target {
       padding: 28px 16px !important;
-      border-radius: 12px !important;
-      background: #F3EEEA !important;
+      border-radius: 10px !important;
+      background: var(--surface-alt, #F0F1E8) !important;
+      border: 1.5px dashed #D3D2C8 !important;
+      transition: all 0.2s ease;
+    }
+    .workspace-grid:not(.has-scan) .upload-card .drop-target:hover {
+      border-color: var(--cortia-red, #C94040) !important;
+      background: #EFEFE9 !important;
     }
     .workspace-grid:not(.has-scan) .upload-card .drop-icon,
     .workspace-grid:not(.has-scan) .upload-card .upload-icon {
@@ -112,25 +118,35 @@
     /* ── Active State: Revealed ONLY after an image is uploaded ── */
     .workspace-grid.has-scan {
       display: grid !important;
-      grid-template-columns: 280px 1fr !important;
+      grid-template-columns: 290px 1fr !important;
       gap: 20px !important;
       align-items: stretch !important;
       margin: 0 0 24px 0 !important;
     }
     .workspace-grid.has-scan .upload-card {
-      width: 280px !important;
-      max-width: 280px !important;
+      width: 290px !important;
+      max-width: 290px !important;
       margin: 0 !important;
       padding: 20px !important;
       border-radius: 12px !important;
+      background: var(--card, #FCFBF8) !important;
+      border: 1px solid var(--border, #E5E4DC) !important;
+      box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
     }
     .workspace-grid.has-scan .upload-card .drop-target {
       padding: 20px 14px !important;
+      border-radius: 10px !important;
+      background: var(--surface-alt, #F0F1E8) !important;
+      border: 1.5px dashed #D3D2C8 !important;
     }
     .workspace-grid.has-scan .viewports-card {
       display: flex !important;
       flex-direction: column !important;
       animation: fadeInWorkspace 0.35s ease forwards;
+      background: var(--card, #FCFBF8) !important;
+      border: 1px solid var(--border, #E5E4DC) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
     }
     .dashboard-container.has-scan .details-grid {
       display: grid !important;
@@ -139,6 +155,10 @@
     .dashboard-container.has-scan .crosshair-wide-card {
       display: block !important;
       animation: fadeInWorkspace 0.35s ease forwards;
+      background: var(--card, #FCFBF8) !important;
+      border: 1px solid var(--border, #E5E4DC) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
     }
     @keyframes fadeInWorkspace {
       from { opacity: 0; transform: translateY(8px); }
@@ -158,15 +178,15 @@
       display: inline-flex !important;
       align-items: center !important;
       gap: 8px !important;
-      padding: 9px 16px !important;
-      background: var(--card, #FFFFFF) !important;
-      border: 1px solid var(--border, #DDD4CC) !important;
-      border-radius: 10px !important;
-      color: var(--ink, #1C1917) !important;
-      font-size: 13px !important;
-      font-weight: 600 !important;
+      padding: 8px 14px !important;
+      background: var(--card, #FCFBF8) !important;
+      border: 1px solid var(--border, #E5E4DC) !important;
+      border-radius: 8px !important;
+      color: var(--ink, #252B28) !important;
+      font-size: 12.5px !important;
+      font-weight: 500 !important;
       text-decoration: none !important;
-      box-shadow: 0 1px 4px rgba(35, 26, 23, 0.05) !important;
+      box-shadow: 0 1px 2px rgba(37, 43, 40, 0.04) !important;
       transition: all 0.2s ease !important;
       cursor: pointer !important;
     }
@@ -175,17 +195,16 @@
       transition: transform 0.2s ease !important;
     }
     .btn-top-history:hover {
-      border-color: var(--cortia-red, #C94040) !important;
-      color: var(--cortia-red, #C94040) !important;
-      background: var(--blush, #F0DDD8) !important;
-      box-shadow: 0 3px 10px rgba(201, 64, 64, 0.15) !important;
+      border-color: #D3D2C8 !important;
+      color: var(--ink, #252B28) !important;
+      background: var(--surface-alt, #F0F1E8) !important;
+      box-shadow: 0 2px 6px rgba(37, 43, 40, 0.08) !important;
       transform: translateY(-1px) !important;
     }
     .btn-top-history:hover svg {
       transform: rotate(-20deg) !important;
     }
 
-  
     .page-title-section {
       position: relative !important;
       text-align: center !important;
@@ -198,16 +217,19 @@
       max-width: 680px !important;
     }
     .page-title-wrap .page-title {
-      font-size: 32px !important;
-      font-weight: 600 !important;
-      color: var(--ink, #1C1917) !important;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      font-size: 34px !important;
+      font-weight: 500 !important;
+      color: var(--ink, #252B28) !important;
       margin-bottom: 6px !important;
-      letter-spacing: -0.01em !important;
+      letter-spacing: -0.02em !important;
+      line-height: 1.15 !important;
       text-align: center !important;
     }
     .page-title-wrap .page-subtitle {
-      font-size: 14px !important;
-      color: var(--mid, #6B5248) !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 13.5px !important;
+      color: var(--mid, #777D75) !important;
       line-height: 1.5 !important;
       margin: 0 auto !important;
       text-align: center !important;
@@ -222,20 +244,19 @@
       gap: 10px !important;
     }
     .btn-top-chat-history {
-      background: var(--card, #FFFFFF) !important;
-      border: 1px solid var(--border, #DDD4CC) !important;
+      background: var(--card, #FCFBF8) !important;
+      border: 1px solid var(--border, #E5E4DC) !important;
+      color: var(--ink, #252B28) !important;
+      border-radius: 8px !important;
+      font-weight: 500 !important;
     }
     .btn-top-chat-history svg {
       color: var(--cortia-red, #C94040) !important;
     }
     .btn-top-chat-history:hover {
-      background: var(--cortia-red, #C94040) !important;
-      border-color: var(--cortia-red, #C94040) !important;
-      color: #FFFFFF !important;
-    }
-    .btn-top-chat-history:hover svg {
-      color: #FFFFFF !important;
-      transform: scale(1.1) !important;
+      background: var(--surface-alt, #F0F1E8) !important;
+      border-color: #D3D2C8 !important;
+      color: var(--ink, #252B28) !important;
     }
     @media (max-width: 900px) {
       .page-title-history-wrap {
@@ -244,7 +265,6 @@
         margin-top: 14px !important;
       }
     }
-
   </style>
 </head>
 

@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     resultLabel.textContent = 'READY FOR ANALYSIS';
     resultLabel.style.color = 'var(--text-main)';
     resultBadge.style.display = 'none';
-    btnExportReport.disabled = true;
+    if (btnExportReport) btnExportReport.disabled = true;
     resetMeters();
     resetRoiMetrics();
   }
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
         metricCenter.textContent = c ? `X:${c.x} Y:${c.y}` : 'N/A';
       }
 
-      btnExportReport.disabled = false;
+      if (btnExportReport) btnExportReport.disabled = false;
 
       // Refresh Telemetry & Audit Table
       loadStats();

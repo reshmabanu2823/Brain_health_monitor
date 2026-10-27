@@ -1,49 +1,69 @@
 /* ==========================================================================
    CORTIA — Unified Design System Stylesheet
-   Color inspiration: CORTIA logo (red/coral watercolor brain mark + warm cream)
+   Design Foundation: MediCluster Aesthetic & CORTIA Brand Identity
+   Palette: Warm Ivory (#F7F6F0), Soft Off-White (#FCFBF8), Muted Sage (#E4E9DB),
+            Dark Charcoal (#252B28), Primary Dark Accent (#192B23),
+            Subtle Border (#E5E4DC), Brand Crimson Accent (#C94040)
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   /* Core Design Tokens */
-  --bg:           #F5F0EB;   /* warm cream — matches intro background */
-  --card:         #FFFFFF;   /* every card */
-  --border:       #DDD4CC;   /* every border */
-  --sidebar:      #231A17;   /* deep wine-brown sidebar */
-  --red:          #C94040;   /* ONE primary accent — pulled from logo brain mark */
-  --red-dark:     #A83232;   /* hover on red */
-  --red-light:    #F0D0D0;   /* badge/tint backgrounds */
-  --ink:          #1C1917;   /* headings, primary text */
-  --mid:          #6B5248;   /* secondary labels */
-  --sub:          #9C8880;   /* captions, metadata */
-  --green:        #5A8A5A;   /* success / normal / connected */
-  --amber:        #C07830;   /* warning / unavailable / caution */
+  --bg:           #F7F6F0;   /* warm ivory application background */
+  --card:         #FCFBF8;   /* main content surfaces */
+  --surface:      #FCFBF8;   /* card surface */
+  --surface-alt:  #F0F1E8;   /* toolbars, filters, grouped controls */
+  --surface-sage: #E4E9DB;   /* selected navigation and subtle sage highlights */
+  --border:       #E5E4DC;   /* subtle dividers and card outlines */
+  --border-subtle:#ECEBE3;   /* hairline dividers */
+  
+  --sidebar:      #FAF7F2;   /* warm ivory sidebar */
+  --sidebar-bg:   #FAF7F2;   /* sidebar background */
+  --sidebar-hover:#EFECE5;   /* sidebar hover */
+  --sidebar-active:#E4E9DB;  /* selected navigation */
+  
+  --ink:          #252B28;   /* headings and primary text */
+  --mid:          #777D75;   /* descriptions and metadata */
+  --sub:          #9BA199;   /* captions and subtle hints */
+  --primary-dark: #192B23;   /* primary buttons and dark accent elements */
+  
+  /* CORTIA Brand Identity: Crimson accent derived from CORTIA brain logo */
+  --red:          #C94040;   /* CORTIA brand accent */
+  --red-dark:     #A83232;   /* hover / active accent */
+  --red-light:    #FAEDED;   /* badge / tint backgrounds */
+  --cortia-red:   #C94040;
+  --cortia-red-dk:#A83232;
+  --cortia-red-lt:#FAEDED;
+  
+  /* Clinical Semantic Indicators */
+  --green:        #3F775B;   /* success / normal / connected */
+  --green-bg:     #EAF2ED;
+  --amber:        #B78036;   /* warning / caution */
+  --amber-bg:     #FAF3E8;
+  --error:        #B94B4B;   /* error / critical */
+  --error-bg:     #FAEDED;
+  --info:         #597B9A;   /* informational states */
+  --info-bg:      #EDF3F7;
 
-  /* Legacy & Semantic Aliases */
+  /* Aliases */
   --cream:        var(--bg);
-  --cream-deep:   #EDE6DD;
-  --blush:        #F0DDD8;
-  --blush-mid:    #DEC5BE;
+  --cream-deep:   var(--surface-alt);
+  --blush:        #F5EBE8;
+  --blush-mid:    #EBD6D1;
   --white:        var(--card);
   --warm-ink:     var(--ink);
   --warm-mid:     var(--mid);
   --warm-sub:     var(--sub);
   --warm-border:  var(--border);
-  --cortia-red:   var(--red);
-  --cortia-red-dk:var(--red-dark);
-  --cortia-red-lt:var(--red-light);
   --status-green: var(--green);
   --status-amber: var(--amber);
-  --sidebar-bg:   var(--sidebar);
-  --sidebar-hover:#2E2220;
-  --sidebar-active:#3A2A26;
+  --primary:      var(--primary-dark);
 
-  /* Zero out any legacy blue variables */
-  --md-blue-primary: var(--red);
-  --cortia-blue:     var(--red);
-  --blue:            var(--red);
-  --primary:         var(--red);
+  /* Fonts */
+  --font-serif:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:    'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 /* ==========================================================================
@@ -68,7 +88,7 @@ html, body {
 
 h1, h2, h3, h4, .brand-name, .page-title, .page-main-heading, .card-title,
 .metric-value, .stat-value, .stat-number, .heading-garamond, .portal-title {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   color: var(--ink);
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -111,8 +131,8 @@ aside.neuro-rail,
   width: 250px !important;
   min-width: 250px !important;
   max-width: 250px !important;
-  background-color: var(--sidebar, #231A17) !important;
-  background: var(--sidebar, #231A17) !important;
+  background-color: var(--sidebar-bg, #FAF7F2) !important;
+  background: var(--sidebar-bg, #FAF7F2) !important;
   height: 100vh !important;
   position: fixed !important;
   top: 0 !important;
@@ -120,7 +140,7 @@ aside.neuro-rail,
   left: 0 !important;
   display: flex !important;
   flex-direction: column !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1px solid var(--border, #E5E4DC) !important;
   padding: 0 !important;
   box-shadow: none !important;
   z-index: 999 !important;
@@ -134,12 +154,16 @@ body.sidebar-open aside.neuro-rail,
 body.sidebar-open .sidebar,
 body.sidebar-open .neuro-rail {
   transform: translateX(0) !important;
-  box-shadow: 6px 0 28px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 4px 0 24px rgba(37, 43, 40, 0.10) !important;
 }
 
 .sidebar-brand {
   padding: 20px 18px 16px 18px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: 1px solid var(--border, #E5E4DC) !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
 }
 
 .sidebar-brand .brand-logo {
@@ -178,18 +202,18 @@ body.sidebar-open .neuro-rail {
 }
 
 .sidebar-brand .brand-name {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  color: #FFFFFF !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: var(--ink, #252B28) !important;
   letter-spacing: 0.5px !important;
   line-height: 1 !important;
 }
 
 .sidebar-brand .brand-tagline {
-  font-size: 10px !important;
-  color: rgba(255, 255, 255, 0.4) !important;
-  margin-top: 6px !important;
+  font-size: 11px !important;
+  color: var(--mid, #777D75) !important;
+  margin-top: 5px !important;
   line-height: 1.3 !important;
   font-weight: 400 !important;
 }
@@ -202,11 +226,11 @@ body.sidebar-open .neuro-rail {
 }
 
 .sidebar-label {
-  font-size: 9px !important;
+  font-size: 10px !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
-  letter-spacing: 1.2px !important;
-  color: rgba(255, 255, 255, 0.3) !important;
+  letter-spacing: 0.08em !important;
+  color: var(--mid, #777D75) !important;
   padding: 0 8px 6px 8px !important;
 }
 
@@ -216,19 +240,19 @@ body.sidebar-open .neuro-rail {
   align-items: center !important;
   gap: 10px !important;
   padding: 8px 12px !important;
-  border-radius: 6px !important;
-  color: rgba(255, 255, 255, 0.5) !important;
+  border-radius: 8px !important;
+  color: var(--mid, #777D75) !important;
   font-size: 13px !important;
   font-weight: 500 !important;
   text-decoration: none !important;
   transition: all 0.15s ease !important;
-  border-left: 2px solid transparent !important;
+  border: 1px solid transparent !important;
 }
 
 .nav-item:hover,
 .rail-item:hover {
-  background-color: #2E2220 !important;
-  color: rgba(255, 255, 255, 0.85) !important;
+  background-color: var(--sidebar-hover, #EFECE5) !important;
+  color: var(--ink, #252B28) !important;
 }
 
 .nav-item.active,
@@ -238,9 +262,10 @@ body[data-page="eeg"] .sidebar a[data-path="/eeg"],
 body[data-page="insights"] .sidebar a[data-path="/insights"],
 body[data-page="ai"] .sidebar a[data-path="/ai"],
 body[data-page="cortia"] .sidebar a[data-path="/cortia"] {
-  background-color: #3A2A26 !important;
-  color: #FFFFFF !important;
-  border-left: 2px solid var(--red) !important;
+  background-color: var(--surface-sage, #E4E9DB) !important;
+  color: var(--ink, #252B28) !important;
+  border: 1px solid #D5DEC9 !important;
+  border-left: 3px solid var(--cortia-red, #C94040) !important;
   font-weight: 600 !important;
 }
 
@@ -255,7 +280,7 @@ body[data-page="cortia"] .sidebar a[data-path="/cortia"] {
 .rail-footer {
   margin-top: auto !important;
   padding: 14px 16px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-top: 1px solid var(--border, #E5E4DC) !important;
 }
 
 .runtime-badge {
@@ -263,7 +288,7 @@ body[data-page="cortia"] .sidebar a[data-path="/cortia"] {
   align-items: center !important;
   gap: 8px !important;
   font-size: 11px !important;
-  color: rgba(255, 255, 255, 0.3) !important;
+  color: var(--mid, #777D75) !important;
 }
 
 .runtime-dot,
@@ -295,9 +320,9 @@ header.neuro-header {
   height: 56px !important;
   min-height: 56px !important;
   max-height: 56px !important;
-  background: #FFFFFF !important;
-  background-color: #FFFFFF !important;
-  border-bottom: 1px solid var(--border) !important;
+  background: var(--card, #FCFBF8) !important;
+  background-color: var(--card, #FCFBF8) !important;
+  border-bottom: 1px solid var(--border, #E5E4DC) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -332,7 +357,7 @@ header.neuro-header {
 }
 
 .topbar-title-text {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-size: 18px !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -413,30 +438,38 @@ header.neuro-header {
 .btn-pacs-primary,
 button.btn-pacs-primary,
 a.btn-pacs-primary,
-.cortia-btn-primary {
-  background: var(--red) !important;
-  background-color: var(--red) !important;
+.cortia-btn-primary,
+.btn-analyze,
+.run-btn,
+.btn-execute {
+  background: var(--primary-dark, #192B23) !important;
+  background-color: var(--primary-dark, #192B23) !important;
   color: #FFFFFF !important;
-  border: none !important;
+  border: 1px solid #192B23 !important;
   border-radius: 8px !important;
-  padding: 7px 14px !important;
+  padding: 8px 16px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
   text-decoration: none !important;
   transition: all 0.15s ease !important;
-  box-shadow: 0 1px 2px rgba(201, 64, 64, 0.2) !important;
+  box-shadow: 0 1px 2px rgba(25, 43, 35, 0.08) !important;
 }
 
 .btn-primary:hover,
 .btn-pacs-primary:hover,
-.cortia-btn-primary:hover {
-  background: var(--red-dark) !important;
-  background-color: var(--red-dark) !important;
+.cortia-btn-primary:hover,
+.btn-analyze:hover,
+.run-btn:hover,
+.btn-execute:hover {
+  background: #253C32 !important;
+  background-color: #253C32 !important;
+  border-color: #253C32 !important;
+  color: #FFFFFF !important;
   transform: translateY(-1px) !important;
 }
 
@@ -446,14 +479,18 @@ a.btn-pacs-primary,
 .btn-pacs-secondary,
 button.btn-pacs-secondary,
 a.btn-pacs-secondary,
-.cortia-btn-secondary {
-  background: transparent !important;
-  color: var(--mid) !important;
-  border: 1px solid var(--border) !important;
+.cortia-btn-secondary,
+.btn-action-back,
+.btn-top-history,
+.btn-outline {
+  background: var(--card, #FCFBF8) !important;
+  background-color: var(--card, #FCFBF8) !important;
+  color: var(--ink, #252B28) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
   border-radius: 8px !important;
-  padding: 6px 12px !important;
+  padding: 7px 14px !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 12px !important;
+  font-size: 12.5px !important;
   font-weight: 500 !important;
   cursor: pointer !important;
   display: inline-flex !important;
@@ -461,15 +498,21 @@ a.btn-pacs-secondary,
   gap: 6px !important;
   text-decoration: none !important;
   transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(37, 43, 40, 0.04) !important;
 }
 
 .btn-ghost:hover,
 .btn-secondary:hover,
 .btn-pacs-secondary:hover,
-.cortia-btn-secondary:hover {
-  background: var(--bg) !important;
-  color: var(--ink) !important;
-  border-color: #C5BCB3 !important;
+.cortia-btn-secondary:hover,
+.btn-action-back:hover,
+.btn-top-history:hover,
+.btn-outline:hover {
+  background: var(--surface-alt, #F0F1E8) !important;
+  background-color: var(--surface-alt, #F0F1E8) !important;
+  color: var(--ink, #252B28) !important;
+  border-color: #D3D2C8 !important;
+  transform: translateY(-1px) !important;
 }
 
 /* ==========================================================================
@@ -483,7 +526,7 @@ a.btn-pacs-secondary,
 
 .page-title,
 .page-main-heading {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-size: 28px !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -522,20 +565,25 @@ a.btn-pacs-secondary,
 .ai-sidebar-card,
 .ai-chat-card,
 .portal-card,
-.workspace-card {
-  background: var(--card) !important;
-  background-color: #FFFFFF !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 10px !important;
+.workspace-card,
+.section-card,
+.upload-card,
+.viewports-card,
+.crosshair-wide-card,
+.steps-card {
+  background: var(--card, #FCFBF8) !important;
+  background-color: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 12px !important;
   padding: 18px 20px !important;
-  box-shadow: 0 1px 3px rgba(28, 25, 23, 0.08) !important;
+  box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
   transition: all 0.2s ease !important;
 }
 
 .card-title,
 .card-header h2,
 .card-header h3 {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-size: 18px !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -562,7 +610,7 @@ a.btn-pacs-secondary,
 .metric-card .metric-value,
 .stat-card .stat-value,
 .stat-number {
-  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-size: 26px !important;
   font-weight: 600 !important;
   color: var(--ink) !important;
@@ -734,10 +782,10 @@ input[type="range"] {
 .eeg-canvas-panel,
 .oscilloscope-panel,
 .dark-viewport {
-  background-color: #1A1412 !important;
-  background: #1A1412 !important;
+  background-color: #141716 !important;
+  background: #141716 !important;
   border-radius: 10px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid #2A332E !important;
   position: relative !important;
 }
 
@@ -849,7 +897,7 @@ input[type="range"] {
 .sidebar-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(18, 12, 10, 0.48);
+  background: rgba(37, 43, 40, 0.22);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   opacity: 0;
@@ -863,7 +911,7 @@ body.sidebar-open .sidebar-backdrop {
   pointer-events: auto;
 }
 
-/* 2. Dark Sidebar Rail Drawer */
+/* 2. Warm Ivory Sidebar Rail Drawer */
 .neuro-rail,
 .sidebar {
   position: fixed !important;
@@ -874,8 +922,8 @@ body.sidebar-open .sidebar-backdrop {
   min-width: 250px !important;
   max-width: 250px !important;
   height: 100vh !important;
-  background: var(--sidebar, #231A17) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: var(--sidebar-bg, #FAF7F2) !important;
+  border-right: 1px solid var(--border, #E5E4DC) !important;
   z-index: 999 !important;
   transform: translateX(-100%) !important;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease !important;
@@ -886,7 +934,7 @@ body.sidebar-open .sidebar-backdrop {
 body.sidebar-open .neuro-rail,
 body.sidebar-open .sidebar {
   transform: translateX(0) !important;
-  box-shadow: 6px 0 28px rgba(0, 0, 0, 0.45) !important;
+  box-shadow: 4px 0 24px rgba(37, 43, 40, 0.10) !important;
 }
 
 /* 3. Main Content Area takes full width */
@@ -916,14 +964,14 @@ body.sidebar-open .sidebar {
   height: 36px !important;
   min-width: 36px !important;
   border-radius: 8px !important;
-  background: var(--card, #FFFFFF) !important;
-  border: 1px solid var(--border, #DDD4CC) !important;
-  color: var(--ink, #1C1917) !important;
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  color: var(--ink, #252B28) !important;
   cursor: pointer !important;
   margin: 0 !important;
   padding: 0 !important;
   transition: all 0.18s ease !important;
-  box-shadow: 0 1px 3px rgba(35, 26, 23, 0.06) !important;
+  box-shadow: 0 1px 2px rgba(37, 43, 40, 0.04) !important;
   flex-shrink: 0 !important;
 }
 .sidebar-toggle-btn:hover {
@@ -948,8 +996,8 @@ body.sidebar-open .sidebar {
 .sidebar-close-btn {
   background: transparent !important;
   border: none !important;
-  color: rgba(255, 255, 255, 0.6) !important;
-  font-size: 26px !important;
+  color: var(--mid, #777D75) !important;
+  font-size: 24px !important;
   line-height: 1 !important;
   width: 32px !important;
   height: 32px !important;
@@ -959,9 +1007,9 @@ body.sidebar-open .sidebar {
   cursor: pointer !important;
   border-radius: 6px !important;
   transition: all 0.15s ease !important;
-  position: absolute;
-  top: 14px;
-  right: 12px;
+  position: absolute !important;
+  top: 14px !important;
+  right: 12px !important;
 }
 .sidebar-close-btn:hover {
   color: #FFFFFF !important;
