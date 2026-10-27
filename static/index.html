@@ -1,1954 +1,577 @@
 <!DOCTYPE html>
-
-
-
 <html lang="en">
-
-
-
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CORTIA — MRI Analysis</title>
+  <link rel="icon" href="data:," />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/cortia-theme.css">
-
-
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-
-
-  <meta charset="UTF-8" />
-
-
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-
-
-  <title>Brain Health Monitor — MRI Analysis Dashboard</title>
-
-
-
-  <link rel="icon" href="data:," />
-
-
-
-  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev6" />
-
-
-
-  <link rel="stylesheet" href="/static/css/style.css?v=20261025_rev6" />
-
-
-
-  
-
-
-  
-
-
-  
-
-
-  <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev6" />
-
-
+  <link rel="stylesheet" href="/static/css/cortia-theme.css" />
+  <link rel="stylesheet" href="/static/css/common.css?v=20261025_rev7" />
+  <link rel="stylesheet" href="/static/css/style.css?v=20261025_rev7" />
+  <link rel="stylesheet" href="/static/css/cortia.css?v=20261025_rev7" />
 
   <script defer src="/static/js/cortia.js?v=20261025_rev6"></script>
-
-
-
-  <link rel="stylesheet" href="/static/css/cortia-assistant.css">
-
-
-
-  <link rel="stylesheet" href="/static/css/companion-mode.css">
-
-
-
-  <style id="mri-centered-styles">
-    /* ── Main MRI Workspace: Default Centered Hero State ── */
-    .workspace-grid:not(.has-scan) {
-      display: flex !important;
-      justify-content: center !important;
-      align-items: center !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      margin: 32px auto 40px auto !important;
-      transition: all 0.3s ease;
-    }
-    .workspace-grid:not(.has-scan) .upload-card {
-      width: 100% !important;
-      max-width: 400px !important;
-      margin: 0 auto !important;
-      padding: 28px !important;
-      border-radius: 12px !important;
-      box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
-      background: var(--card, #FCFBF8) !important;
-      border: 1px solid var(--border, #E5E4DC) !important;
-    }
-    .workspace-grid:not(.has-scan) .upload-card .drop-target {
-      padding: 28px 16px !important;
-      border-radius: 10px !important;
-      background: var(--surface-alt, #F0F1E8) !important;
-      border: 1.5px dashed #D3D2C8 !important;
-      transition: all 0.2s ease;
-    }
-    .workspace-grid:not(.has-scan) .upload-card .drop-target:hover {
-      border-color: var(--cortia-red, #C94040) !important;
-      background: #EFEFE9 !important;
-    }
-    .workspace-grid:not(.has-scan) .upload-card .drop-icon,
-    .workspace-grid:not(.has-scan) .upload-card .upload-icon {
-      width: 38px !important;
-      height: 38px !important;
-      max-width: 38px !important;
-      max-height: 38px !important;
-      color: var(--cortia-red, #C94040) !important;
-      margin-bottom: 6px !important;
-    }
-    .workspace-grid:not(.has-scan) .viewports-card {
+  <script defer src="/static/js/cortia-sidebar.js?v=20261026_rev2"></script>
+  <style>
+    /* Complete removal of legacy hamburger and sidebar */
+    #cortia-sidebar-toggle, .sidebar-toggle-btn, .sidebar-edge-fallback-btn,
+    .sidebar, .neuro-rail, .sidebar-backdrop, #cortia-topbar {
       display: none !important;
     }
-    .dashboard-container:not(.has-scan) .details-grid,
-    .dashboard-container:not(.has-scan) .crosshair-wide-card {
-      display: none !important;
-    }
-
-    /* ── Active State: Revealed ONLY after an image is uploaded ── */
-    .workspace-grid.has-scan {
-      display: grid !important;
-      grid-template-columns: 290px 1fr !important;
-      gap: 20px !important;
-      align-items: stretch !important;
-      margin: 0 0 24px 0 !important;
-    }
-    .workspace-grid.has-scan .upload-card {
-      width: 290px !important;
-      max-width: 290px !important;
-      margin: 0 !important;
-      padding: 20px !important;
-      border-radius: 12px !important;
-      background: var(--card, #FCFBF8) !important;
-      border: 1px solid var(--border, #E5E4DC) !important;
-      box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
-    }
-    .workspace-grid.has-scan .upload-card .drop-target {
-      padding: 20px 14px !important;
-      border-radius: 10px !important;
-      background: var(--surface-alt, #F0F1E8) !important;
-      border: 1.5px dashed #D3D2C8 !important;
-    }
-    .workspace-grid.has-scan .viewports-card {
+    .neuro-app {
       display: flex !important;
       flex-direction: column !important;
-      animation: fadeInWorkspace 0.35s ease forwards;
-      background: var(--card, #FCFBF8) !important;
-      border: 1px solid var(--border, #E5E4DC) !important;
-      border-radius: 12px !important;
-      box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
-    }
-    .dashboard-container.has-scan .details-grid {
-      display: grid !important;
-      animation: fadeInWorkspace 0.35s ease forwards;
-    }
-    .dashboard-container.has-scan .crosshair-wide-card {
-      display: block !important;
-      animation: fadeInWorkspace 0.35s ease forwards;
-      background: var(--card, #FCFBF8) !important;
-      border: 1px solid var(--border, #E5E4DC) !important;
-      border-radius: 12px !important;
-      box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
-    }
-    @keyframes fadeInWorkspace {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @media (max-width: 1024px) {
-      .workspace-grid.has-scan {
-        grid-template-columns: 1fr !important;
-      }
-      .workspace-grid.has-scan .upload-card {
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-    }
-  
-    .btn-top-history {
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      padding: 8px 14px !important;
-      background: var(--card, #FCFBF8) !important;
-      border: 1px solid var(--border, #E5E4DC) !important;
-      border-radius: 8px !important;
-      color: var(--ink, #252B28) !important;
-      font-size: 12.5px !important;
-      font-weight: 500 !important;
-      text-decoration: none !important;
-      box-shadow: 0 1px 2px rgba(37, 43, 40, 0.04) !important;
-      transition: all 0.2s ease !important;
-      cursor: pointer !important;
-    }
-    .btn-top-history svg {
-      color: var(--cortia-red, #C94040) !important;
-      transition: transform 0.2s ease !important;
-    }
-    .btn-top-history:hover {
-      border-color: #D3D2C8 !important;
-      color: var(--ink, #252B28) !important;
-      background: var(--surface-alt, #F0F1E8) !important;
-      box-shadow: 0 2px 6px rgba(37, 43, 40, 0.08) !important;
-      transform: translateY(-1px) !important;
-    }
-    .btn-top-history:hover svg {
-      transform: rotate(-20deg) !important;
-    }
-
-    .page-title-section {
-      position: relative !important;
-      text-align: center !important;
-      margin: 12px auto 28px auto !important;
       width: 100% !important;
-    }
-    .page-title-wrap {
-      text-align: center !important;
-      margin: 0 auto !important;
-      max-width: 680px !important;
-    }
-    .page-title-wrap .page-title {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-      font-size: 34px !important;
-      font-weight: 500 !important;
-      color: var(--ink, #252B28) !important;
-      margin-bottom: 6px !important;
-      letter-spacing: -0.02em !important;
-      line-height: 1.15 !important;
-      text-align: center !important;
-    }
-    .page-title-wrap .page-subtitle {
-      font-family: 'Inter', sans-serif !important;
-      font-size: 13.5px !important;
-      color: var(--mid, #777D75) !important;
-      line-height: 1.5 !important;
-      margin: 0 auto !important;
-      text-align: center !important;
-    }
-    .page-title-history-wrap {
-      position: absolute !important;
-      right: 0 !important;
-      top: 50% !important;
-      transform: translateY(-50%) !important;
-      display: flex !important;
-      align-items: center !important;
-      gap: 10px !important;
-    }
-    .btn-top-chat-history {
-      background: var(--card, #FCFBF8) !important;
-      border: 1px solid var(--border, #E5E4DC) !important;
-      color: var(--ink, #252B28) !important;
-      border-radius: 8px !important;
-      font-weight: 500 !important;
-    }
-    .btn-top-chat-history svg {
-      color: var(--cortia-red, #C94040) !important;
-    }
-    .btn-top-chat-history:hover {
-      background: var(--surface-alt, #F0F1E8) !important;
-      border-color: #D3D2C8 !important;
-      color: var(--ink, #252B28) !important;
-    }
-    @media (max-width: 900px) {
-      .page-title-history-wrap {
-        position: static !important;
-        transform: none !important;
-        margin-top: 14px !important;
-      }
     }
   </style>
 </head>
 
-
-
 <body data-page="mri">
 
-
-
   <!-- Cortia Cinematic Loading / Landing Screen Overlay -->
-
-
-
   <div id="cortia-splash" class="cortia-splash-overlay">
-
-
-
     <button id="cortia-skip" class="cortia-skip-btn" type="button" aria-label="Skip intro">Skip Intro &rarr;</button>
-
-
-
-
-
-
-
     <main class="cortia-stage" aria-busy="true">
-
-
-
       <div id="cortia-lockup" class="cortia-lockup" role="img" aria-label="Cortia is loading">
-
-
-
         <div class="cortia-film">
-
-
-
           <img src="/static/cortia/cortia-poster.jpg" alt="" decoding="async">
-
-
-
-          <video id="cortia-v" muted playsinline preload="auto" disablepictureinpicture>
-
-
-
-            <source src="/static/cortia/cortia-reveal.mp4" type="video/mp4">
-
-
-
-            <source src="/static/cortia/cortia-reveal.webm" type="video/webm">
-
-
-
+          <video id="cortia-v" muted playsinline preload="auto" poster="/static/cortia/cortia-poster.jpg">
+            <source src="/static/cortia/cortia-intro.mp4" type="video/mp4" />
           </video>
-
-
-
         </div>
-
-
-
+        <div class="cortia-caption">
+          <div class="cortia-title">CORTIA</div>
+          <div class="cortia-rule" aria-hidden="true"></div>
+          <div class="cortia-tag">BRAIN HEALTH MONITOR</div>
+        </div>
       </div>
-
-
-
+      <div id="cortia-progress" class="cortia-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="cortia-bar"></div>
+      </div>
     </main>
-
-
-
-
-
-
-
-    <div class="cortia-final">
-
-
-
-      <div class="cortia-fin" id="cortia-fin" role="img" aria-label="Cortia">
-
-
-
-        <img class="l" data-l="C" src="/static/cortia/f_C.webp" alt="" decoding="async" draggable="false" style="left:0.758%;top:16.618%;width:16.818%;height:68.513%">
-
-
-
-        <img class="l" data-l="R" src="/static/cortia/f_R.webp" alt="" decoding="async" draggable="false" style="left:42.576%;top:17.784%;width:15.682%;height:66.181%">
-
-
-
-        <img class="l" data-l="T" src="/static/cortia/f_T.webp" alt="" decoding="async" draggable="false" style="left:58.333%;top:17.784%;width:14.621%;height:66.181%">
-
-
-
-        <img class="l" data-l="I" src="/static/cortia/f_I.webp" alt="" decoding="async" draggable="false" style="left:74.394%;top:17.784%;width:4.394%;height:66.181%">
-
-
-
-        <img class="l" data-l="A" src="/static/cortia/f_A.webp" alt="" decoding="async" draggable="false" style="left:80.0%;top:17.784%;width:19.318%;height:66.181%">
-
-
-
-        <img class="brain" id="cortia-brain" src="/static/cortia/final-brain.webp" alt="" decoding="async" draggable="false">
-
-
-
-        <img class="flier" id="cortia-flier" src="/static/cortia/cortia-brain.webp" alt="" decoding="async" draggable="false">
-
-
-
-      </div>
-
-
-
-    </div>
-
-
-
-
-
-
-
-    <!-- Interactive Navigation Options on Reveal -->
-
-
-
-    <div id="cortia-cta" class="cortia-cta-wrap">
-
-
-
-      <button id="cortia-enter-btn" class="cortia-btn-primary" type="button">Enter MRI Workspace &rarr;</button>
-
-
-
-      <a href="/eeg" class="cortia-btn-secondary">Open EEG Workspace &rarr;</a>
-
-
-
-    </div>
-
-
-
   </div>
-
-
-
-
-
-
-
-  <a class="skip" href="#main">Skip to main content</a>
-
-
-
-
-
-
 
   <div class="neuro-app">
-
-
-
-
-
-
-
-        <!-- CORTIA Dark Sidebar (#231A17) -->
-
-        <!-- CORTIA Dark Sidebar (#231A17) -->
-
-    <aside class="sidebar neuro-rail" aria-label="Main Navigation">
-      <div class="sidebar-brand">
-        <a class="brand-logo" href="/cortia">
-          <div class="brand-icon">
-            <img src="/static/cortia/cortia-brain.webp" alt="CORTIA" class="brand-brain-img">
-          </div>
-          <div class="brand-name">CORTIA</div>
-        </a>
-        <div class="brand-tagline">Neural Intelligence &amp; Clinical Workstation</div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-label">Workspaces</div>
-        <a class="nav-item rail-item" data-path="/" href="/" title="MRI Analysis">
-          <span class="nav-icon">⊕</span> <span class="rail-label">MRI Analysis</span>
-        </a>
-        <a class="nav-item rail-item" data-path="/eeg" href="/eeg" title="EEG Monitoring">
-          <span class="nav-icon">〜</span> <span class="rail-label">EEG Monitoring</span>
+    <!-- ========================================== -->
+    <!-- 1. PERMANENT HORIZONTAL TOP NAVIGATION BAR -->
+    <!-- ========================================== -->
+    <header class="cortia-top-navbar" id="cortia-top-navbar">
+      <div class="cortia-nav-left">
+        <a href="/cortia" class="cortia-brand-link">
+          <img src="/static/cortia/cortia-brain-vector.png" alt="CORTIA" class="cortia-brand-brain">
+          <span class="cortia-brand-text">CORTIA</span>
         </a>
       </div>
 
-      <div class="sidebar-section">
-        <div class="sidebar-label">Assistant</div>
-        <a class="nav-item rail-item" data-path="/ai" href="/ai" title="CORTIA AI">
-          <span class="nav-icon">✦</span> <span class="rail-label">CORTIA AI</span>
-        </a>
-      </div>
+      <nav class="cortia-nav-center" aria-label="Main Navigation">
+        <a href="/cortia" class="cortia-nav-item">Overview</a>
+        <a href="/" class="cortia-nav-item active">MRI Analysis</a>
+        <a href="/eeg" class="cortia-nav-item">EEG Monitoring</a>
+        <a href="/ai" class="cortia-nav-item">CORTIA AI</a>
+      </nav>
 
-      <div class="sidebar-section" style="margin-top:auto; padding-top:12px;">
-        <a class="nav-item rail-item" data-path="/cortia" href="/cortia" title="Cortia Portal">
-          <span class="nav-icon">⬡</span> <span class="rail-label">Cortia Portal</span>
-        </a>
-      </div>
-
-      <div class="sidebar-footer rail-footer">
-        <div class="runtime-badge">
-          <span class="runtime-dot status-indicator"></span>
-          Runtime v2.4 &bull; Active
+      <div class="cortia-nav-right">
+        <div class="cortia-status-badge">
+          <span class="status-dot"></span>
+          <span class="status-label">Research</span>
         </div>
-      </div>
-    </aside>
-
-
-
-
-
-
-
-    <!-- Main Workspace Content Area -->
-
-
-
-    <main id="main" class="neuro-content">
-
-
-
-
-
-
-
-      <!-- Top App Bar (Header) -->
-
-
-
-      <header class="neuro-header" id="cortia-topbar">
-        <div class="header-left">
-          <button type="button" class="sidebar-toggle-btn" id="cortia-sidebar-toggle" aria-label="Toggle navigation menu" title="Toggle Navigation Menu">
-          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
+        <div class="cortia-user-profile">
+          <div class="cortia-avatar-circle">RB</div>
+          <span class="cortia-user-name">Reshma Banu</span>
+          <svg class="cortia-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
-        </button>
-          <div class="header-meta">
-            <div class="brand-title">
-              <span class="topbar-title-text" id="topbar-title">MRI Analysis Dashboard</span>
-              <span class="brand-badge" id="topbar-badge">Clinical PACS</span>
-            </div>
-            <span class="brand-subtitle" id="topbar-subtitle">Clinical research environment &bull; Not for diagnostic use</span>
-          </div>
         </div>
-      </header>
+      </div>
+    </header>
 
+    <!-- Hidden File Input for Image Uploading -->
+    <input type="file" id="file-input" accept=".dcm,image/jpeg,image/png,image/webp" style="display: none;" />
 
-
-
-
-
-
-      <!-- Section A: Page Heading (Centered, Patient POV) -->
-      <section class="page-title-section">
-        <div class="page-title-wrap">
-          <h1 class="page-title">MRI Analysis Dashboard</h1>
-          <p class="page-subtitle">Understand your brain MRI scan with clear visual explanations and AI-guided health insights</p>
+    <!-- ========================================== -->
+    <!-- 2. MAIN RESEARCH WORKSPACE CONTAINER      -->
+    <!-- ========================================== -->
+    <main class="cortia-workspace-container" id="main-content">
+      
+      <!-- PAGE HEADER -->
+      <section class="mri-page-header">
+        <div class="mri-header-text">
+          <div class="mri-header-badge">RESEARCH WORKSPACE</div>
+          <h1 class="mri-page-title">MRI Analysis</h1>
+          <p class="mri-page-subtitle">Analyze brain MRI scans with AI-driven insights and clear visual explanations for research purposes.</p>
         </div>
-        <div class="page-title-history-wrap">
-          <a href="/history" target="_blank" class="btn-top-history" id="btn-top-history" title="Open Scan Audit History in a new page">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
+        <div class="mri-header-actions">
+          <button type="button" class="btn-top-upload" id="btn-top-upload">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
-            Scan Audit History &rarr;
-          </a>
+            <span>Upload Images</span>
+          </button>
         </div>
       </section>
 
-
-
-
-
-
-
-      <!-- Step Indicators: 3 steps in a single white card row -->
-
-
-
-      <section class="steps-section" aria-label="Workflow Steps">
-
-
-
-        <div class="steps-card">
-
-
-
-          <div class="step-item">
-
-
-
-            <span class="step-num">1</span>
-
-
-
-            <div class="step-meta">
-
-
-
-              <span class="step-title">Upload Axial Scan</span>
-
-
-
-              <span class="step-desc">DICOM (.dcm), JPEG, PNG, WebP</span>
-
-
-
-            </div>
-
-
-
+      <!-- THREE-STEP WORKFLOW BAR -->
+      <section class="mri-steps-bar" aria-label="Workflow progress">
+        <div class="step-item step-1 active">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Upload Axial Scan</div>
+            <div class="step-desc">DICOM (.dcm), JPEG, PNG, WebP</div>
           </div>
-
-
-
-          <div class="step-divider"></div>
-
-
-
-          <div class="step-item">
-
-
-
-            <span class="step-num">2</span>
-
-
-
-            <div class="step-meta">
-
-
-
-              <span class="step-title">Run Inference</span>
-
-
-
-              <span class="step-desc">EfficientNetV2-S classification</span>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-          <div class="step-divider"></div>
-
-
-
-          <div class="step-item">
-
-
-
-            <span class="step-num">3</span>
-
-
-
-            <div class="step-meta">
-
-
-
-              <span class="step-title">Review Findings</span>
-
-
-
-              <span class="step-desc">Grad-CAM saliency & audit log</span>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
         </div>
+        <div class="step-arrow">&gt;</div>
 
+        <div class="step-item step-2">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Run Inference</div>
+            <div class="step-desc">EfficientNetV2-S classification</div>
+          </div>
+        </div>
+        <div class="step-arrow">&gt;</div>
 
-
+        <div class="step-item step-3">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Review Findings</div>
+            <div class="step-desc">Grad-CAM saliency &amp; audit log</div>
+          </div>
+        </div>
       </section>
 
-<!-- Dashboard Main Body -->
-
-
-
-      <div class="dashboard-container">
-
-
-
-
-
-
-
-        <!-- Section C: Main MRI Workspace (Upload + Dual Viewports) -->
-
-
-
-        <section class="workspace-grid" aria-label="Main MRI Workspace">
-
-
-
-
-
-
-
-          <!-- Left: MRI Scan Upload Card -->
-
-
-
-          <div class="card-section upload-card">
-
-
-
-            <h2 class="card-title">MRI Scan Upload</h2>
-
-
-
-            <p class="card-subtitle">Upload axial brain MRI scan sequence for model evaluation</p>
-
-
-
-
-
-
-
-            <div class="drop-target" id="drop-zone" tabindex="0" role="button" aria-label="Drop MRI scan file here or click to select file">
-
-
-
-              <svg class="upload-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-
-
-
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-
-
-
-                <polyline points="17 8 12 3 7 8" />
-
-
-
-                <line x1="12" y1="3" x2="12" y2="15" />
-
-
-
-              </svg>
-
-
-
-              <span class="drop-text">Drag and drop MRI scan here</span>
-
-
-
-              <span class="drop-sub">DICOM (.dcm), JPEG, PNG, WebP</span>
-
-
-
-              <input type="file" id="file-input" accept="image/*,.dcm,.dicom" style="display: none;" />
-
-
-
-            </div>
-
-
-
-
-
-
-
-            <div id="file-badge" class="file-badge" style="display: none;">
-              <span id="selected-filename">FILE: -</span>
-              <button type="button" id="btn-clear-scan" title="Remove scan" class="btn-clear-scan" aria-label="Remove scan">&times;</button>
-            </div>
-
-
-
-
-
-
-
-            
-
-
-
-
-
-
-
-            <button class="btn-execute" id="btn-analyse" disabled>
-
-
-
-              Run Model Analysis
-
-
-
-            </button>
-
-
-
-          </div>
-
-
-
-
-
-
-
-          <!-- Right: MRI Viewer & Activation Map Card -->
-
-
-
-          <div class="card-section viewports-card" style="display: none;">
-
-
-
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
-
-
-
-              <div>
-
-
-
-                <h2 class="card-title">MRI Viewer &amp; Inference Activation Map</h2>
-
-
-
-                <p class="card-subtitle" style="margin-bottom: 0;">Synchronized anatomical sequence view with Grad-CAM saliency localization</p>
-
-
-
-              </div>
-
-
-
-            </div>
-
-
-
-
-
-
-
-            <!-- Integrated Viewport Toolbar -->
-
-
-
-            <div class="viewer-toolbar">
-
-
-
-              <div class="toolbar-group">
-
-
-
-                <span class="tool-label">View:</span>
-
-
-
-                <div class="view-tabs" id="pacs-view-tabs" role="tablist">
-
-
-
-                  <button type="button" class="view-tab active" data-view="dual">Dual Sync</button>
-
-
-
-                  <button type="button" class="view-tab" data-view="mri">MRI Only</button>
-
-
-
-                  <button type="button" class="view-tab" data-view="heat">Grad-CAM</button>
-
-
-
-                </div>
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <div class="toolbar-group">
-
-
-
-                <label for="heatmap-opacity" class="tool-label" style="display: inline; margin: 0;">Opacity:</label>
-
-
-
-                <input type="range" id="heatmap-opacity" min="0.1" max="1.0" step="0.05" value="0.9" class="pacs-slider" />
-
-
-
-                <span id="opacity-val" class="slider-readout">90%</span>
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <div class="toolbar-group">
-
-
-
-                <label for="img-contrast" class="tool-label" style="display: inline; margin: 0;">Contrast:</label>
-
-
-
-                <input type="range" id="img-contrast" min="50" max="200" step="5" value="100" class="pacs-slider" />
-
-
-
-                <span id="contrast-val" class="slider-readout">100%</span>
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <div class="toolbar-group">
-
-
-
-                <label for="img-brightness" class="tool-label" style="display: inline; margin: 0;">Brightness:</label>
-
-
-
-                <input type="range" id="img-brightness" min="50" max="150" step="5" value="100" class="pacs-slider" />
-
-
-
-                <span id="brightness-val" class="slider-readout">100%</span>
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <div class="toolbar-group">
-
-
-
-                <span class="tool-label">Zoom:</span>
-
-
-
-                <button class="btn-pacs-sm" id="btn-zoom-in" title="Zoom In">+</button>
-
-
-
-                <button class="btn-pacs-sm" id="btn-zoom-out" title="Zoom Out">-</button>
-
-
-
-                <button class="btn-pacs-sm" id="btn-zoom-reset" title="Reset Zoom">1:1</button>
-
-
-
-              </div>
-
-
-
-            </div>
-
-
-
-
-
-
-
-            <!-- Dual Viewers Container -->
-
-
-
-            <div class="viewers-grid" id="canvas-viewport">
-
-
-
-
-
-
-
-              <!-- Left Viewer: Original Anatomical MRI -->
-
-
-
-              <div class="viewer-frame" id="frame-orig">
-
-
-
-                <div class="viewer-frame-header">
-
-
-
-                  <span>Anatomical MRI Scan</span>
-
-
-
-                  <span class="hud-tag" id="hud-coords-orig">X:0 Y:0</span>
-
-
-
-                </div>
-
-
-
-                <div class="frame-canvas-wrapper" id="wrapper-orig">
-
-
-
-                  <div class="hud hud-tl">SERIES: 01</div>
-
-
-
-                  <div class="hud hud-tr">224x224</div>
-
-
-
-                  <img id="img-original" style="display: none;" alt="Uploaded MRI image" />
-
-
-
-                  <div class="crosshair-h" id="ch-orig-h" style="display: none;"></div>
-
-
-
-                  <div class="crosshair-v" id="ch-orig-v" style="display: none;"></div>
-
-
-
-                  <div class="pacs-placeholder" id="ph-original">
-
-
-
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" style="margin-bottom: 8px; opacity: 0.5;">
-
-
-
-                      <circle cx="12" cy="12" r="9"/>
-
-
-
-                      <path d="M12 3a9 9 0 0 0 0 18M12 3v18"/>
-
-
-
-                    </svg>
-
-
-
-                    <span>Select an MRI scan to begin analysis.</span>
-
-
-
-                  </div>
-
-
-
-                </div>
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <!-- Right Viewer: Grad-CAM Activation Map -->
-
-
-
-              <div class="viewer-frame" id="frame-heat">
-
-
-
-                <div class="viewer-frame-header">
-
-
-
-                  <span>Inference Activation Map</span>
-
-
-
-                  <span class="hud-tag" id="hud-coords-heat">X:0 Y:0</span>
-
-
-
-                </div>
-
-
-
-                <div class="frame-canvas-wrapper" id="wrapper-heat">
-
-
-
-                  <div class="hud hud-tl">GRAD-CAM</div>
-
-
-
-                  <div class="hud hud-tr">RANGE [0.0 - 1.0]</div>
-
-
-
-                  <img id="img-heatmap" style="display: none;" alt="Grad-CAM Inferno Saliency Overlay" />
-
-
-
-                  <div class="crosshair-h" id="ch-heat-h" style="display: none;"></div>
-
-
-
-                  <div class="crosshair-v" id="ch-heat-v" style="display: none;"></div>
-
-
-
-                  <div class="pacs-placeholder" id="ph-heatmap">
-
-
-
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" style="margin-bottom: 8px; opacity: 0.5;">
-
-
-
-                      <path d="M12 2a9 9 0 0 0-9 9c0 4.97 4.03 9 9 9s9-4.03 9-9a9 9 0 0 0-9-9z"/>
-
-
-
-                      <path d="M12 6v6l4 2"/>
-
-
-
-                    </svg>
-
-
-
-                    <span>Activation map will display following model analysis.</span>
-
-
-
-                  </div>
-
-
-
-                </div>
-
-
-
-                <!-- Colormap Legend -->
-
-
-
-                <div class="heatmap-legend">
-
-
-
-                  <span class="legend-label">0.0 (Min Saliency)</span>
-
-
-
-                  <div class="legend-bar"></div>
-
-
-
-                  <span class="legend-label">1.0 (Peak)</span>
-
-
-
-                </div>
-
-
-
-              </div>
-
-
-
-
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-
-        </section>
-
-
-
-
-
-
-
-        <!-- Section D: Analysis Details (4 Cards Grid) -->
-
-
-
-        <section class="details-grid" aria-label="Analysis Details" style="display: none;">
-
-
-
-
-
-
-
-          <!-- Card 1: Classification Results -->
-
-
-
-          <div class="card-section results-card">
-
-
-
-            <div class="results-header">
-
-
-
-              <span class="stat-label">Classification Results</span>
-
-
-
-              <div class="outcome-status-badge" id="result-badge" style="display: none;">
-
-
-
-                <span class="badge-icon" id="badge-icon"></span>
-
-
-
-                <span class="badge-text" id="badge-text">UNCERTIFIED</span>
-
-
-
-              </div>
-
-
-
-            </div>
-
-
-
-
-
-
-
-            <h3 id="result-label" class="outcome-heading">Awaiting Analysis</h3>
-
-
-
-
-
-
-
-            <!-- Horizontal Probability Meters -->
-
-
-
-            <div class="probability-instrument" aria-label="Class Confidence Probability Distribution">
-
-
-
-              <div class="class-readout-row">
-
-
-
-                <span class="class-name">Glioma Tumor</span>
-
-
-
-                <div class="meter-track">
-
-
-
-                  <div class="meter-fill fill-terracotta" id="bar-glioma"></div>
-
-
-
-                </div>
-
-
-
-                <span class="meter-val" id="pct-glioma">0.0%</span>
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <div class="class-readout-row">
-
-
-
-                <span class="class-name">Meningioma Tumor</span>
-
-
-
-                <div class="meter-track">
-
-
-
-                  <div class="meter-fill fill-amber" id="bar-meningioma"></div>
-
-
-
-                </div>
-
-
-
-                <span class="meter-val" id="pct-meningioma">0.0%</span>
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <div class="class-readout-row">
-
-
-
-                <span class="class-name">No Tumor (Normal)</span>
-
-
-
-                <div class="meter-track">
-
-
-
-                  <div class="meter-fill fill-sage" id="bar-notumor"></div>
-
-
-
-                </div>
-
-
-
-                <span class="meter-val" id="pct-notumor">0.0%</span>
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <div class="class-readout-row">
-
-
-
-                <span class="class-name">Pituitary Tumor</span>
-
-
-
-                <div class="meter-track">
-
-
-
-                  <div class="meter-fill fill-slate" id="bar-pituitary"></div>
-
-
-
-                </div>
-
-
-
-                <span class="meter-val" id="pct-pituitary">0.0%</span>
-
-
-
-              </div>
-
-
-
-            </div>
-
-
-
-
-
-
-
-            <div class="disclaimer-text">
-
-
-
-              For research purposes only. Not intended for clinical diagnosis.
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-
-          <!-- Card 2: Acquisition Metadata -->
-
-
-
-          <div class="card-section">
-
-
-
-            <h3 class="card-title">Acquisition Metadata</h3>
-
-
-
-            <p class="card-subtitle">Scan &amp; inference parameters</p>
-
-
-
-            <div class="kv-table">
-
-
-
-              <div class="kv-row"><span>Matrix Dim:</span> <strong id="meta-res">224 x 224 px</strong></div>
-
-
-
-              <div class="kv-row"><span>Color Space:</span> <strong id="meta-type">RGB (8-bit)</strong></div>
-
-
-
-              <div class="kv-row"><span>File Size:</span> <strong id="meta-size">0 KB</strong></div>
-
-
-
-              <div class="kv-row"><span>Latency:</span> <strong id="meta-time">-- ms</strong></div>
-
-
-
-              <div class="kv-row"><span>Colormap:</span> <strong>Inferno (Uniform)</strong></div>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-
-          <!-- Card 3: Saliency Coverage -->
-
-
-
-          <div class="card-section">
-
-
-
-            <h3 class="card-title">Saliency Coverage</h3>
-
-
-
-            <p class="card-subtitle">ROI activation geometry</p>
-
-
-
-            <div class="kv-table">
-
-
-
-              <div class="kv-row"><span>Coverage Area:</span> <strong id="metric-tumor-area" class="mono-readout">--</strong></div>
-
-
-
-              <div class="kv-row"><span>Peak Saliency:</span> <strong id="metric-peak-sal" class="mono-readout">--</strong></div>
-
-
-
-              <div class="kv-row"><span>Bounding Box:</span> <strong id="metric-bbox" class="mono-readout">--</strong></div>
-
-
-
-              <div class="kv-row"><span>Saliency Center:</span> <strong id="metric-center" class="mono-readout">--</strong></div>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-
-        </section>
-
-
-
-
-
-
-
-        <!-- Crosshair Inspector: Displayed as a single wide card, 3 columns inline -->
-
-
-
-        <section class="card-section crosshair-wide-card" aria-label="Crosshair Saliency Inspector" style="display: none;">
-
-
-
-          <div class="crosshair-wide-header">
-
-
-
-            <h3 class="card-title" style="margin-bottom: 2px;">Crosshair Inspector</h3>
-
-
-
-            <p class="card-subtitle" style="margin-bottom: 0;">Real-time synchronized point probe and activation localization</p>
-
-
-
-          </div>
-
-
-
-          <div class="crosshair-inline-columns">
-
-
-
-            <div class="crosshair-col">
-
-
-
-              <span class="xhair-label">Coordinates</span>
-
-
-
-              <strong id="insp-coords" class="xhair-val mono-readout">X: -- Y: --</strong>
-
-
-
-            </div>
-
-
-
-            <div class="crosshair-col">
-
-
-
-              <span class="xhair-label">Saliency Index</span>
-
-
-
-              <strong id="insp-val" class="xhair-val mono-readout">0.0000</strong>
-
-
-
-            </div>
-
-
-
-            <div class="crosshair-col">
-
-
-
-              <span class="xhair-label">Activation Zone</span>
-
-
-
-              <div>
-
-
-
-                <span id="insp-zone" class="zone-badge">QUIESCENT</span>
-
-
-
-              </div>
-
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-        </section>
-
-
-
-
-
-
-
+      <!-- TWO-COLUMN WORKSPACE GRID -->
+      <div class="mri-workspace-grid">
         
+        <!-- LEFT COLUMN: MEDICAL SCAN VIEWER & FILMSTRIP -->
+        <div class="cortia-card mri-viewer-card">
+          <!-- Top File Metadata Row -->
+          <div class="viewer-meta-row">
+            <span class="viewer-filename" id="viewer-filename">brain_scan_01.jpg</span>
+            <span class="viewer-filesize" id="viewer-filesize">24 KB</span>
+          </div>
 
+          <!-- Main Black Medical Viewer Box -->
+          <div class="medical-viewport-window" id="medical-viewport-window">
+            <div class="scan-image-wrapper">
+              <img id="img-original" class="scan-img-layer scan-img-base" src="/static/samples/slice_01.jpg" alt="Axial Brain MRI" />
+              <div id="wrapper-heat" class="heatmap-wrapper" style="display: none;">
+                <img id="img-heatmap" class="scan-img-layer scan-img-heat" src="" alt="" style="display: none;" />
+              </div>
+            </div>
 
+            <!-- Bottom-Right Viewport Controls Overlay -->
+            <div class="viewer-controls-overlay">
+              <button type="button" class="ctrl-btn" title="Zoom Out" aria-label="Zoom Out">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+              </button>
+              <button type="button" class="ctrl-btn" title="Zoom In" aria-label="Zoom In">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  <line x1="11" y1="8" x2="11" y2="14"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+              </button>
+              <button type="button" class="ctrl-btn" title="Fullscreen" aria-label="Fullscreen">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <polyline points="9 21 3 21 3 15"></polyline>
+                  <polyline points="21 14 21 20 15 20"></polyline>
+                  <polyline points="3 10 3 4 9 4"></polyline>
+                </svg>
+              </button>
+              <button type="button" class="ctrl-btn" id="btn-toggle-heatmap" title="Toggle Saliency Overlay" aria-label="Toggle Saliency Overlay">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
 
+          <!-- Bottom Filmstrip Slices Row -->
+          <div class="mri-filmstrip-row">
+            <div class="filmstrip-thumbnails" id="filmstrip-thumbnails">
+              <div class="thumb-slice active" data-src="/static/samples/slice_01.jpg" data-name="brain_scan_01.jpg" data-size="24 KB" title="Load Brain Scan 01">
+                <img src="/static/samples/slice_01.jpg" alt="Slice 1">
+              </div>
+              <div class="thumb-slice" data-src="/static/samples/slice_02.jpg" data-name="brain_scan_02.jpg" data-size="28 KB" title="Load Brain Scan 02">
+                <img src="/static/samples/slice_02.jpg" alt="Slice 2">
+              </div>
+              <div class="thumb-slice" data-src="/static/samples/slice_03.jpg" data-name="brain_scan_03.jpg" data-size="32 KB" title="Load Brain Scan 03">
+                <img src="/static/samples/slice_03.jpg" alt="Slice 3">
+              </div>
+              <div class="thumb-slice" data-src="/static/samples/slice_04.jpg" data-name="brain_scan_04.jpg" data-size="26 KB" title="Load Brain Scan 04">
+                <img src="/static/samples/slice_04.jpg" alt="Slice 4">
+              </div>
+            </div>
 
+            <!-- Add More Images Box -->
+            <button type="button" class="add-images-card" id="btn-add-images" title="Add More Images">
+              <div class="add-icon-circle">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#252B28" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+              </div>
+              <div class="add-text-wrap">
+                <span class="add-title">Add</span>
+                <span class="add-sub">More Images</span>
+              </div>
+            </button>
+          </div>
+        </div>
 
+        <!-- RIGHT COLUMN: ANALYSIS & FINDINGS CARD -->
+        <div class="cortia-card mri-analysis-card" id="mri-analysis-card">
+          <!-- Top Tab Navigation Pills -->
+          <nav class="analysis-tabs-nav" aria-label="Analysis Sections">
+            <button type="button" class="tab-pill active" data-tab="summary">Summary</button>
+            <button type="button" class="tab-pill" data-tab="findings">Findings</button>
+            <button type="button" class="tab-pill" data-tab="explanation">Explanation</button>
+            <button type="button" class="tab-pill" data-tab="record">Record</button>
+          </nav>
 
+          <!-- Card Content Body -->
+          <div class="analysis-card-body">
+            
+            <!-- STATE A: Awaiting Scan View (Visible by default until scan loaded) -->
+            <div class="awaiting-scan-view" id="awaiting-scan-view">
+              <div class="awaiting-graphic">
+                <svg class="awaiting-icon" viewBox="0 0 88 88" width="88" height="88">
+                  <circle cx="44" cy="44" r="42" fill="#F0F1E8"></circle>
+                  <!-- Document outline with dog-ear -->
+                  <path d="M30 22h18l14 14v30a3 3 0 0 1-3 3H30a3 3 0 0 1-3-3V25a3 3 0 0 1 3-3z" fill="none" stroke="#8A9188" stroke-width="2.2"></path>
+                  <polyline points="48 22 48 36 62 36" fill="none" stroke="#8A9188" stroke-width="2.2"></polyline>
+                  <!-- Brain silhouette watermark in document -->
+                  <circle cx="41" cy="48" r="6" fill="none" stroke="#A8AFA4" stroke-width="1.8"></circle>
+                  <circle cx="49" cy="48" r="6" fill="none" stroke="#A8AFA4" stroke-width="1.8"></circle>
+                  <line x1="45" y1="43" x2="45" y2="54" stroke="#A8AFA4" stroke-width="1.8"></line>
+                  <!-- Add badge at bottom right -->
+                  <circle cx="61" cy="61" r="11" fill="#FCFBF8" stroke="#8A9188" stroke-width="2"></circle>
+                  <line x1="61" y1="56" x2="61" y2="66" stroke="#3F775B" stroke-width="2.2" stroke-linecap="round"></line>
+                  <line x1="56" y1="61" x2="66" y2="61" stroke="#3F775B" stroke-width="2.2" stroke-linecap="round"></line>
+                </svg>
+              </div>
+              <h3 class="awaiting-title">Awaiting scan</h3>
+              <p class="awaiting-subtitle">Upload a brain MRI scan to run model analysis and view results here.</p>
+              <button type="button" class="btn-primary-dark" id="btn-upload-scan-hero">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Upload MRI Scan</span>
+              </button>
+            </div>
+
+            <!-- STATE B: Active Analysis & Results View (Shown when scan loaded or analyzed) -->
+            <div class="active-analysis-view" id="active-analysis-view">
+              <!-- Tab 1: Summary Pane -->
+              <div class="tab-pane active" id="pane-summary">
+                <div class="analysis-outcome-header">
+                  <div class="outcome-title-wrap">
+                    <span class="outcome-eyebrow">DIAGNOSTIC INFERENCE</span>
+                    <h2 class="outcome-main-title" id="val-diagnosis">READY FOR ANALYSIS</h2>
+                  </div>
+                  <div class="outcome-badge-wrap">
+                    <span class="badge-status badge-ready" id="badge-reliability">Awaiting Run</span>
+                  </div>
+                </div>
+
+                <!-- Probability Distribution Section -->
+                <div class="analysis-section-block">
+                  <div class="section-label-row">
+                    <span class="section-label">PROBABILITY DISTRIBUTION</span>
+                  </div>
+
+                  <div class="distribution-list">
+                    <div class="dist-row">
+                      <div class="dist-meta">
+                        <span class="dist-class">Glioma Tumor</span>
+                        <span class="dist-val" id="prob-glioma">0.0%</span>
+                      </div>
+                      <div class="dist-track">
+                        <div class="dist-fill fill-glioma" id="bar-glioma" style="width: 0%;"></div>
+                      </div>
+                    </div>
+
+                    <div class="dist-row">
+                      <div class="dist-meta">
+                        <span class="dist-class">Meningioma Tumor</span>
+                        <span class="dist-val" id="prob-meningioma">0.0%</span>
+                      </div>
+                      <div class="dist-track">
+                        <div class="dist-fill fill-meningioma" id="bar-meningioma" style="width: 0%;"></div>
+                      </div>
+                    </div>
+
+                    <div class="dist-row">
+                      <div class="dist-meta">
+                        <span class="dist-class">No Tumor (Normal)</span>
+                        <span class="dist-val" id="prob-normal">0.0%</span>
+                      </div>
+                      <div class="dist-track">
+                        <div class="dist-fill fill-normal" id="bar-normal" style="width: 0%;"></div>
+                      </div>
+                    </div>
+
+                    <div class="dist-row">
+                      <div class="dist-meta">
+                        <span class="dist-class">Pituitary Tumor</span>
+                        <span class="dist-val" id="prob-pituitary">0.0%</span>
+                      </div>
+                      <div class="dist-track">
+                        <div class="dist-fill fill-pituitary" id="bar-pituitary" style="width: 0%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Active Scan Status Banner -->
+                <div class="loaded-file-chip" id="loaded-file-chip">
+                  <span class="chip-text" id="chip-filename">FILE: brain_scan_01.jpg</span>
+                  <button type="button" class="btn-chip-clear" id="btn-clear-scan" title="Clear scan and return to awaiting view">&times;</button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="analysis-actions-stack">
+                  <button type="button" class="btn-primary-dark w-100" id="btn-analyse">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>Execute Inference</span>
+                  </button>
+                  <button type="button" class="btn-secondary-outline w-100" id="btn-export-pdf" disabled>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>Export Diagnostic Report</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tab 2: Findings Pane -->
+              <div class="tab-pane" id="pane-findings" style="display: none;">
+                <div class="findings-content-block">
+                  <h4 class="findings-header">Quantitative Lesion Metrics</h4>
+                  <div class="metrics-grid">
+                    <div class="metric-card">
+                      <span class="metric-lbl">Estimated Volume</span>
+                      <span class="metric-val" id="metric-vol">-- mm&sup3;</span>
+                    </div>
+                    <div class="metric-card">
+                      <span class="metric-lbl">Max Cross-Diameter</span>
+                      <span class="metric-val" id="metric-diam">-- mm</span>
+                    </div>
+                    <div class="metric-card">
+                      <span class="metric-lbl">Saliency Peak Focus</span>
+                      <span class="metric-val" id="metric-focus">--</span>
+                    </div>
+                    <div class="metric-card">
+                      <span class="metric-lbl">Segmentation Quality</span>
+                      <span class="metric-val" id="metric-quality">Research Grade</span>
+                    </div>
+                  </div>
+                  <div class="clinical-notes-card">
+                    <div class="notes-title">Clinical Research Notes</div>
+                    <p class="notes-body" id="findings-notes">Run model inference to generate automated clinical findings, feature density distribution, and focal lesion boundaries.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3: Explanation Pane -->
+              <div class="tab-pane" id="pane-explanation" style="display: none;">
+                <div class="explanation-content-block">
+                  <h4 class="findings-header">Grad-CAM Visual Attribution</h4>
+                  <p class="explanation-desc">Visual explanation highlight maps generated from the penultimate convolutional layers of EfficientNetV2-S showing focal feature weights.</p>
+                  <div class="explanation-attribution-box">
+                    <div class="attr-row">
+                      <span class="attr-name">Attribution Algorithm</span>
+                      <span class="attr-val">Grad-CAM++ (Gradient-weighted Class Activation Mapping)</span>
+                    </div>
+                    <div class="attr-row">
+                      <span class="attr-name">Target Layer</span>
+                      <span class="attr-val">top_conv (Conv2d 1280 channels)</span>
+                    </div>
+                    <div class="attr-row">
+                      <span class="attr-name">Resolution</span>
+                      <span class="attr-val">224 &times; 224 bicubic interpolation</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 4: Record Pane -->
+              <div class="tab-pane" id="pane-record" style="display: none;">
+                <div class="record-content-block">
+                  <h4 class="findings-header">Audit &amp; Telemetry Log</h4>
+                  <div class="audit-stream" id="audit-log-stream">
+                    <div class="audit-entry">
+                      <span class="audit-time">11:38:20</span>
+                      <span class="audit-text">Session initialized under research protocol v2.4</span>
+                    </div>
+                    <div class="audit-entry">
+                      <span class="audit-time">11:38:21</span>
+                      <span class="audit-text">Hardware acceleration verified: CUDA / CPU fallback ready</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
 
       </div>
 
-
-
-
-
-
-
-      <!-- Footer -->
-
-
-
-      <footer class="pacs-footer">
-
-
-
-        Brain Health Monitor System &bull; Clinical Research Workspace &bull; Not for clinical diagnosis
-
-
-
+      <!-- FOOTER -->
+      <footer class="cortia-page-footer">
+        <div class="footer-left">
+          <span>CORTIA | Brain Health Monitor System &bull; Research Use Only &bull; Not for clinical diagnosis</span>
+        </div>
+        <div class="footer-right">
+          <span>&copy; 2026 CORTIA. All rights reserved.</span>
+        </div>
       </footer>
 
-
-
     </main>
-
-
-
-
-
-
-
   </div>
-
-
-
-
-
-
-
-  <!-- Medical Diagnostic Report Modal -->
-
-
-
-  <div class="modal-backdrop" id="report-modal" style="display: none;" role="dialog" aria-modal="true">
-
-
-
-    <div class="modal-dialog">
-
-
-
-      <div class="modal-header-pacs">
-
-
-
-        <div>
-
-
-
-          <h3>Research Model Analysis Report</h3>
-
-
-
-          <span class="modal-sub">Brain Health Monitor System &bull; Experimental classifier output &bull; No clinical certification</span>
-
-
-
-        </div>
-
-
-
-        <button class="modal-close-btn" id="modal-close" aria-label="Close Report Modal">&times;</button>
-
-
-
-      </div>
-
-
-
-
-
-
-
-      <div class="modal-body-pacs" id="modal-body">
-
-
-
-        <div class="report-meta-grid">
-
-
-
-          <div><span class="lbl">Report ID:</span> <strong id="rep-id">—</strong></div>
-
-
-
-          <div><span class="lbl">Scan Timestamp:</span> <strong id="rep-date">--</strong></div>
-
-
-
-          <div><span class="lbl">Source Sequence:</span> <strong id="rep-file">--</strong></div>
-
-
-
-        </div>
-
-
-
-
-
-
-
-        <div class="report-box-findings">
-
-
-
-          <span class="lbl">Model Classification Output</span>
-
-
-
-          <div class="report-outcome-title" id="rep-outcome">Awaiting Analysis</div>
-
-
-
-          <div class="report-confidence">Primary Class Confidence: <strong id="rep-conf">0.0%</strong></div>
-
-
-
-        </div>
-
-
-
-
-
-
-
-        <div class="report-images-grid">
-
-
-
-          <div class="rep-img-box">
-
-
-
-            <span class="img-lbl">Uploaded MRI Scan</span>
-
-
-
-            <img id="rep-img-orig" alt="MRI Scan" />
-
-
-
-          </div>
-
-
-
-          <div class="rep-img-box">
-
-
-
-            <span class="img-lbl">Grad-CAM Inferno Saliency Map</span>
-
-
-
-            <img id="rep-img-heat" alt="Inferno Heatmap" />
-
-
-
-          </div>
-
-
-
-        </div>
-
-
-
-
-
-
-
-        <div class="report-signature-block">
-
-
-
-          <div>For research purposes only. Review findings with a qualified professional.</div>
-
-
-
-        </div>
-
-
-
-      </div>
-
-
-
-
-
-
-
-      <div class="modal-footer-pacs">
-
-
-
-        <button class="btn-pacs" id="btn-download-pdf">
-
-
-
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-
-
-
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-
-
-
-            <polyline points="7 10 12 15 17 10" />
-
-
-
-            <line x1="12" y1="15" x2="12" y2="3" />
-
-
-
-          </svg>
-
-
-
-          Download PDF Report
-
-
-
-        </button>
-
-
-
-        <button class="btn-pacs-secondary" onclick="window.print()">Print</button>
-
-
-
-        <button class="btn-pacs-secondary" id="modal-close-2">Close</button>
-
-
-
-      </div>
-
-
-
-    </div>
-
-
-
-  </div>
-
-
-
-
-
-
-
-  <script src="/static/js/app.js?v=20261025_rev6"></script>
-
-
-
-  <script src="/static/js/cortia-assistant.js"></script>
-
-
-
-  <script src="/static/js/companion-mode.js"></script>
-
-
-
-  <!-- Floating Ask CORTIA AI Button -->
-  <a href="/ai" class="cortia-ai-fab" title="Ask CORTIA AI Assistant">
-    <span class="fab-icon">✦</span>
-    <span>Ask CORTIA AI</span>
-  </a>
 
   <script>
     (function() {
-      document.addEventListener("DOMContentLoaded", function() {
-        var p = window.location.pathname.replace(/\/$/, '') || '/';
-        document.querySelectorAll('.sidebar a[data-path]').forEach(function(a) {
-          if (a.getAttribute('data-path') === p) {
-            a.classList.add('active');
-          } else {
-            a.classList.remove('active');
+      'use strict';
+      document.addEventListener('DOMContentLoaded', () => {
+        const fileInput = document.getElementById('file-input');
+        const btnTopUpload = document.getElementById('btn-top-upload');
+        const btnAddImages = document.getElementById('btn-add-images');
+        const btnHeroUpload = document.getElementById('btn-upload-scan-hero');
+        const card = document.getElementById('mri-analysis-card');
+        const viewerFilename = document.getElementById('viewer-filename');
+        const viewerFilesize = document.getElementById('viewer-filesize');
+        const chipFilename = document.getElementById('chip-filename');
+        const imgOrig = document.getElementById('img-original');
+        const imgHeat = document.getElementById('img-heatmap');
+        const wrapperHeat = document.getElementById('wrapper-heat');
+        const btnToggleHeat = document.getElementById('btn-toggle-heatmap');
+        const btnClear = document.getElementById('btn-clear-scan');
+
+        // Connect upload buttons to file input
+        [btnTopUpload, btnAddImages, btnHeroUpload].forEach(btn => {
+          if (btn && fileInput) {
+            btn.addEventListener('click', () => fileInput.click());
           }
         });
-        var titleEl = document.getElementById('topbar-title');
-        var badgeEl = document.getElementById('topbar-badge');
-        var subEl = document.getElementById('topbar-subtitle');
-        if (p === '/' || p === '/mri') {
-          if (titleEl) titleEl.textContent = 'MRI Analysis Dashboard';
-          if (badgeEl) badgeEl.textContent = 'Clinical PACS';
-          if (subEl) subEl.textContent = 'Clinical research environment • Not for diagnostic use';
-        } else if (p === '/eeg') {
-          if (titleEl) titleEl.textContent = 'EEG Signal Intelligence';
-          if (badgeEl) badgeEl.textContent = 'BioAmp EXG';
-          if (subEl) subEl.textContent = 'Physiological biopotential telemetry, spectral estimation • Simulated demo data';
-        } else if (p === '/insights') {
-          if (titleEl) titleEl.textContent = 'CORTIA Insights';
-          if (badgeEl) badgeEl.textContent = 'Explainable AI';
-          if (subEl) subEl.textContent = 'Visual explanations, biopotential feature extraction, and verifiable evaluation records';
-        } else if (p === '/ai') {
-          if (titleEl) titleEl.textContent = 'CORTIA AI';
-          if (badgeEl) badgeEl.textContent = 'Grounded Assistant';
-          if (subEl) subEl.textContent = 'Grounded in scientific literature, verified application state, and real telemetry records';
+
+        // Tab Switching in Right Card
+        const tabs = document.querySelectorAll('.analysis-tabs-nav .tab-pill');
+        const panes = {
+          summary: document.getElementById('pane-summary'),
+          findings: document.getElementById('pane-findings'),
+          explanation: document.getElementById('pane-explanation'),
+          record: document.getElementById('pane-record')
+        };
+
+        tabs.forEach(tab => {
+          tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.dataset.tab;
+            Object.keys(panes).forEach(k => {
+              if (panes[k]) panes[k].style.display = (k === target) ? 'block' : 'none';
+            });
+            // If user explicitly clicks tabs, activate analysis card
+            if (card) card.classList.add('is-active');
+          });
+        });
+
+        // Toggle heatmap overlay on/off
+        if (btnToggleHeat && wrapperHeat && imgHeat) {
+          btnToggleHeat.addEventListener('click', () => {
+            const isHidden = wrapperHeat.style.display === 'none' || imgHeat.style.display === 'none';
+            wrapperHeat.style.display = isHidden ? 'flex' : 'none';
+            imgHeat.style.display = isHidden ? 'block' : 'none';
+          });
+        }
+
+        // Filmstrip Thumbnail Click
+        const thumbs = document.querySelectorAll('.thumb-slice');
+        thumbs.forEach(thumb => {
+          thumb.addEventListener('click', async () => {
+            thumbs.forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+            const src = thumb.dataset.src;
+            const name = thumb.dataset.name || 'brain_scan.jpg';
+            const size = thumb.dataset.size || '24 KB';
+
+            if (viewerFilename) viewerFilename.textContent = name;
+            if (viewerFilesize) viewerFilesize.textContent = size;
+            if (chipFilename) chipFilename.textContent = 'FILE: ' + name;
+            if (imgOrig) imgOrig.src = src;
+
+            if (card) card.classList.add('is-active');
+
+            try {
+              const res = await fetch(src);
+              const blob = await res.blob();
+              const file = new File([blob], name, { type: blob.type || 'image/jpeg' });
+              
+              const dt = new DataTransfer();
+              dt.items.add(file);
+              if (fileInput) {
+                fileInput.files = dt.files;
+                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            } catch (err) {
+              console.log('Thumbnail fetch fallback', err);
+            }
+          });
+        });
+
+        // Listen for file changes to automatically switch view from awaiting to active
+        if (fileInput) {
+          fileInput.addEventListener('change', () => {
+            if (fileInput.files && fileInput.files.length > 0) {
+              const f = fileInput.files[0];
+              if (viewerFilename) viewerFilename.textContent = f.name;
+              if (viewerFilesize) viewerFilesize.textContent = (f.size / 1024).toFixed(1) + ' KB';
+              if (chipFilename) chipFilename.textContent = 'FILE: ' + f.name;
+              if (card) card.classList.add('is-active');
+            }
+          });
+        }
+
+        // Clear scan button resets to awaiting state
+        if (btnClear) {
+          btnClear.addEventListener('click', () => {
+            if (card) card.classList.remove('is-active');
+            if (fileInput) fileInput.value = '';
+          });
         }
       });
     })();
   </script>
-  <script defer src="/static/js/cortia-sidebar.js?v=20261026_rev1"></script>
 </body>
-
-
-
 </html>
-
-
-

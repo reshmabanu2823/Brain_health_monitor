@@ -1041,3 +1041,1161 @@ body.sidebar-open .sidebar {
   border-color: var(--cortia-red, #C94040);
   transform: scale(1.05);
 }
+
+/* ==========================================================================
+   CORTIA PERMANENT HORIZONTAL TOP NAVIGATION & REFERENCE DESIGN STYLES
+   Direct reproduction of the MediCluster reference design
+   ========================================================================== */
+
+/* Completely remove legacy hamburger button and sidebar drawer */
+#cortia-sidebar-toggle,
+.sidebar-toggle-btn,
+.sidebar-edge-fallback-btn,
+.sidebar,
+.neuro-rail,
+.sidebar-backdrop {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Base application wrapper: Full width, no left margin */
+.neuro-app, .app {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: var(--bg, #F7F6F0) !important;
+  overflow-x: hidden !important;
+}
+
+main.neuro-content, .main {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: var(--bg, #F7F6F0) !important;
+}
+
+/* ── Top Navigation Bar ── */
+.cortia-top-navbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 62px !important;
+  min-height: 62px !important;
+  background: var(--card, #FCFBF8) !important;
+  border-bottom: 1px solid var(--border, #E5E4DC) !important;
+  padding: 0 40px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+
+.cortia-nav-left {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+}
+
+.cortia-brand-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+}
+
+.cortia-brand-brain {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.cortia-brand-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.14em !important;
+  color: var(--ink, #252B28) !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+}
+
+.cortia-nav-center {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 auto !important;
+}
+
+.cortia-nav-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 7px 18px !important;
+  border-radius: 20px !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: var(--mid, #777D75) !important;
+  text-decoration: none !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.cortia-nav-item:hover {
+  color: var(--ink, #252B28) !important;
+  background: rgba(228, 233, 219, 0.45) !important;
+}
+
+.cortia-nav-item.active,
+body[data-page="mri"] .cortia-nav-item[data-page="mri"],
+body[data-page="eeg"] .cortia-nav-item[data-page="eeg"],
+body[data-page="ai"] .cortia-nav-item[data-page="ai"],
+body[data-page="overview"] .cortia-nav-item[data-page="overview"] {
+  background: var(--surface-sage, #E4E9DB) !important;
+  color: var(--ink, #252B28) !important;
+  font-weight: 600 !important;
+}
+
+.cortia-nav-right {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  gap: 20px !important;
+}
+
+.cortia-status-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--ink, #252B28) !important;
+  padding-right: 20px !important;
+  border-right: 1px solid var(--border, #E5E4DC) !important;
+}
+
+.status-dot-green {
+  width: 7px !important;
+  height: 7px !important;
+  border-radius: 50% !important;
+  background: #3F775B !important;
+  display: inline-block !important;
+}
+
+.cortia-user-profile {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+.cortia-user-avatar {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+  background: #D8DFD4 !important;
+  color: var(--ink, #252B28) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  letter-spacing: 0.04em !important;
+}
+
+.cortia-user-name {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--ink, #252B28) !important;
+}
+
+.cortia-chevron {
+  color: var(--mid, #777D75) !important;
+}
+
+/* ── Content Wrapper ── */
+.cortia-workspace-container {
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 32px 40px 48px 40px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 24px !important;
+}
+
+/* ── Page Header Section ── */
+.mri-page-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  width: 100% !important;
+}
+
+.mri-header-text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.mri-eyebrow {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: var(--mid, #777D75) !important;
+}
+
+.mri-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 34px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.15 !important;
+  color: var(--ink, #252B28) !important;
+  margin: 0 !important;
+}
+
+.mri-subtitle {
+  font-size: 13.5px !important;
+  color: var(--mid, #777D75) !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.mri-header-actions {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.btn-upload-images {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 16px !important;
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 8px !important;
+  color: var(--ink, #252B28) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px rgba(37, 43, 40, 0.04) !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-upload-images:hover {
+  background: var(--surface-alt, #F0F1E8) !important;
+  border-color: #D3D2C8 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Steps Progress Bar Card ── */
+.mri-steps-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 12px !important;
+  padding: 16px 28px !important;
+  box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
+  box-sizing: border-box !important;
+}
+
+.mri-step {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  flex: 1 !important;
+}
+
+.step-badge {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  background: var(--surface-alt, #F0F1E8) !important;
+  color: var(--mid, #777D75) !important;
+}
+
+.step-badge.step-1,
+.mri-step.active .step-badge {
+  background: #FAEDED !important;
+  color: var(--cortia-red, #C94040) !important;
+}
+
+.step-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+
+.step-heading {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--ink, #252B28) !important;
+  line-height: 1.2 !important;
+}
+
+.step-sub {
+  font-size: 11.5px !important;
+  color: var(--mid, #777D75) !important;
+  line-height: 1.2 !important;
+}
+
+.step-arrow {
+  margin-left: auto !important;
+  padding-right: 24px !important;
+  color: #C8CCC2 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+/* ── 2-Column Main Workspace Grid ── */
+.mri-workspace-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 24px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+@media (max-width: 1024px) {
+  .mri-workspace-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Left Column: Viewer Card ── */
+.mri-viewer-card {
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 16px !important;
+  gap: 16px !important;
+}
+
+.mri-viewer-container {
+  background: #141716 !important;
+  border-radius: 10px !important;
+  border: 1px solid #2A332E !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 420px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.viewer-top-meta {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 14px !important;
+  font-size: 11.5px !important;
+  color: #7A8580 !important;
+  font-family: 'Inter', monospace !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.viewer-canvas-area {
+  flex: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  min-height: 380px !important;
+  padding: 12px !important;
+}
+
+.viewer-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.scan-image, .heatmap-image {
+  max-width: 90% !important;
+  max-height: 360px !important;
+  object-fit: contain !important;
+  border-radius: 4px !important;
+  transition: transform 0.15s ease !important;
+}
+
+.viewer-placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+  font-size: 13px !important;
+}
+
+.viewer-controls-overlay {
+  position: absolute !important;
+  bottom: 12px !important;
+  right: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(20, 23, 22, 0.75) !important;
+  backdrop-filter: blur(4px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 3px 6px !important;
+  z-index: 10 !important;
+}
+
+.v-control-btn {
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  width: 26px !important;
+  height: 26px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+  transition: all 0.15s ease !important;
+}
+
+.v-control-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+}
+
+/* Filmstrip Below Viewer */
+.mri-filmstrip-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  overflow-x: auto !important;
+  padding-top: 4px !important;
+}
+
+.filmstrip-thumbnails {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.thumb-slice {
+  width: 58px !important;
+  height: 58px !important;
+  min-width: 58px !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  border: 1.5px solid var(--border, #E5E4DC) !important;
+  background: #141716 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.thumb-slice img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.thumb-slice:hover {
+  border-color: #777D75 !important;
+  transform: translateY(-1px) !important;
+}
+
+.thumb-slice.active {
+  border-color: var(--primary-dark, #192B23) !important;
+  box-shadow: 0 0 0 2px rgba(25, 43, 35, 0.2) !important;
+}
+
+.btn-add-more-images {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 58px !important;
+  padding: 0 14px !important;
+  border-radius: 8px !important;
+  border: 1px dashed #D3D2C8 !important;
+  background: var(--surface-alt, #F0F1E8) !important;
+  color: var(--ink, #252B28) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.btn-add-more-images:hover {
+  border-color: var(--cortia-red, #C94040) !important;
+  background: #EFEFE9 !important;
+}
+
+.plus-icon-circle {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  border: 1px solid #777D75 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  color: var(--ink, #252B28) !important;
+}
+
+.add-text {
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+  line-height: 1.15 !important;
+}
+
+.add-main {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+}
+
+.add-sub {
+  font-size: 10px !important;
+  color: var(--mid, #777D75) !important;
+}
+
+/* ── Right Column: Analysis & Findings Card ── */
+.mri-analysis-card {
+  background: var(--card, #FCFBF8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(37, 43, 40, 0.04) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 20px 24px !important;
+  gap: 20px !important;
+}
+
+.analysis-tabs-nav {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border-bottom: 1px solid var(--border-subtle, #ECEBE3) !important;
+  padding-bottom: 14px !important;
+}
+
+.tab-pill {
+  background: transparent !important;
+  border: none !important;
+  padding: 6px 18px !important;
+  border-radius: 16px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--mid, #777D75) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.tab-pill:hover {
+  color: var(--ink, #252B28) !important;
+}
+
+.tab-pill.active {
+  background: var(--primary-dark, #192B23) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+
+.analysis-card-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Awaiting Scan Empty State (Matches Reference) */
+.awaiting-scan-view {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 40px 20px !important;
+  margin: auto !important;
+  max-width: 360px !important;
+}
+
+.awaiting-graphic {
+  margin-bottom: 20px !important;
+}
+
+.awaiting-title {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: var(--ink, #252B28) !important;
+  margin: 0 0 8px 0 !important;
+}
+
+.awaiting-subtitle {
+  font-size: 13px !important;
+  color: var(--mid, #777D75) !important;
+  line-height: 1.5 !important;
+  margin: 0 0 24px 0 !important;
+}
+
+.btn-primary-dark {
+  background: var(--primary-dark, #192B23) !important;
+  color: #FFFFFF !important;
+  border: 1px solid #192B23 !important;
+  border-radius: 8px !important;
+  padding: 10px 24px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(25, 43, 35, 0.08) !important;
+}
+
+.btn-primary-dark:hover {
+  background: #253C32 !important;
+  border-color: #253C32 !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-primary-dark.w-100 {
+  width: 100% !important;
+}
+
+/* Active Analysis View */
+.active-analysis-view {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
+
+.analysis-outcome-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  border-bottom: 1px solid var(--border-subtle, #ECEBE3) !important;
+  padding-bottom: 14px !important;
+}
+
+.outcome-title-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+.outcome-eyebrow {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--mid, #777D75) !important;
+}
+
+.outcome-label {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: var(--ink, #252B28) !important;
+  margin: 0 !important;
+}
+
+.outcome-status-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 3px 10px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.outcome-status-badge.flag-positive {
+  background: #FAEDED !important;
+  color: var(--cortia-red, #C94040) !important;
+}
+
+.outcome-status-badge.flag-negative {
+  background: #EAF2ED !important;
+  color: #3F775B !important;
+}
+
+/* Probability Distribution */
+.probability-distribution {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.dist-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  color: var(--mid, #777D75) !important;
+  margin-bottom: 2px !important;
+}
+
+.dist-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.dist-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  font-size: 12.5px !important;
+  color: var(--ink, #252B28) !important;
+  font-weight: 500 !important;
+}
+
+.dist-track {
+  width: 100% !important;
+  height: 6px !important;
+  border-radius: 3px !important;
+  background: var(--surface-alt, #F0F1E8) !important;
+  overflow: hidden !important;
+}
+
+.dist-fill {
+  height: 100% !important;
+  border-radius: 3px !important;
+  background: var(--cortia-red, #C94040) !important;
+  width: 0%;
+  transition: width 0.4s ease !important;
+}
+
+.file-action-row {
+  margin-top: 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.file-badge {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  background: var(--surface-alt, #F0F1E8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  font-size: 11.5px !important;
+  color: var(--ink, #252B28) !important;
+}
+
+.btn-clear-scan {
+  background: transparent !important;
+  border: none !important;
+  font-size: 16px !important;
+  color: var(--mid, #777D75) !important;
+  cursor: pointer !important;
+}
+
+/* Findings tab grid */
+.findings-metric-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin-top: 8px !important;
+}
+
+.metric-box {
+  background: var(--surface-alt, #F0F1E8) !important;
+  border: 1px solid var(--border, #E5E4DC) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.m-box-label {
+  font-size: 10.5px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  color: var(--mid, #777D75) !important;
+}
+
+.m-box-val {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: var(--ink, #252B28) !important;
+}
+
+/* Record tab list */
+.record-meta-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-top: 8px !important;
+}
+
+.meta-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid var(--border-subtle, #ECEBE3) !important;
+  font-size: 12px !important;
+}
+
+.meta-row .m-k {
+  color: var(--mid, #777D75) !important;
+}
+
+.meta-row .m-v {
+  font-weight: 600 !important;
+  color: var(--ink, #252B28) !important;
+}
+
+.explanation-note {
+  font-size: 13px !important;
+  color: var(--mid, #777D75) !important;
+  line-height: 1.5 !important;
+  margin-top: 8px !important;
+}
+
+/* ── App Footer ── */
+.cortia-app-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 24px 40px !important;
+  border-top: 1px solid var(--border, #E5E4DC) !important;
+  font-size: 11.5px !important;
+  color: var(--mid, #777D75) !important;
+  background: var(--bg, #F7F6F0) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.footer-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.footer-sep {
+  color: #C8CCC2 !important;
+}
+
+.footer-right {
+  color: var(--mid, #777D75) !important;
+}
+
+
+/* --- REFERENCE DESIGN PIXEL REFINEMENTS --- */
+
+/* Brand & Navbar */
+.cortia-brand-brain {
+  width: 26px !important;
+  height: 26px !important;
+  object-fit: contain !important;
+}
+.cortia-brand-text {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+  letter-spacing: 2px !important;
+  color: #252B28 !important;
+}
+
+/* Hide all floating assistant launcher and bubbles */
+#cortia-assistant-launcher, .cortia-assistant-launcher, .assistant-bubble, 
+.companion-fab, .cortia-assistant-modal, #cortia-ai-fab {
+  display: none !important;
+}
+
+/* Analysis Card Tabs Pill Container */
+.analysis-tabs-nav {
+  display: flex !important;
+  background: #F0F1E8 !important;
+  border-radius: 999px !important;
+  padding: 4px !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+  border: none !important;
+  margin-bottom: 24px !important;
+}
+
+.analysis-tabs-nav .tab-pill {
+  background: transparent !important;
+  border: none !important;
+  color: #777D75 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 6px 20px !important;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex: 1 !important;
+  text-align: center !important;
+}
+
+.analysis-tabs-nav .tab-pill.active {
+  background: #192B23 !important;
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+}
+
+/* Analysis Card State Management */
+.analysis-card-body {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.awaiting-scan-view {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 50px 24px 30px !important;
+  min-height: 440px !important;
+}
+
+.active-analysis-view {
+  display: none !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  padding: 4px 0 !important;
+}
+
+/* Mutual exclusivity via .is-active on parent */
+.mri-analysis-card.is-active .awaiting-scan-view {
+  display: none !important;
+}
+
+.mri-analysis-card.is-active .active-analysis-view {
+  display: flex !important;
+}
+
+/* Viewer Controls Overlay */
+.viewer-controls-overlay {
+  position: absolute !important;
+  bottom: 16px !important;
+  right: 16px !important;
+  background: rgba(30, 35, 32, 0.75) !important;
+  backdrop-filter: blur(4px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  z-index: 10 !important;
+}
+
+.ctrl-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #A0A69D !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.15s ease !important;
+}
+
+.ctrl-btn:hover {
+  color: #FFFFFF !important;
+}
+
+
+/* --- VIEWER & FILMSTRIP EXACT PROPORTIONS --- */
+.mri-viewer-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 560px !important;
+}
+
+.viewer-meta-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 12px !important;
+  width: 100% !important;
+}
+
+.viewer-filename, .viewer-filesize {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #777D75 !important;
+}
+
+.medical-viewport-window {
+  position: relative !important;
+  width: 100% !important;
+  height: 440px !important;
+  background: #141716 !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.scan-image-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.scan-img-layer {
+  max-width: 90% !important;
+  max-height: 90% !important;
+  object-fit: contain !important;
+  border-radius: 4px !important;
+  display: block !important;
+}
+
+.viewer-controls-overlay {
+  position: absolute !important;
+  bottom: 14px !important;
+  right: 14px !important;
+  background: rgba(30, 35, 32, 0.75) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 6px !important;
+  padding: 5px 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  z-index: 10 !important;
+}
+
+.mri-filmstrip-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin-top: 16px !important;
+  width: 100% !important;
+}
+
+.filmstrip-thumbnails {
+  display: flex !important;
+  gap: 10px !important;
+  flex-shrink: 0 !important;
+}
+
+.thumb-slice {
+  width: 74px !important;
+  height: 74px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  border: 2px solid transparent !important;
+  background: #000000 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.thumb-slice.active {
+  border-color: #252B28 !important;
+  box-shadow: 0 0 0 1px #E5E4DC !important;
+}
+
+.thumb-slice img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.add-images-card {
+  height: 74px !important;
+  padding: 0 16px !important;
+  background: #F0F1E8 !important;
+  border: 1px dashed #D3D8CB !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.add-images-card:hover {
+  background: #E4E9DB !important;
+}
+
+.add-icon-circle {
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.add-text-wrap {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  line-height: 1.2 !important;
+}
+
+.add-title {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #252B28 !important;
+}
+
+.add-sub {
+  font-size: 11px !important;
+  color: #777D75 !important;
+}
+
+.btn-top-upload {
+  background: transparent !important;
+  border: 1px solid #D0D4CB !important;
+  border-radius: 8px !important;
+  padding: 8px 18px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #252B28 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+.btn-top-upload:hover {
+  background: #EAECE2 !important;
+  border-color: #B5BDB0 !important;
+}
