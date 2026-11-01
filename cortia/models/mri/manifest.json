@@ -1,0 +1,27 @@
+{
+  "source": "https://github.com/reshmabanu2823/Brain_health_monitor",
+  "source_commit": "84af19c0260b995add9f93ba3c84cb402f7920c6",
+  "architecture": "MobileNetV2 feature extractor, global average pooling, dense classifier",
+  "preprocessing": "legacy_rgb_0_1",
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "artifact_hashes": {
+    "brain_tumor_model.tflite": "c034cd57128e44e408587973d9f54da1838acade845236c9580316efbe0b036e",
+    "best_model.h5": "c07d7f794f07672eb32338cb6418d1cb00c508c23064bb83a5cccdc10026d7d7",
+    "class_indices.json": "4efcffb2c97452773255594472c2176e26e3876772eeea1b8b7214e9bdceb7a1"
+  },
+  "limitations": [
+    "Four-class image classifier only; not lesion segmentation or general brain-health diagnosis.",
+    "No verified clinical performance or out-of-distribution rejection. Scores are not calibrated clinical confidence."
+  ]
+}

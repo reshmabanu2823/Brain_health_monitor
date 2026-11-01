@@ -1,0 +1,31 @@
+{
+  "kind": "accelerated_test_fixture_soak",
+  "physical_hardware_test": false,
+  "limitation": "Generated packets exist only in temporary test directories; not real EEG, real-time serial throughput, or physical signal validation.",
+  "results": [
+    {
+      "sampling_hz": 250,
+      "fixture_minutes": 60,
+      "sample_count": 900000,
+      "valid_windows": 450,
+      "raw_bytes": 42871993,
+      "database_bytes_including_wal": 9883320,
+      "elapsed_seconds": 13.189349087999858,
+      "samples_per_wall_second": 68236.87764992529,
+      "peak_process_rss_kib": 152808,
+      "all_integrity_checks_pass": true
+    },
+    {
+      "sampling_hz": 500,
+      "fixture_minutes": 60,
+      "sample_count": 1800000,
+      "valid_windows": 450,
+      "raw_bytes": 86661519,
+      "database_bytes_including_wal": 9846432,
+      "elapsed_seconds": 20.469675715999983,
+      "samples_per_wall_second": 87934.9543673055,
+      "peak_process_rss_kib": 153064,
+      "all_integrity_checks_pass": true
+    }
+  ]
+}

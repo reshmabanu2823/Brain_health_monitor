@@ -1,0 +1,171 @@
+{
+  "verified_images": 9,
+  "class_agreement": true,
+  "max_absolute_probability_difference": 8.367681542387206e-07,
+  "model_sha256": "bea0d73e4a9a6e5be4e68fa87bca718d04c9d1c7b9a7c61d9e89548a132d64be",
+  "limitation": "Software export parity and saliency only; not clinical performance or generalization.",
+  "images": [
+    {
+      "image": "N1.JPG",
+      "sha256": "1a7acec452891038ede718862dddf209915a51deb0ac3718948c235519adc94b",
+      "keras_probabilities": [
+        0.029134517535567284,
+        0.020087119191884995,
+        0.916558563709259,
+        0.03421971946954727
+      ],
+      "tflite_probabilities": [
+        0.02913455373983515,
+        0.020087125341048243,
+        0.9165585893176101,
+        0.034219731601506424
+      ],
+      "max_absolute_probability_difference": 3.6204267864908823e-08,
+      "gradcam_available": true
+    },
+    {
+      "image": "image(1).jpg",
+      "sha256": "37462cc70ce94a639e5f567e7f646471c68c66e685eb9fc000c66c3588def449",
+      "keras_probabilities": [
+        0.8714926242828369,
+        0.07582125812768936,
+        0.027533257380127907,
+        0.02515292912721634
+      ],
+      "tflite_probabilities": [
+        0.871492871274614,
+        0.07582104054183457,
+        0.027533205517371432,
+        0.025152882666180043
+      ],
+      "max_absolute_probability_difference": 2.469917770309138e-07,
+      "gradcam_available": true
+    },
+    {
+      "image": "image(10).jpg",
+      "sha256": "3762d2449d141b9e5668215c4ee685d132b021faefa59e6510ed5b21d152086b",
+      "keras_probabilities": [
+        0.8226163387298584,
+        0.10742108523845673,
+        0.0323832705616951,
+        0.03757927939295769
+      ],
+      "tflite_probabilities": [
+        0.8226159674645942,
+        0.10742138926431849,
+        0.03238332452531855,
+        0.037579318745768746
+      ],
+      "max_absolute_probability_difference": 3.712652641985059e-07,
+      "gradcam_available": true
+    },
+    {
+      "image": "image(1).jpg",
+      "sha256": "32e58268a4a9d3f82caec378c1065311360f4212c2ab72a1ca6f1ef8ffcca92b",
+      "keras_probabilities": [
+        0.030616773292422295,
+        0.9258139729499817,
+        0.022133637219667435,
+        0.021435489878058434
+      ],
+      "tflite_probabilities": [
+        0.03061663494342991,
+        0.9258142554530346,
+        0.022133634985978316,
+        0.021435474617557095
+      ],
+      "max_absolute_probability_difference": 2.825030529507444e-07,
+      "gradcam_available": true
+    },
+    {
+      "image": "image(10).jpg",
+      "sha256": "39cabdc25d698ca1fbb4db79efa72184c0f92d854c553ee098d74ccbcfa38fef",
+      "keras_probabilities": [
+        0.6854496002197266,
+        0.2472972571849823,
+        0.03664607182145119,
+        0.0306070726364851
+      ],
+      "tflite_probabilities": [
+        0.6854504283009989,
+        0.24729642041682806,
+        0.0366460454031262,
+        0.0306071058790469
+      ],
+      "max_absolute_probability_difference": 8.367681542387206e-07,
+      "gradcam_available": true
+    },
+    {
+      "image": "image(1).jpg",
+      "sha256": "3a4344d358c8faf37824a990ee88b70b6af511ac1925c3d96a831dc579d620db",
+      "keras_probabilities": [
+        0.05276022478938103,
+        0.04161016643047333,
+        0.8745955228805542,
+        0.031034093350172043
+      ],
+      "tflite_probabilities": [
+        0.05276020166055495,
+        0.041610138953298646,
+        0.8745955717523902,
+        0.03103408763375623
+      ],
+      "max_absolute_probability_difference": 4.8871836022534865e-08,
+      "gradcam_available": true
+    },
+    {
+      "image": "image(10).jpg",
+      "sha256": "9af05acd768793e89fc6776c3af838b0bf0747cfc3a3737e1cd3af44ea09c930",
+      "keras_probabilities": [
+        0.026752544566988945,
+        0.02098838984966278,
+        0.9286931157112122,
+        0.023565908893942833
+      ],
+      "tflite_probabilities": [
+        0.02675255840279336,
+        0.020988405376327197,
+        0.9286931433884246,
+        0.023565892832454825
+      ],
+      "max_absolute_probability_difference": 2.767721241081489e-08,
+      "gradcam_available": true
+    },
+    {
+      "image": "image(1).jpg",
+      "sha256": "f9d0258b9e93c970f46574f7f76ac449b80479c91603e7398690689bc63e73b8",
+      "keras_probabilities": [
+        0.01911739818751812,
+        0.049310352653265,
+        0.01680893823504448,
+        0.9147633910179138
+      ],
+      "tflite_probabilities": [
+        0.019117349651917723,
+        0.04931025552017471,
+        0.016808889712343608,
+        0.9147635051155639
+      ],
+      "max_absolute_probability_difference": 1.140976501057267e-07,
+      "gradcam_available": true
+    },
+    {
+      "image": "image(10).jpg",
+      "sha256": "6a73e6f4251e3cd88d5af71216fbddf9e8b44037ede1eb7ae70d3a9c42fba9b9",
+      "keras_probabilities": [
+        0.019356217235326767,
+        0.017561666667461395,
+        0.016451286152005196,
+        0.9466308355331421
+      ],
+      "tflite_probabilities": [
+        0.019356189644038742,
+        0.017561657843013053,
+        0.01645127182648812,
+        0.9466308806864601
+      ],
+      "max_absolute_probability_difference": 4.515331797350086e-08,
+      "gradcam_available": true
+    }
+  ]
+}

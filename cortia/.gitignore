@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.pytest_cache/
+node_modules/
+frontend/dist/
+data/
+.env
+models/**/*.h5
+models/**/*.tflite
+.superpowers/
+*.egg-info/
+frontend/test-results/
+frontend/playwright-report/
+*.tsbuildinfo

@@ -1,0 +1,23 @@
+{
+  "same_verified_image_count": 314,
+  "candidate_newly_correct": 39,
+  "candidate_newly_wrong": 22,
+  "models": {
+    "baseline": {
+      "accuracy": 0.7547770700636943,
+      "macro_f1": 0.7066500615157927,
+      "model_sha256": "19917cd19886162798d23aaa6b184effcf4804cd4578fac210b3eb2dd75826a1",
+      "tumor_labeled_images_predicted_no_tumor": 23,
+      "no_tumor_labeled_images_predicted_tumor": 1
+    },
+    "candidate": {
+      "accuracy": 0.8089171974522293,
+      "macro_f1": 0.7976419497018408,
+      "model_sha256": "bea0d73e4a9a6e5be4e68fa87bca718d04c9d1c7b9a7c61d9e89548a132d64be",
+      "tumor_labeled_images_predicted_no_tumor": 25,
+      "no_tumor_labeled_images_predicted_tumor": 12
+    }
+  },
+  "decision": "Candidate remains experimental. Four-class gains come with worse tumor/no-tumor label errors; no automatic promotion.",
+  "limitation": "Reused repository benchmark only; no independent clinical validation or patient independence."
+}
