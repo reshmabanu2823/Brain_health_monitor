@@ -1,0 +1,99 @@
+{
+  "manifest_sha256": "40e566e59598a8dac6d7e8668cc274fe6d7e754faadbe118c52fddffc55077a4",
+  "scope": "Recorded training/validation/test manifest integrity only; no clinical or patient-independence claim.",
+  "splits": {
+    "train": {
+      "records": 6862,
+      "unique_hashes": 6862,
+      "duplicate_hash_count": 0,
+      "files_verified": 2238,
+      "class_counts": {
+        "glioma_tumor": 3987,
+        "meningioma_tumor": 1209,
+        "pituitary_tumor": 1381,
+        "no_tumor": 285
+      },
+      "known_patient_identifier_count": 756,
+      "records_without_patient_identifiers": 2238,
+      "known_validation_clusters": 1205,
+      "records_without_validation_cluster": 2224,
+      "file_failures_count": 4624,
+      "failure_reasons": {
+        "missing": 4624
+      },
+      "unavailable_source_groups": {
+        "/home/vinay/datasets_extra/cheng/images": 2400,
+        "/home/vinay/datasets_extra/brats2023_gli/images_filtered": 2224
+      }
+    },
+    "validation": {
+      "records": 1168,
+      "unique_hashes": 1168,
+      "duplicate_hash_count": 0,
+      "files_verified": 562,
+      "class_counts": {
+        "glioma_tumor": 448,
+        "meningioma_tumor": 302,
+        "pituitary_tumor": 345,
+        "no_tumor": 73
+      },
+      "known_patient_identifier_count": 45,
+      "records_without_patient_identifiers": 562,
+      "known_validation_clusters": 291,
+      "records_without_validation_cluster": 0,
+      "file_failures_count": 606,
+      "failure_reasons": {
+        "missing": 606
+      },
+      "unavailable_source_groups": {
+        "/home/vinay/datasets_extra/cheng/images": 606
+      }
+    },
+    "test": {
+      "records": 314,
+      "unique_hashes": 314,
+      "duplicate_hash_count": 0,
+      "files_verified": 314,
+      "class_counts": {
+        "glioma_tumor": 84,
+        "meningioma_tumor": 113,
+        "no_tumor": 81,
+        "pituitary_tumor": 36
+      },
+      "known_patient_identifier_count": 0,
+      "records_without_patient_identifiers": 314,
+      "known_validation_clusters": 0,
+      "records_without_validation_cluster": 314,
+      "file_failures_count": 0,
+      "failure_reasons": {},
+      "unavailable_source_groups": {}
+    }
+  },
+  "recorded_overlaps": {
+    "train_validation": {
+      "image_hashes": 0,
+      "patient_identifiers": 0,
+      "validation_clusters": 0
+    },
+    "train_test": {
+      "image_hashes": 0,
+      "patient_identifiers": 0,
+      "validation_clusters": 0
+    },
+    "validation_test": {
+      "image_hashes": 0,
+      "patient_identifiers": 0,
+      "validation_clusters": 0
+    }
+  },
+  "elapsed_seconds": 0.7002227460002359,
+  "limitations": [
+    "Patient IDs are absent for some images. Zero observed identifier overlap is not proof of patient independence.",
+    "Validation-cluster similarity screening is heuristic and not proof of independent subjects.",
+    "The original Testing cohort has been reused during model development."
+  ],
+  "source_manifest_byte_hash_matches_experiment": false,
+  "archived_manifest_sha256": "22c5f0bb40975c4b3fadaf5eaf3facdcd9e16b9532117dd466eec1081f9bf0d0",
+  "archived_manifest_byte_hash_matches_experiment": true,
+  "source_and_archived_manifest_parsed_content_identical": true
+}

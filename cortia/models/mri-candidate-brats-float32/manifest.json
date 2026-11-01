@@ -1,0 +1,129 @@
+{
+  "source": "https://github.com/reshmabanu2823/Brain_health_monitor",
+  "source_commit": "84af19c0260b995add9f93ba3c84cb402f7920c6",
+  "source_artifact_subdirectory": "model_candidate_eff_brats",
+  "source_artifacts_in_commit": true,
+  "source_metadata_sha256": "11ca381838a21ef023aa5ed33f3b3367d856e48423cebab08d2dd58472be48b4",
+  "architecture": "efficientnetv2s",
+  "preprocessing": "mobilenet_v2",
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "artifact_hashes": {
+    "best_model.h5": "fefa1713809bb43f1990e7ceeb71e41542457b31c0770678c64f17c5f227c0aa",
+    "brain_tumor_model.tflite": "bea0d73e4a9a6e5be4e68fa87bca718d04c9d1c7b9a7c61d9e89548a132d64be",
+    "class_indices.json": "4efcffb2c97452773255594472c2176e26e3876772eeea1b8b7214e9bdceb7a1"
+  },
+  "experimental_candidate": true,
+  "limitations": [
+    "Four-class image classifier only; not lesion segmentation or general brain-health diagnosis.",
+    "No verified clinical performance or out-of-distribution rejection. Scores are not calibrated clinical confidence.",
+    "Experimental source candidate. Recorded image grouping does not prove cross-source patient independence.",
+    "The repository test set has been reused during development; benchmark gains are not independent clinical validation."
+  ],
+  "training_provenance": {
+    "training_metadata": {
+      "created": "2026-10-15T15:17:26.433658+00:00",
+      "seed": 42,
+      "backbone": "efficientnetv2s",
+      "fine_tune_layers": 0,
+      "fine_tune_lr": 5e-05,
+      "label_smoothing": 0.1,
+      "validation_grouping": {
+        "method": "connected_components_dhash_and_patient",
+        "max_hash_distance": 3,
+        "clusters": 1496,
+        "largest_cluster": 134,
+        "cross_label_clusters": 4,
+        "class_counts": {
+          "train": {
+            "glioma_tumor": 1763,
+            "meningioma_tumor": 1209,
+            "no_tumor": 285,
+            "pituitary_tumor": 1381
+          },
+          "validation": {
+            "glioma_tumor": 448,
+            "meningioma_tumor": 302,
+            "no_tumor": 73,
+            "pituitary_tumor": 345
+          }
+        },
+        "extension": "Original grouped validation/test kept identical; screened BraTS patients appended only to training"
+      },
+      "best_validation_loss": 0.45626094937324524,
+      "split_counts": {
+        "train": 6862,
+        "validation": 1168,
+        "test": 314
+      },
+      "tensorflow": "2.21.0"
+    },
+    "dataset_manifest_file": "evaluation-manifest.json",
+    "dataset_manifest_sha256": "22c5f0bb40975c4b3fadaf5eaf3facdcd9e16b9532117dd466eec1081f9bf0d0",
+    "dataset_manifest_matches_experiment": true,
+    "source_manifest_sha256": "40e566e59598a8dac6d7e8668cc274fe6d7e754faadbe118c52fddffc55077a4",
+    "experiment_sha256": "50a21ccb152faceaaff12befdd2815870a8e6027aeda8caeda1615cfc6a300e6",
+    "source_promoted": false
+  },
+  "derivation": {
+    "method": "TFLiteConverter.from_keras_model; float32; optimizations=[]; no training",
+    "source_artifact_hashes": {
+      "brain_tumor_model.tflite": "f122f7178b82759d08c259374652d27da9317f55d8de62deffaec4c99e0926e2",
+      "best_model.h5": "fefa1713809bb43f1990e7ceeb71e41542457b31c0770678c64f17c5f227c0aa",
+      "class_indices.json": "4efcffb2c97452773255594472c2176e26e3876772eeea1b8b7214e9bdceb7a1"
+    },
+    "tensorflow_version": "2.21.0",
+    "keras_version": "3.15.1",
+    "parity_tolerance": 0.001
+  },
+  "evaluation": {
+    "report": "docs/benchmarks/2026-11-01-mri-candidate-brats.json",
+    "report_sha256": "80a98b0bfc415ba112d3a75f8e7f0fd2cad0cf307c5d2a70e6d5b6d87695997e",
+    "sample_count": 314,
+    "accuracy": 0.8089171974522293,
+    "macro_f1": 0.7976419497018408,
+    "per_class": {
+      "glioma_tumor": {
+        "precision": 0.819672131147541,
+        "recall": 0.5952380952380952,
+        "f1": 0.689655172413793,
+        "support": 84
+      },
+      "meningioma_tumor": {
+        "precision": 0.8739495798319328,
+        "recall": 0.9203539823008849,
+        "f1": 0.8965517241379309,
+        "support": 113
+      },
+      "no_tumor": {
+        "precision": 0.7340425531914894,
+        "recall": 0.8518518518518519,
+        "f1": 0.7885714285714285,
+        "support": 81
+      },
+      "pituitary_tumor": {
+        "precision": 0.775,
+        "recall": 0.8611111111111112,
+        "f1": 0.8157894736842106,
+        "support": 36
+      }
+    },
+    "independent_clinical_validation": false,
+    "limitations": [
+      "Experimental candidate benchmark: 80.9% four-class accuracy on 314 reused repository images; not independent clinical validation.",
+      "Tradeoff against baseline: no-tumor recall falls from 98.8% to 85.2%; no-tumor images predicted as tumor increase from 1/81 to 12/81.",
+      "Tumor-labeled images predicted as no tumor increase from 23/233 to 25/233 despite higher four-class accuracy.",
+      "Training cannot be fully reproduced here: 5230 recorded training/validation image files are unavailable; test patient identities are unknown."
+    ]
+  }
+}

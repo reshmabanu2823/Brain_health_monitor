@@ -1,0 +1,77 @@
+{
+  "source": "https://github.com/reshmabanu2823/Brain_health_monitor",
+  "source_commit": "84af19c0260b995add9f93ba3c84cb402f7920c6",
+  "architecture": "MobileNetV2 feature extractor, global average pooling, dense classifier",
+  "preprocessing": "legacy_rgb_0_1",
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "classes": [
+    "glioma_tumor",
+    "meningioma_tumor",
+    "no_tumor",
+    "pituitary_tumor"
+  ],
+  "artifact_hashes": {
+    "best_model.h5": "c07d7f794f07672eb32338cb6418d1cb00c508c23064bb83a5cccdc10026d7d7",
+    "brain_tumor_model.tflite": "19917cd19886162798d23aaa6b184effcf4804cd4578fac210b3eb2dd75826a1",
+    "class_indices.json": "4efcffb2c97452773255594472c2176e26e3876772eeea1b8b7214e9bdceb7a1"
+  },
+  "limitations": [
+    "Four-class image classifier only; not lesion segmentation or general brain-health diagnosis.",
+    "No verified clinical performance or out-of-distribution rejection. Scores are not calibrated clinical confidence."
+  ],
+  "derivation": {
+    "method": "TFLiteConverter.from_keras_model; float32; optimizations=[]; no training",
+    "source_artifact_hashes": {
+      "brain_tumor_model.tflite": "c034cd57128e44e408587973d9f54da1838acade845236c9580316efbe0b036e",
+      "best_model.h5": "c07d7f794f07672eb32338cb6418d1cb00c508c23064bb83a5cccdc10026d7d7",
+      "class_indices.json": "4efcffb2c97452773255594472c2176e26e3876772eeea1b8b7214e9bdceb7a1"
+    },
+    "tensorflow_version": "2.21.0",
+    "keras_version": "3.15.1",
+    "parity_tolerance": 0.001
+  },
+  "evaluation": {
+    "report": "docs/benchmarks/2026-11-01-mri.json",
+    "report_sha256": "0c833332a6198542dfa7f1888938c7f94e6421c6bce96b889fab2f64d29233b5",
+    "sample_count": 314,
+    "accuracy": 0.7547770700636943,
+    "macro_f1": 0.7066500615157927,
+    "per_class": {
+      "glioma_tumor": {
+        "precision": 1.0,
+        "recall": 0.2976190476190476,
+        "f1": 0.4587155963302752,
+        "support": 84
+      },
+      "meningioma_tumor": {
+        "precision": 0.6829268292682927,
+        "recall": 0.9911504424778761,
+        "f1": 0.808664259927798,
+        "support": 113
+      },
+      "no_tumor": {
+        "precision": 0.7766990291262136,
+        "recall": 0.9876543209876543,
+        "f1": 0.8695652173913043,
+        "support": 81
+      },
+      "pituitary_tumor": {
+        "precision": 0.9090909090909091,
+        "recall": 0.5555555555555556,
+        "f1": 0.6896551724137931,
+        "support": 36
+      }
+    },
+    "independent_clinical_validation": false,
+    "original_training_overlap_unknown": true,
+    "limitations": [
+      "Repository benchmark: 75.5% accuracy on 314 images; original training overlap and patient independence are unknown. This reused dataset is not independent clinical validation.",
+      "Known class confusion: only 25/84 glioma-labeled images (29.8% recall) and 20/36 pituitary-labeled images (55.6% recall) were correctly classified in that benchmark."
+    ]
+  }
+}
